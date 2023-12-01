@@ -13,10 +13,20 @@ $ cd backend
 $ npm install or npm i 
 ```
 
+### Config
+
+Create a .env file in the backend folder and add the following data
+
+```bash
+PORT=3003
+MONGODB_URL=mongodb+srv://project-20231:20231@project-20231.wmwqcgv.mongodb.net/
+```
+
+
 ### Running
 
 ```bash
 $ npm start
 ```
 
-- Finally, open [http://localhost:3003](http://localhost:3003) with your browser to see the result.
+Open [http://localhost:3003](http://localhost:3003) with your browser to see the result.
