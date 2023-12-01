@@ -1,9 +1,9 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const cors = require("cors");
 
 require("dotenv").config();
-const { PORT } = require("./config");
-const connectDb = require("./connect");
+const { PORT, MONGODB_URL } = require("./config");
 const app = express();
 
 app.use(cors());
@@ -11,7 +11,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //Connect to mongodb
-connectDb();
+mongoose
+  .connect(MONGODB_URL)
+  .then(() => console.log("Connected successfully to mongodb atlas"))
+  .catch((err) => {
+    console.error(err);
+    process.exit();
+  });
 
 app.get("/", (req, res) => {
   res.send("hello world");
