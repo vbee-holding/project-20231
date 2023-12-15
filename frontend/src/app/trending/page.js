@@ -1,8 +1,12 @@
+"use client"
 import Post from "@/components/post";
-import { faBoltLightning } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const Trending = () => {
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  
   const datas = [
     {
       id: 1,
@@ -14,6 +18,7 @@ const Trending = () => {
         "Thread chỉ nhận report, nghiêm cấm mọi hành vi spam post, thảo luận/ tranh cãi/ chửi bới",
       comment: 50,
       view: 50,
+      like: 50,
     },
     {
       id: 2,
@@ -25,6 +30,7 @@ const Trending = () => {
         "Thread chỉ nhận report, nghiêm cấm mọi hành vi spam post, thảo luận/ tranh cãi/ chửi bới",
       comment: 50,
       view: 50,
+      like: 50,
     },
     {
       id: 3,
@@ -36,6 +42,7 @@ const Trending = () => {
         "Thread chỉ nhận report, nghiêm cấm mọi hành vi spam post, thảo luận/ tranh cãi/ chửi bới",
       comment: 50,
       view: 50,
+      like: 50,
     },
     {
       id: 4,
@@ -47,6 +54,7 @@ const Trending = () => {
         "Thread chỉ nhận report, nghiêm cấm mọi hành vi spam post, thảo luận/ tranh cãi/ chửi bới",
       comment: 50,
       view: 50,
+      like: 50,
     },
     {
       id: 5,
@@ -58,6 +66,7 @@ const Trending = () => {
         "Thread chỉ nhận report, nghiêm cấm mọi hành vi spam post, thảo luận/ tranh cãi/ chửi bới",
       comment: 50,
       view: 50,
+      like: 50,
     },
     {
       id: 6,
@@ -69,6 +78,7 @@ const Trending = () => {
         "Thread chỉ nhận report, nghiêm cấm mọi hành vi spam post, thảo luận/ tranh cãi/ chửi bới",
       comment: 50,
       view: 50,
+      like: 50,
     },
     {
       id: 7,
@@ -80,16 +90,95 @@ const Trending = () => {
         "Thread chỉ nhận report, nghiêm cấm mọi hành vi spam post, thảo luận/ tranh cãi/ chửi bới",
       comment: 50,
       view: 50,
+      like: 50,
     },
   ];
+  const [items, setItems] = useState([...datas]);
+  const fetchMoreData = () => {
+    const newData = [
+      {
+        id: 8,
+        linkImg: "/assets/images/avatarIcon.png",
+        name: "thuyvan",
+        created: "7/12/2023",
+        title: "InfiniteScroll !",
+        overView:
+          "Cuộn trang vô hạn",
+        comment: 50,
+        view: 50,
+        like: 50,
+      },
+      {
+        id: 9,
+        linkImg: "/assets/images/avatarIcon.png",
+        name: "thuyvan",
+        created: "7/12/2023",
+        title: "InfiniteScroll !",
+        overView:
+          "Cuộn trang vô hạn",
+        comment: 50,
+        view: 50,
+        like: 50,
+      },
+      {
+        id: 10,
+        linkImg: "/assets/images/avatarIcon.png",
+        name: "thuyvan",
+        created: "7/12/2023",
+        title: "InfiniteScroll !",
+        overView:
+          "Cuộn trang vô hạn",
+        comment: 50,
+        view: 50,
+        like: 50,
+      },
+      {
+        id: 11,
+        linkImg: "/assets/images/avatarIcon.png",
+        name: "thuyvan",
+        created: "7/12/2023",
+        title: "InfiniteScroll !",
+        overView:
+          "Cuộn trang vô hạn",
+        comment: 50,
+        view: 50,
+        like: 50,
+      },
+      {
+        id: 12,
+        linkImg: "/assets/images/avatarIcon.png",
+        name: "thuyvan",
+        created: "7/12/2023",
+        title: "InfiniteScroll !",
+        overView:
+          "Cuộn trang vô hạn",
+        comment: 50,
+        view: 50,
+        like: 50,
+      },
+    ]
+
+    if (newData.length === 0) {
+      setHasMore(false);
+    } else {
+      setItems([...items, ...newData]);
+      setPage(page + 1);
+    }
+  };
   return (
     <div>
-      <div className="flex justify-center mt-2">
-        <FontAwesomeIcon icon={faBoltLightning} style={{ width: 30, color: "#33363F" }} />
-        <h1 className="font-bold text-3xl ">Trending</h1>
-      </div>
-      <div>
-        {datas.map((item) => (
+      <InfiniteScroll
+      dataLength={items.length}
+      next={fetchMoreData}
+      hasMore={hasMore}
+      loader={<h4>Loading...</h4>}
+      endMessage={
+        <p style={{ textAlign: 'center' }}>
+          <b>Yay! You have seen it all</b>
+        </p>
+      }
+      >
+        {items.map((item) => (
           <Post
             key={item.id}
             linkImg={item.linkImg}
@@ -99,9 +188,10 @@ const Trending = () => {
             overView={item.overView}
             comment={item.comment}
             view={item.view}
+            like={item.like}
           />
         ))}
-      </div>
+      </InfiniteScroll>
     </div>
   );
 };
