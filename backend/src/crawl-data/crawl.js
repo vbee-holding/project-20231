@@ -27,7 +27,7 @@ const url = "https://voz.vn/f/chuyen-tro-linh-tinh.17/";
     return results;
   });
   try {
-    fs.writeFileSync('src/crawl-data/data.json', JSON.stringify(data, null, 2));
+    fs.writeFileSync('crawldata.json', JSON.stringify(data, null, 2));
     console.log('Saved!');
   } catch (err) {
     console.error(err);
