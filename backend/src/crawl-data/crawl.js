@@ -15,12 +15,11 @@ const url = "https://voz.vn/f/chuyen-tro-linh-tinh.17/";
       const title = item.querySelector('.structItem-title a').innerText.trim();
       const link = item.querySelector('.structItem-title a').href;
       const author = item.querySelector('.structItem-parts a').innerText.trim(); 
-      const createAt = item.querySelector('.u-dt').innerText.trim();
-      const updateAt = item.querySelector('.structItem-latestDate.u-dt').innerText.trim();
+      const createAt = item.querySelector('.u-dt').title;
+      const updateAt = item.querySelector('.structItem-latestDate.u-dt').title;
       const replies = item.querySelector('.pairs.pairs--justified dd').innerText.trim();
       const views = item.querySelector('.pairs.pairs--justified.structItem-minor dd').innerText.trim();
      
-  
       results.push({
         title, link, author, createAt, updateAt, replies, views
       });
@@ -28,7 +27,7 @@ const url = "https://voz.vn/f/chuyen-tro-linh-tinh.17/";
     return results;
   });
   try {
-    fs.writeFileSync('data.json', JSON.stringify(data, null, 2));
+    fs.writeFileSync('src/crawl-data/data.json', JSON.stringify(data, null, 2));
     console.log('Saved!');
   } catch (err) {
     console.error(err);
