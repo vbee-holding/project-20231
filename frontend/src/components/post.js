@@ -15,8 +15,7 @@ const Item = (props) => {
       className="flex items-center 
       bg-neutral-200
       mr-4 py-1 px-2 
-      rounded-3xl cursor-pointer 
-    hover:bg-neutral-400"
+      rounded-3xl cursor-pointer"
     >
       <FontAwesomeIcon
         icon={props.icon}
@@ -69,7 +68,6 @@ const Post = (props) => {
           </div>
         </div>
         <div className="flex mt-2">
-          <Item icon={faHeart} amout={props.comment} text="likes"/>
           <Item icon={faComment} amout={props.view} text="comments"/>
           <Item icon={faEye} amout={props.like} text="views" />
         </div>
