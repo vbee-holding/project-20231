@@ -1,8 +1,8 @@
 const isAuthenticated = (req, res, next) => {
-  if (req.session.passport.user) {
+  if (req.session.passport?.user !== undefined) {
     next();
   } else {
-    res.redirect("/login");
+    res.redirect("/user/login");
   }
 };
 
