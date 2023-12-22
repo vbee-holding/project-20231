@@ -8,7 +8,7 @@ output.logstash:
   enabled: true
   hosts: ["logstash:5044"]
   username: "elastic"
-  password: "tienanh123"
+  password: $ELASTIC_PASSWORD
 
 # output.kafka: 
 #   hosts: ["kafka:9092"] 
@@ -22,5 +22,5 @@ output.logstash:
 setup.kibana:
   host: "http://kibana:5601"
   username: "elastic"
-  password: "tienanh123"
+  password: $ELASTIC_PASSWORD
 
