@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const session = require("express-session");
 const passport = require("passport");
+const route = require("./routes");
 const MongoDBStore = require("connect-mongodb-session")(session);
 
 require("dotenv").config();
@@ -49,6 +50,7 @@ app.use(passport.session());
 passportService(passport);
 
 app.use(authRoutes);
+route(app);
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
