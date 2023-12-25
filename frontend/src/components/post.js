@@ -1,10 +1,6 @@
 import {
   faComment,
-  faCommentDots,
-  faEllipsis,
   faEye,
-  faHeart,
-  faShare,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
@@ -50,12 +46,6 @@ const Post = (props) => {
               {props.name}
             </p>
             <p>{props.created}</p>
-          </div>
-          <div
-            className="flex items-center bg-white hover:bg-gray-400 p-2 
-        rounded-full cursor-pointer"
-          >
-            <FontAwesomeIcon icon={faEllipsis} style={{ width: 20 }} />
           </div>
         </div>
         <div>

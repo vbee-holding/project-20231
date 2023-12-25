@@ -14,6 +14,8 @@ module.exports = {
       },
       colors: {
         custom: '#343A40',
+        header: '#334464',
+        button: '#7234FA'
       },
     },
   },
