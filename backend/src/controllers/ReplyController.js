@@ -7,6 +7,7 @@ class ReplyController{
     const repliesPerPage = 10;
 
     try{
+      let totalReplies = await Reply.countDocuments({threadId: req.params.threadId})
       let replies = await Reply.find({threadId: req.params.threadId})
       .sort({ createdTime: -1 })
       .skip(page * repliesPerPage)
@@ -15,7 +16,12 @@ class ReplyController{
       if(replies.length === 0){
         return res.status(404).send('404 - No replies found!');
       }
-      return res.status(200).json(replies);
+      // return res.status(200).json(replies);
+      const response = {
+        totalPages: Math.ceil(totalReplies / repliesPerPage),
+        replies
+      }
+      return res.status(200).json(response);
     }
     catch(error){
       next(error);
@@ -36,6 +42,7 @@ class ReplyController{
     const repliesPerPage = 10;
 
     let query = Reply.find({ content: { $in: regexKeyWords } });
+    let totalReplies = await Reply.countDocuments({ content: { $in: regexKeyWords } });
     if (newerThan && olderThan) {
       query = query.where('createdTime').gte(new Date(newerThan)).lte(new Date(olderThan));
     }
@@ -60,10 +67,15 @@ class ReplyController{
           reply.relevanceScore = relevanceScore
         });
         replies.sort((a, b) => b.relevanceScore - a.relevanceScore);
-        const startIndex = page * threadsPerPage;
-        const endIndex = startIndex + threadsPerPage;
-        const paginatedReplies = threads.slice(startIndex, endIndex);
-        res.status(200).json(paginatedReplies);
+        const startIndex = page * repliesPerPage;
+        const endIndex = startIndex + repliesPerPage;
+        const paginatedReplies = replies.slice(startIndex, endIndex);
+        // res.status(200).json(paginatedReplies);
+        const response = {
+          totalPages: Math.ceil(totalReplies / repliesPerPage),
+          paginatedReplies
+        }
+        return res.status(200).json(response);
       })
       .catch(next);
       return;

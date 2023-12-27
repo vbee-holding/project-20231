@@ -7,6 +7,7 @@ class ThreadController{
     const threadsPerPage = 10;
     
     try{
+      let totalThreads = await Thread.countDocuments({});
       let threads = await Thread.find({})
         .sort({ createdTime: -1 })
         .skip(page * threadsPerPage)
@@ -15,7 +16,11 @@ class ThreadController{
       if(!threads){
         return res.status(404).send('404 - No threads found!');
       }
-      return res.status(200).json(threads);
+      const response = {
+        totalPages: Math.ceil(totalThreads / threadsPerPage),
+        threads
+      }
+      return res.status(200).json(response);
     }
     catch(error){
       next(error);
@@ -38,7 +43,7 @@ class ThreadController{
     }
   }
 
-    // [GET] /threads/search?text=<từ khóa cần tìm>&newer=<YY-MM-DD>&older=<YY-MM-DD>&order=<type>
+    // [GET] /threads/search?text=<từ khóa cần tìm>&newer=<YY-MM-DD>&older=<YY-MM-DD>&order=<type>?page=<pageNumber>
   async searchThread(req, res, next){
     const text = req.query.text;
     const order = req.query.order;
@@ -52,6 +57,8 @@ class ThreadController{
     const threadsPerPage = 10;
 
     let query = Thread.find({ title: { $in: regexKeyWords } });
+    let totalThreads = await Thread.countDocuments({ title: { $in: regexKeyWords } });
+
     if (newerThan && olderThan) {
       query = query.where('createdTime').gte(new Date(newerThan)).lte(new Date(olderThan));
     }
@@ -79,7 +86,12 @@ class ThreadController{
         const startIndex = page * threadsPerPage;
         const endIndex = startIndex + threadsPerPage;
         const paginatedThreads = threads.slice(startIndex, endIndex);
-        res.status(200).json(paginatedThreads);
+        // res.status(200).json(paginatedThreads);
+        const response = {
+          totalPages: Math.ceil(totalThreads / threadsPerPage),
+          paginatedThreads
+        }
+        return res.status(200).json(response);
       })
       .catch(next);
       return;
