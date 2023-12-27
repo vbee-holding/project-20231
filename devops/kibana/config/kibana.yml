@@ -7,4 +7,7 @@ xpack.monitoring.ui.container.elasticsearch.enabled: true
 #
 
 elasticsearch.username: "kibana"
-elasticsearch.password: $ELASTIC_PASSWORD
+elasticsearch.password: "project20231"
+# xpack.monitoring.enabled: true
+# xpack.monitoring.elasticsearch.username: elastic
+# xpack.monitoring.elasticsearch.password: "project20231"

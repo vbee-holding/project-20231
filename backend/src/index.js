@@ -7,7 +7,7 @@ const MongoDBStore = require("connect-mongodb-session")(session);
 
 require("dotenv").config();
 const passportService = require("./services/passport");
-const { PORT, MONGODB_URL, SECRET_KEY } = require("./config");
+const { PORT, MONGODB_URL_DEV,MONGODB_URL_PRODUCT, SECRET_KEY } = require("./config");
 const { A_WEEK } = require("./constants");
 const authRoutes = require("./routes/auth");
 const app = express();
@@ -17,16 +17,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //Connect to mongodb atlas
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
+let mongoDBURL;
+
+if (isDevelopment) {
+  mongoDBURL = MONGODB_URL_DEV;
+} else {
+  mongoDBURL = MONGODB_URL_PRODUCT;
+}
+
 mongoose
-  .connect(MONGODB_URL)
-  .then(() => console.log("Connected successfully to mongodb atlas"))
+  .connect(mongoDBURL)
+  .then(() => console.log(`Connected successfully to MongoDB Atlas for ${isDevelopment ? 'development' : 'production'}`))
   .catch((err) => {
     console.error(err);
     process.exit();
   });
 
 const store = new MongoDBStore({
-  uri: MONGODB_URL,
+  uri: mongoDBURL,
   collection: "sessions",
 });
 
