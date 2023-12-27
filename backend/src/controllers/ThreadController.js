@@ -3,26 +3,37 @@ const Thread = require('../models/Thread');
 class ThreadController{
   // [GET] /threads
   async showAll(req, res, next){
-    await Thread.find({})
-      .sort({ createdTime: -1 })
-      .lean()
-      .then(thread => {
-        res.json(thread);
-      })
-      .catch(next);
+    try{
+      let threads = await Thread.find({})
+        .sort({ createdTime: -1 })
+        .lean();
+      if(!threads){
+        return res.status(404).send('404 - No threads found!');
+      }
+      return res.status(200).json(threads);
+    }
+    catch(error){
+      next(error);
+    }
   }
 
   // [GET] /threads/:threadId
   async showThread(req, res, next){
-    await Thread.findOne({ threadId: req.params.threadId })
-      .lean()
-      .then(thread => {
-        res.json(thread);
-      })
-      .catch(next);
+    try{
+      let threads = await Thread.findOne({ threadId: req.params.threadId })
+      .sort({ createdTime: -1 })
+      .lean();
+      if(!threads){
+        return res.status(404).send('404 - No threads found!');
+      }
+        return res.status(200).json(threads);
+    }
+    catch(error){
+      next(error);
+    }
   }
 
-  // // [GET] /threads/search
+    // [GET] /threads/search?text=<từ khóa cần tìm>&newer=<YY-MM-DD>&older=<YY-MM-DD>&order=<type>
   async searchThread(req, res, next){
     const text = req.query.text;
     const order = req.query.order;
@@ -57,7 +68,7 @@ class ThreadController{
           thread.relevanceScore = relevanceScore
         });
         threads.sort((a, b) => b.relevanceScore - a.relevanceScore);
-        res.json(threads);
+        res.status(200).json(threads);
       })
       .catch(next);
       return;

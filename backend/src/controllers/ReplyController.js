@@ -4,16 +4,21 @@ class ReplyController{
 
   // [GET] /threads/:threadId/replies
   async showReply(req, res, next){
-    await Reply.find({threadId: req.params.threadId})
+    try{
+      let replies = await Reply.find({threadId: req.params.threadId})
       .sort({ createdTime: -1 })
-      .lean()
-      .then(reply => {
-        res.json(reply);
-      })
-      .catch(next);
+      .lean();
+      if(replies.length === 0){
+        return res.status(404).send('404 - No replies found!');
+      }
+      return res.status(200).json(replies);
+    }
+    catch(error){
+      next(error);
+    }
   }
   
-  // [GET] /threads/:threadId/replies/search
+  // [GET] /threads/:threadId/replies/search?text=<từ khóa cần tìm>&newer=<YY-MM-DD>&older=<YY-MM-DD>&order=<type>
   async searchReply(req, res, next){
     const text = req.query.text;
     const order = req.query.order;
