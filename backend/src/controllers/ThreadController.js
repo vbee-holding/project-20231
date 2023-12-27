@@ -1,11 +1,16 @@
 const Thread = require('../models/Thread');
 
 class ThreadController{
-  // [GET] /threads
+  // [GET] /threads?page=<pageNumber>
   async showAll(req, res, next){
+    const page = req.query.page || 0;
+    const threadsPerPage = 10;
+    
     try{
       let threads = await Thread.find({})
         .sort({ createdTime: -1 })
+        .skip(page * threadsPerPage)
+        .limit(threadsPerPage)
         .lean();
       if(!threads){
         return res.status(404).send('404 - No threads found!');
@@ -42,7 +47,10 @@ class ThreadController{
     
     const keywords = text.split(' ');
     const regexKeyWords = keywords.map(keyword => new RegExp(keyword, 'i'));
-    console.log(regexKeyWords);
+
+    const page = req.query.page || 0;
+    const threadsPerPage = 10;
+
     let query = Thread.find({ title: { $in: regexKeyWords } });
     if (newerThan && olderThan) {
       query = query.where('createdTime').gte(new Date(newerThan)).lte(new Date(olderThan));
@@ -68,13 +76,18 @@ class ThreadController{
           thread.relevanceScore = relevanceScore
         });
         threads.sort((a, b) => b.relevanceScore - a.relevanceScore);
-        res.status(200).json(threads);
+        const startIndex = page * threadsPerPage;
+        const endIndex = startIndex + threadsPerPage;
+        const paginatedThreads = threads.slice(startIndex, endIndex);
+        res.status(200).json(paginatedThreads);
       })
       .catch(next);
       return;
     }
 
     await query
+      .skip(page * threadsPerPage)
+      .limit(threadsPerPage)
       .lean()
       .then(threads =>{
         res.json(threads);

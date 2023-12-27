@@ -1,12 +1,16 @@
 const Reply = require('../models/Reply');
 
 class ReplyController{
-
-  // [GET] /threads/:threadId/replies
+  // [GET] /threads/:threadId/replies?page=<pageNumber>
   async showReply(req, res, next){
+    const page = req.query.page || 0;
+    const repliesPerPage = 10;
+
     try{
       let replies = await Reply.find({threadId: req.params.threadId})
       .sort({ createdTime: -1 })
+      .skip(page * repliesPerPage)
+      .limit(repliesPerPage)
       .lean();
       if(replies.length === 0){
         return res.status(404).send('404 - No replies found!');
@@ -27,6 +31,10 @@ class ReplyController{
 
     const keywords = text.split(' ');
     const regexKeyWords = keywords.map(keyword => new RegExp(keyword, 'i'));
+    
+    const page = req.query.page || 0;
+    const repliesPerPage = 10;
+
     let query = Reply.find({ content: { $in: regexKeyWords } });
     if (newerThan && olderThan) {
       query = query.where('createdTime').gte(new Date(newerThan)).lte(new Date(olderThan));
@@ -52,7 +60,10 @@ class ReplyController{
           reply.relevanceScore = relevanceScore
         });
         replies.sort((a, b) => b.relevanceScore - a.relevanceScore);
-        res.json(replies);
+        const startIndex = page * threadsPerPage;
+        const endIndex = startIndex + threadsPerPage;
+        const paginatedReplies = threads.slice(startIndex, endIndex);
+        res.status(200).json(paginatedReplies);
       })
       .catch(next);
       return;
