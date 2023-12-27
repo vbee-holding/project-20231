@@ -5,7 +5,7 @@ class ReplyController{
   // [GET] /threads/:threadId/replies
   async showReply(req, res, next){
     await Reply.find({threadId: req.params.threadId})
-      .sort({ createdAt: -1 })
+      .sort({ createdTime: -1 })
       .lean()
       .then(reply => {
         res.json(reply);
@@ -24,11 +24,11 @@ class ReplyController{
     const regexKeyWords = keywords.map(keyword => new RegExp(keyword, 'i'));
     let query = Reply.find({ content: { $in: regexKeyWords } });
     if (newerThan && olderThan) {
-      query = query.where('createdAt').gte(new Date(newerThan)).lte(new Date(olderThan));
+      query = query.where('createdTime').gte(new Date(newerThan)).lte(new Date(olderThan));
     }
     // Sort by date
     if (order === 'date') {
-      query = query.sort({ createdAt: -1 });
+      query = query.sort({ createdTime: -1 });
     }
 
     // Sort by relevance
@@ -44,10 +44,9 @@ class ReplyController{
               relevanceScore++;
             }
           });
-          reply.relenvanceScore = relevanceScore
+          reply.relevanceScore = relevanceScore
         });
-        replies.sort((a, b) => b.relevanceScore - a.relenvanceScore);
-        threads.reverse();
+        replies.sort((a, b) => b.relevanceScore - a.relevanceScore);
         res.json(replies);
       })
       .catch(next);

@@ -4,7 +4,7 @@ class ThreadController{
   // [GET] /threads
   async showAll(req, res, next){
     await Thread.find({})
-      .sort({ createdAt: -1 })
+      .sort({ createdTime: -1 })
       .lean()
       .then(thread => {
         res.json(thread);
@@ -34,11 +34,11 @@ class ThreadController{
     console.log(regexKeyWords);
     let query = Thread.find({ title: { $in: regexKeyWords } });
     if (newerThan && olderThan) {
-      query = query.where('createdAt').gte(new Date(newerThan)).lte(new Date(olderThan));
+      query = query.where('createdTime').gte(new Date(newerThan)).lte(new Date(olderThan));
     }
     // Sort by date
     if (order === 'date') {
-      query = query.sort({ createdAt: -1 });
+      query = query.sort({ createdTime: -1 });
     }
 
     // Sort by relevance
@@ -54,10 +54,9 @@ class ThreadController{
               relevanceScore++;
             }
           });
-          thread.relenvanceScore = relevanceScore
+          thread.relevanceScore = relevanceScore
         });
-        threads.sort((a, b) => b.relevanceScore - a.relenvanceScore);
-        threads.reverse();
+        threads.sort((a, b) => b.relevanceScore - a.relevanceScore);
         res.json(threads);
       })
       .catch(next);
