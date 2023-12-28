@@ -81,12 +81,20 @@ class ReplyController{
       return;
     }
 
-    await query
-      .lean()
-      .then(replies =>{
-        res.json(replies);
-      })
-      .catch(next);
+    const replies = await query
+    .sort({ createdTime: -1 })
+    .skip(page * repliesPerPage)
+    .limit(repliesPerPage)
+    .lean();
+    if(replies.length === 0){
+      return res.status(404).send('404 - No replies found!');
+    }
+    // return res.status(200).json(replies);
+    const response = {
+      totalPages: Math.ceil(totalReplies / repliesPerPage),
+      replies
+    }
+    return res.status(200).json(response);
   }
 }
 

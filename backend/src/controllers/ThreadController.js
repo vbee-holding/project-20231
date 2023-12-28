@@ -97,16 +97,21 @@ class ThreadController{
       return;
     }
 
-    await query
+    const threads = await query
+      .sort({createdTime: -1})
       .skip(page * threadsPerPage)
       .limit(threadsPerPage)
-      .lean()
-      .then(threads =>{
-        res.json(threads);
-      })
-      .catch(next);
+      .lean();
+      if(threads.length === 0){
+        return res.status(404).send('404 - No threads found!');
+      }
+      // return res.status(200).json(replies);
+      const response = {
+        totalPages: Math.ceil(totalThreads / threadsPerPage),
+        threads
+      }
+      return res.status(200).json(response);
   }
-
 }
 
 module.exports = new ThreadController();
