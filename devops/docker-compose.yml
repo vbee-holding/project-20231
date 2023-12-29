@@ -18,9 +18,10 @@ services:
       - "9300:9300"
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-      ELASTIC_PASSWORD: $ELASTIC_PASSWORD
+      ELASTIC_PASSWORD: "project20231"
     networks:
       - project20231
+
   logstash:
     build:
       context: logstash/
@@ -55,7 +56,7 @@ services:
     environment:
         ELASTICSEARCH_USERNAME: kibana
         ELASTICSEARCH_URL: http://elasticsearch:9200
-        ELASTICSEARCH_PASSWORD: $ELASTIC_PASSWORD
+        ELASTICSEARCH_PASSWORD: "project20231"
     #   ELASTICSEARCH_SERVICEACCOUNTTOKEN: AAEAAWVsYXN0aWMva2liYW5hL3Rva2VuMTpaM1YzQVpTMFFVNmhQU3UzczlmLUpn
     volumes:
       - type: bind
@@ -82,6 +83,52 @@ services:
       - kibana
     links: 
       - logstash
+
+
+  nginx:
+    build: ./nginx
+    volumes:
+      - ./nginx/config:/etc/nginx/conf.d
+      - ./nginx/log:/var/log/nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - app-project20231:app-project20231
+    depends_on: 
+      - app-project20231
+    networks:
+      - project20231
+
+  # app-project20231-fe:
+  #   build : 
+  #     context: ../frontend
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./app:/usr/app
+  #     - ./app/log:/var/log/app
+  #     - /usr/src/app-fe/node_modules/
+  #   command: npm run dev
+  #   ports:
+  #     - "3003:3003"
+  #   depends_on: 
+  #     - app-project20231
+  #   networks:
+  #     - project20231
+
+    app-project20231:
+    build : 
+      context: ../backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./app:/usr/app
+      - ./app/log:/var/log/app
+      - /usr/src/app/node_modules/
+    command: npm start
+    ports:
+      - "3003:3003"
+    networks:
+      - project20231
 
 networks:
   project20231:
