@@ -6,4 +6,5 @@ module.exports = {
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
   CALLBACK_URL: process.env.CALLBACK_URL,
   SECRET_KEY: process.env.SECRET_KEY,
+  BASE_URL : process.env.BASE_URL || 'http://localhost',
 };
