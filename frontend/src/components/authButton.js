@@ -1,15 +1,15 @@
 "use client";
 import Image from "next/image";
-import { signIn, signOut, useSession } from "next-auth/react";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-export function GoogleSignInButton({ image, name, email }) {
+export function AvatarUser({ image, name, email }) {
   const handleClick = () => {
-    signOut();
+    localStorage.removeItem("userSession");
+    window.location.reload();
   };
   return (
     <Menu as="div" className="relative inline-block mr-2">
@@ -65,39 +65,22 @@ export function GoogleSignInButton({ image, name, email }) {
                 </p>
               )}
             </Menu.Item>
-              <Menu.Item>
-                {({ active }) => (
-                  <button
-                    onClick={handleClick}
-                    className={classNames(
-                      active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                      "block w-full px-4 py-2 text-left text-sm"
-                    )}
-                  >
-                    Sign out
-                  </button>
-                )}
-              </Menu.Item>
+            <Menu.Item>
+              {({ active }) => (
+                <button
+                  onClick={handleClick}
+                  className={classNames(
+                    active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+                    "block w-full px-4 py-2 text-left text-sm"
+                  )}
+                >
+                  Sign out
+                </button>
+              )}
+            </Menu.Item>
           </div>
         </Menu.Items>
       </Transition>
     </Menu>
-  );
-}
-export function ButtonLogin() {
-  const handleClick = async () => {
-    const response = await signIn("google");
-  };
-  return (
-    <div className="flex justify-between items-center">
-      <div className="mr-1">
-        <button
-          onClick={() => handleClick()}
-          className="bg-button hover:bg-violet-500 active:bg-gray-800 text-white font-bold py-2 px-4 rounded-full w-max"
-        >
-          Log in
-        </button>
-      </div>
-    </div>
   );
 }
