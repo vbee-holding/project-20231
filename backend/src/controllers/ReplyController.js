@@ -8,6 +8,9 @@ class ReplyController{
 
     try{
       let totalReplies = await Reply.countDocuments({threadId: req.params.threadId})
+      if(page > Math.ceil(totalReplies / repliesPerPage)){
+        return res.status(404).send('404 - No replies found!');
+      }
       let replies = await Reply.find({threadId: req.params.threadId})
       .sort({ createdTime: -1 })
       .skip(page * repliesPerPage)
@@ -43,6 +46,9 @@ class ReplyController{
 
     let query = Reply.find({ content: { $in: regexKeyWords } });
     let totalReplies = await Reply.countDocuments({ content: { $in: regexKeyWords } });
+    if(page > Math.ceil(totalReplies / repliesPerPage)){
+      return res.status(404).send('404 - No replies found!');
+    }
     if (newerThan && olderThan) {
       query = query.where('createdTime').gte(new Date(newerThan)).lte(new Date(olderThan));
     }

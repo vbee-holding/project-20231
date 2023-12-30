@@ -5,9 +5,12 @@ class ThreadController{
   async showAll(req, res, next){
     const page = req.query.page || 0;
     const threadsPerPage = 10;
-    
+
     try{
       let totalThreads = await Thread.countDocuments({});
+      if(page > Math.ceil(totalThreads / threadsPerPage)){
+        return res.status(404).send('404 - No threads found!');
+      }
       let threads = await Thread.find({})
         .sort({ createdTime: -1 })
         .skip(page * threadsPerPage)
@@ -59,6 +62,10 @@ class ThreadController{
     let query = Thread.find({ title: { $in: regexKeyWords } });
     let totalThreads = await Thread.countDocuments({ title: { $in: regexKeyWords } });
 
+    if(page > Math.ceil(totalThreads / threadsPerPage)){
+      return res.status(404).send('404 - No threads found!');
+    }
+    
     if (newerThan && olderThan) {
       query = query.where('createdTime').gte(new Date(newerThan)).lte(new Date(olderThan));
     }
