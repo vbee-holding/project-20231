@@ -1,5 +1,8 @@
 const Thread = require('../models/Thread');
-
+const { OpenAI } = require('openai');
+const openai = new OpenAI({
+  apiKey: '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',
+});
 class ThreadController{
   // [GET] /threads?page=<pageNumber>
   async showAll(req, res, next){
@@ -34,7 +37,6 @@ class ThreadController{
   async showThread(req, res, next){
     try{
       let threads = await Thread.findOne({ threadId: req.params.threadId })
-      .sort({ createdTime: -1 })
       .lean();
       if(!threads){
         return res.status(404).send('404 - No threads found!');
@@ -46,6 +48,39 @@ class ThreadController{
     }
   }
 
+  // [GET] /threads/:threadId/summary
+  async showSummarizedThread(req, res, next){
+    try{
+      let threads = await Thread.findOne({ threadId: req.params.threadId })
+      .lean();
+      let content = threads.content;
+      // const prompt = "Summarize content you are provided with in Vietnamese as if you are the writer of that content in exactly 100 words for me, please";
+      const prompt = "tóm tắt giúp tôi nội dung bạn được cung cấp trong đúng 70 từ";
+      if(content.length < 200){
+        return res.json(content);
+      }
+      else{
+        const response = await openai.chat.completions.create({
+          model: "gpt-3.5-turbo",
+          messages: [
+            { 
+              "role": "system", 
+              "content": prompt},
+            {
+              "role": "user",
+              "content": content
+            }
+          ],
+          temperature: 0.5,
+          top_p: 0.5,
+        });
+        return res.json(response);
+      }
+    }
+    catch(error){
+      next(error);
+    }
+  }
     // [GET] /threads/search?text=<từ khóa cần tìm>&newer=<YY-MM-DD>&older=<YY-MM-DD>&order=<type>?page=<pageNumber>
   async searchThread(req, res, next){
     const text = req.query.text;
