@@ -1,7 +1,6 @@
 "use client"
 import Post from "@/components/post";
-import { GoogleLogin, GoogleOAuthProvider, useGoogleOneTapLogin } from "@react-oauth/google";
-import { useEffect, useState } from "react";
+import {useState } from "react";
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 const Trending = () => {
