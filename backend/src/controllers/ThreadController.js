@@ -1,7 +1,7 @@
 const Thread = require('../models/Thread');
 const { OpenAI } = require('openai');
 const openai = new OpenAI({
-  apiKey: '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',
+  apiKey: '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',
 });
 class ThreadController{
   // [GET] /threads?page=<pageNumber>
@@ -54,8 +54,7 @@ class ThreadController{
       let threads = await Thread.findOne({ threadId: req.params.threadId })
       .lean();
       let content = threads.content;
-      // const prompt = "Summarize content you are provided with in Vietnamese as if you are the writer of that content in exactly 100 words for me, please";
-      const prompt = "tóm tắt giúp tôi nội dung bạn được cung cấp trong đúng 70 từ";
+      const prompt = "Summarize content you are provided with in Vietnamese in exactly 100 words";
       if(content.length < 200){
         return res.json(content);
       }
@@ -65,14 +64,15 @@ class ThreadController{
           messages: [
             { 
               "role": "system", 
-              "content": prompt},
+              "content": prompt
+            },
             {
               "role": "user",
               "content": content
             }
           ],
-          temperature: 0.5,
-          top_p: 0.5,
+          temperature: 0,
+          top_p: 1,
         });
         return res.json(response);
       }
