@@ -1,14 +1,12 @@
-import schedule
-import time
 from pymongo import MongoClient
 
 
 def join_collections():
-    client = MongoClient("mongodb://localhost:27017/")
+    client = MongoClient("mongodb+srv://project-20231:20231@project-20231.wmwqcgv.mongodb.net")
     database = client["test"]
 
-    thread = database["thread"]
-    reply = database["reply"]
+    thread = database["threads"]
+    reply = database["replies"]
 
     pipeline = [
         {
@@ -32,10 +30,3 @@ def join_collections():
 
 
 join_collections()
-
-# Hẹn giờ chạy lại sau mỗi 2 phút
-schedule.every(2).minutes.do(join_collections)
-
-while True:
-    schedule.run_pending()
-    time.sleep(1)

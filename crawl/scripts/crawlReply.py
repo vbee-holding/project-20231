@@ -2,14 +2,12 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 import pymongo
-import schedule
-import time
 
-# Kết nóio với mongodb
-client = pymongo.MongoClient("mongodb://localhost:27017/")
+# Kết nối với mongodb
+client = pymongo.MongoClient("mongodb+srv://project-20231:20231@project-20231.wmwqcgv.mongodb.net")
 database = client["test"]
-collection_thread = database["thread"]
-collection_reply = database["reply"]
+collection_thread = database["threads"]
+collection_reply = database["replies"]
 
 
 def fetch_data(url):
@@ -87,7 +85,7 @@ def fetch_data(url):
             else:
                 img_url = ''
 
-            threadId = url[17:]
+            threadId = url[17:].split('/')[0]
 
             result.append({'reply_id': reply_id, 'author': author, 'avatar_url': avatar_url, 'author_title': author_title, 'text_content': text_content,
                            'img_url': img_url, 'reply_detail': {'reply_detail_id': reply_detail_id, 'title': title, 'reply_detail_content': reply_detail_content, 'reply_detail_img_url': reply_detail_img_url}, 'threadId': threadId, 'createdAt': createdAt, 'createdTime': createdTime})
@@ -103,23 +101,13 @@ def fetch_data(url):
 
 def scrape_data():
     all_results = []
-    # Lấy thời gian hiện tại
-    now = datetime.utcnow()
 
-    # Lấy thời gian 1 ngày trước
-    yesterday = now - timedelta(days=1)
-
-    # Lấy tất cả threadId được tạo trong 1 ngày gần với hiện tại
-    # data = collection.find({"updatedAt": {"$gte": yesterday}}, {
-    #                        "threadId": 1, "_id": 0})
-    # data_count = len(list(data))
-    # print(data_count)
-
-    data = collection_thread.find({}, {"threadId": 1, "_id": 0})
-    # data.rewind()
+    data = collection_thread.find(
+        {"check": 1}, {"threadId": 1, "last_page": 1})
 
     for child in data:
-        url = "https://voz.vn/t/" + child['threadId']
+        url = "https://voz.vn/t/" + \
+            child['threadId'] + "/page-" + child['last_page']
         fetched_data = fetch_data(url)
         if fetched_data:
             all_results.extend(fetched_data)
@@ -130,15 +118,4 @@ def scrape_data():
         print("Hiện tại không có dữ liệu mới nào được thêm vào")
 
 
-def run_scrape():
-    scrape_data()
-    # Hẹn giờ chạy lại sau 1 phút
-    schedule.every(1).minutes.do(scrape_data)
-
-
-run_scrape()
-
-# Chạy vô hạn để luôn thực hiện lịch trình
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+scrape_data()
