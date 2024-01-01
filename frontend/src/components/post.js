@@ -35,13 +35,13 @@ const Post = (props) => {
       <div className="max-w-2xl p-4 mx-auto">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
-            <Image
+            {/* <Image
               className="cursor-pointer"
               src={props.linkImg}
               alt="avatar"
               width={60}
               height={60}
-            />
+            /> */}
             <p className="font-bold mx-2 cursor-pointer hover:underline">
               {props.name}
             </p>
@@ -50,16 +50,10 @@ const Post = (props) => {
         </div>
         <div>
           <h1 className="font-bold text-3xl my-2">{props.title}</h1>
-          <div>
-            <p className="inline">{props.overView}</p>
-            <span className="inline font-bold cursor-pointer hover:underline">
-              ... More
-            </span>
-          </div>
         </div>
         <div className="flex mt-2">
-          <Item icon={faComment} amout={props.view} text="comments"/>
-          <Item icon={faEye} amout={props.like} text="views" />
+          <Item icon={faComment} amout={props.comment} text="comments"/>
+          <Item icon={faEye} amout={props.view} text="views" />
         </div>
       </div>
       <div className="bg-gray-400 h-0.5 max-w-2xl mx-auto"></div>

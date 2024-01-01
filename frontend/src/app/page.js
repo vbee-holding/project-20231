@@ -1,111 +1,65 @@
+"use client"
 import { faBoltLightning } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Post from '@/components/post';
+import Post from "@/components/post";
+import { useEffect, useState } from "react";
+import axios from "@/utils/axios";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function Home() {
-  const datas = [
-    {
-      id: 1,
-      linkImg: "/assets/images/avatarIcon.png",
-      name: "thuyvan",
-      created: "7/12/2023",
-      title: "Report for F17 !",
-      overView:
-        "Thread chỉ nhận report, nghiêm cấm mọi hành vi spam post, thảo luận/ tranh cãi/ chửi bới",
-      comment: 50,
-      view: 50,
-      like: 50,
-    },
-    {
-      id: 2,
-      linkImg: "/assets/images/avatarIcon.png",
-      name: "thuyvan",
-      created: "7/12/2023",
-      title: "Report for F17 !",
-      overView:
-        "Thread chỉ nhận report, nghiêm cấm mọi hành vi spam post, thảo luận/ tranh cãi/ chửi bới",
-      comment: 50,
-      view: 50,
-      like: 50,
-    },
-    {
-      id: 3,
-      linkImg: "/assets/images/avatarIcon.png",
-      name: "thuyvan",
-      created: "7/12/2023",
-      title: "Report for F17 !",
-      overView:
-        "Thread chỉ nhận report, nghiêm cấm mọi hành vi spam post, thảo luận/ tranh cãi/ chửi bới",
-      comment: 50,
-      view: 50,
-      like: 50,
-    },
-    {
-      id: 4,
-      linkImg: "/assets/images/avatarIcon.png",
-      name: "thuyvan",
-      created: "7/12/2023",
-      title: "Report for F17 !",
-      overView:
-        "Thread chỉ nhận report, nghiêm cấm mọi hành vi spam post, thảo luận/ tranh cãi/ chửi bới",
-      comment: 50,
-      view: 50,
-      like: 50,
-    },
-    {
-      id: 5,
-      linkImg: "/assets/images/avatarIcon.png",
-      name: "thuyvan",
-      created: "7/12/2023",
-      title: "Report for F17 !",
-      overView:
-        "Thread chỉ nhận report, nghiêm cấm mọi hành vi spam post, thảo luận/ tranh cãi/ chửi bới",
-      comment: 50,
-      view: 50,
-      like: 50,
-    },
-    {
-      id: 6,
-      linkImg: "/assets/images/avatarIcon.png",
-      name: "thuyvan",
-      created: "7/12/2023",
-      title: "Report for F17 !",
-      overView:
-        "Thread chỉ nhận report, nghiêm cấm mọi hành vi spam post, thảo luận/ tranh cãi/ chửi bới",
-      comment: 50,
-      view: 50,
-      like: 50,
-    },
-    {
-      id: 7,
-      linkImg: "/assets/images/avatarIcon.png",
-      name: "thuyvan",
-      created: "7/12/2023",
-      title: "Report for F17 !",
-      overView:
-        "Thread chỉ nhận report, nghiêm cấm mọi hành vi spam post, thảo luận/ tranh cãi/ chửi bới",
-      comment: 50,
-      view: 50,
-      like: 50,
-    },
-  ];
+  const [items, setItems] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [index, setIndex] = useState(1);
+
+  useEffect(() => {
+    axios
+      .get("threads")
+      .then((res) => setItems(res.data.threads))
+      .catch((err) => console.log(err));
+  }, []);
+
+  const fetchMoreData = () => {
+    axios
+      .get("threads", {
+        params: {
+          page: index,
+        },
+      })
+      .then((res) => {
+        setItems((prevItems) => [...prevItems, ...res.data.threads]);
+
+        res.data.threads.length > 0 ? setHasMore(true) : setHasMore(false);
+      })
+      .catch((err) => console.log(err));
+
+    setIndex((prevIndex) => prevIndex + 1);
+  };
+
   return (
     <main>
       <div>
-        {datas.map((item) => (
+        <InfiniteScroll
+          dataLength={items.length}
+          next={fetchMoreData}
+          hasMore={hasMore}
+          loader={<p className="text-center">Loading</p>}
+        >
+          {items.map((item, index) => (
           <Post
-            key={item.id}
-            linkImg={item.linkImg}
-            name={item.name}
-            created={item.created}
+            key={index}
+            linkImg={item.avatar_url}
+            name={item.author}
+            created={item.createdAt}
             title={item.title}
-            overView={item.overView}
-            comment={item.comment}
-            view={item.view}
-            like={item.like}
+            // overView={item.overView}
+            comment={item.replies}
+            view={item.views}
+            // like={item.like}
           />
         ))}
+        </InfiniteScroll>
+        
       </div>
     </main>
-  )
+  );
 }
