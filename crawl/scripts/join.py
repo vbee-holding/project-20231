@@ -9,13 +9,13 @@ def join_collections():
     client = MongoClient(os.getenv("MONGODB_URL_DEV"))
     database = client["test"]
 
-    thread = database["threads"]
-    reply = database["replies"]
+    threads = database["threads"]
+    database["replies"]
 
     pipeline = [
         {
             "$lookup": {
-                "from": "reply",
+                "from": "replies",
                 "localField": "threadId",
                 "foreignField": "threadId",
                 "as": "replys"
@@ -23,13 +23,13 @@ def join_collections():
         },
         {
             "$merge": {
-                "into": "thread",
+                "into": "threads",
                 "whenMatched": "merge"
             }
         }
     ]
 
-    result = thread.aggregate(pipeline)
+    threads.aggregate(pipeline)
     print("Join thành công")
 
 
