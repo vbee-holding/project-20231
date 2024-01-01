@@ -1,8 +1,12 @@
 from pymongo import MongoClient
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 
 def join_collections():
-    client = MongoClient("mongodb+srv://project-20231:20231@project-20231.wmwqcgv.mongodb.net")
+    client = MongoClient(os.getenv("MONGODB_URL_DEV"))
     database = client["test"]
 
     thread = database["threads"]
