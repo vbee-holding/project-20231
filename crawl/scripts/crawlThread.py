@@ -2,13 +2,11 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 import pymongo
-import schedule
-import time
 
 # Kết nối với mongodb
-client = pymongo.MongoClient("mongodb://localhost:27017/")
+client = pymongo.MongoClient("mongodb+srv://project-20231:20231@project-20231.wmwqcgv.mongodb.net")
 database = client["test"]
-collection = database["thread"]
+collection = database["threads"]
 
 
 def crawl_thread():  # Hàm crawl data thread
@@ -45,6 +43,17 @@ def crawl_thread():  # Hàm crawl data thread
             "div", class_="structItem-title").a.text.strip()
         existing_thread = collection.find_one({"title": title})
 
+        page_jump = post_content.find('span', class_='structItem-pageJump')
+        # Giá trị mặc định
+        last_page = '1'
+        if page_jump:
+            all_links = page_jump.find_all("a")
+            if all_links:
+                if all_links[-1].text:
+                    last_page = all_links[-1].text
+
+        check = 0
+
         # Kiểm tra tiêu đề đã có trong collection thread chưa
         if existing_thread:
             # Nếu title đã tồn tại và updatedTime mới hơn latest_time, cập nhật lại updatedTime, updatedAt
@@ -53,16 +62,22 @@ def crawl_thread():  # Hàm crawl data thread
                     {"title": title}, {"$set": {"updatedTime": updatedTime}})
                 collection.update_one(
                     {"title": title}, {"$set": {"updatedAt": updatedAt}})
+                collection.update_one(
+                    {"title": title}, {"$set": {"check": 1}})
+                collection.update_one(
+                    {"title": title}, {"$set": {"last_page": last_page}})
                 print(
-                    f"Đã cập nhật updatedTime và updatedAt cho thread: {title}")
+                    f"Đã cập nhật updatedTime, updatedAt, last_page và check cho thread: {title}")
             else:
+                collection.update_one(
+                    {"title": title}, {"$set": {"check": 0}})
                 print("Dữ liệu trong collection thread không có sự thay đổi")
 
             existing_thread = None
         else:
             # Nếu title chưa tồn tại trong collection thread, thêm dữ liệu mới
             threadId = post_content.find(
-                "div", class_="structItem-title").a["href"][3:]
+                "div", class_="structItem-title").a["href"][3:-1]
 
             avatar_url = (
                 post_content.find(
@@ -85,6 +100,8 @@ def crawl_thread():  # Hàm crawl data thread
                 else post_content.find("a", class_="username").text.strip()
             )
 
+            check = 1
+
             result.append(
                 {
                     "title": title,
@@ -93,6 +110,8 @@ def crawl_thread():  # Hàm crawl data thread
                     "threadId": threadId,
                     "total_replies": total_replies,
                     "views": views,
+                    "last_page": last_page,
+                    "check": check,
                     "createdAt": createdAt,
                     "updatedAt": updatedAt,
                     "createdTime": createdTime,
@@ -106,11 +125,4 @@ def crawl_thread():  # Hàm crawl data thread
         collection.insert_many(result)
 
 
-# Gọi hàm crawl_thread và crawl lại data sau 1 phút
 crawl_thread()
-schedule.every(1).minutes.do(crawl_thread)
-
-# Tạo vòng lặp vô hạn để luôn chạy dự án
-while True:
-    schedule.run_pending()
-    time.sleep(1)
