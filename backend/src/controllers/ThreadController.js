@@ -1,7 +1,7 @@
 const Thread = require('../models/Thread');
 const { OpenAI } = require('openai');
 const openai = new OpenAI({
-  apiKey: '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',
+  apiKey: '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',
 });
 class ThreadController{
   // [GET] /threads?page=<pageNumber>
@@ -22,6 +22,13 @@ class ThreadController{
       if(!threads){
         return res.status(404).send('404 - No threads found!');
       }
+      // Giới hạn content của threads chỉ có tối đa 20 từ
+      threads = threads.map(thread => {
+        if (thread.content && thread.content.split(' ').length > 20) {
+          thread.content = thread.content.split(' ').slice(0, 20).join(' ');
+        }
+        return thread;
+      });
       const response = {
         totalPages: Math.ceil(totalThreads / threadsPerPage),
         threads
