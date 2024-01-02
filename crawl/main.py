@@ -5,7 +5,7 @@ commands = [
     ["python", "scripts/crawlThread.py"],
     ["python", "scripts/crawlReply.py"],
     ["python", "scripts/crawlSimilarThreads.py"],
-    ["python", "scripts/join.py"]
+    ["python", "scripts/embedded.py"]
 ]
 
 while True:
