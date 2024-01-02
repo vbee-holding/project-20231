@@ -4,6 +4,7 @@ import time
 commands = [
     ["python", "scripts/crawlThread.py"],
     ["python", "scripts/crawlReply.py"],
+    ["python", "scripts/crawlSimilarThreads.py"],
     ["python", "scripts/join.py"]
 ]
 
