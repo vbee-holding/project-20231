@@ -1,7 +1,9 @@
+require("dotenv").config();
 const Thread = require('../models/Thread');
 const { OpenAI } = require('openai');
+const { OPENAI_API_KEY } = require('../config');
 const openai = new OpenAI({
-  apiKey: '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',
+  apiKey: OPENAI_API_KEY,
 });
 class ThreadController{
   // [GET] /threads?page=<pageNumber>
