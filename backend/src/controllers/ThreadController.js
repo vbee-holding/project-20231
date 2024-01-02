@@ -1,5 +1,8 @@
 const Thread = require('../models/Thread');
-
+const { OpenAI } = require('openai');
+const openai = new OpenAI({
+  apiKey: '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',
+});
 class ThreadController{
   // [GET] /threads?page=<pageNumber>
   async showAll(req, res, next){
@@ -19,6 +22,13 @@ class ThreadController{
       if(!threads){
         return res.status(404).send('404 - No threads found!');
       }
+      // Giới hạn content của threads chỉ có tối đa 20 từ
+      threads = threads.map(thread => {
+        if (thread.content && thread.content.split(' ').length > 20) {
+          thread.content = thread.content.split(' ').slice(0, 20).join(' ');
+        }
+        return thread;
+      });
       const response = {
         totalPages: Math.ceil(totalThreads / threadsPerPage),
         threads
@@ -34,7 +44,6 @@ class ThreadController{
   async showThread(req, res, next){
     try{
       let threads = await Thread.findOne({ threadId: req.params.threadId })
-      .sort({ createdTime: -1 })
       .lean();
       if(!threads){
         return res.status(404).send('404 - No threads found!');
@@ -46,6 +55,39 @@ class ThreadController{
     }
   }
 
+  // [GET] /threads/:threadId/summary
+  async showSummarizedThread(req, res, next){
+    try{
+      let threads = await Thread.findOne({ threadId: req.params.threadId })
+      .lean();
+      let content = threads.content;
+      const prompt = "Summarize content you are provided with in Vietnamese in exactly 100 words";
+      if(content.length < 200){
+        return res.json(content);
+      }
+      else{
+        const response = await openai.chat.completions.create({
+          model: "gpt-3.5-turbo",
+          messages: [
+            { 
+              "role": "system", 
+              "content": prompt
+            },
+            {
+              "role": "user",
+              "content": content
+            }
+          ],
+          temperature: 0,
+          top_p: 1,
+        });
+        return res.json(response);
+      }
+    }
+    catch(error){
+      next(error);
+    }
+  }
     // [GET] /threads/search?text=<từ khóa cần tìm>&newer=<YY-MM-DD>&older=<YY-MM-DD>&order=<type>?page=<pageNumber>
   async searchThread(req, res, next){
     const text = req.query.text;
