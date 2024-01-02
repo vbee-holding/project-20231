@@ -8,6 +8,7 @@ const userSchema = mongoose.model(
       email: String,
       username: String,
       profileImgUrl: String,
+      isNotifi: Boolean,
     },
     {
       timestamps: true,
