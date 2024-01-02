@@ -1,7 +1,4 @@
-import {
-  faComment,
-  faEye,
-} from "@fortawesome/free-solid-svg-icons";
+import { faComment, faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 
@@ -35,24 +32,31 @@ const Post = (props) => {
       <div className="max-w-2xl p-4 mx-auto">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
-            {/* <Image
-              className="cursor-pointer"
-              src={props.linkImg}
-              alt="avatar"
-              width={60}
-              height={60}
-            /> */}
+            {props.linkImg.startsWith("https://") ? (
+              <Image
+                className="cursor-pointer rounded-full"
+                src={props.linkImg}
+                alt="avatar"
+                width={48}
+                height={48}
+              />
+            ) : (
+              <div className="w-12 h-12 rounded-full bg-blue-700 flex justify-center items-center">
+                <p className="font-bold text-lg text-white">T</p>
+              </div>
+            )}
+
             <p className="font-bold mx-2 cursor-pointer hover:underline">
               {props.name}
             </p>
-            <p>{props.created}</p>
+            <p className="text-sm">{props.created}</p>
           </div>
         </div>
         <div>
-          <h1 className="font-bold text-3xl my-2">{props.title}</h1>
+          <h1 className="font-bold text-2xl my-2">{props.title}</h1>
         </div>
         <div className="flex mt-2">
-          <Item icon={faComment} amout={props.comment} text="comments"/>
+          <Item icon={faComment} amout={props.comment} text="comments" />
           <Item icon={faEye} amout={props.view} text="views" />
         </div>
       </div>
