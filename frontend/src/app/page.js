@@ -5,6 +5,7 @@ import Post from "@/components/post";
 import { useEffect, useState } from "react";
 import axios from "@/utils/axios";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Loader from "@/components/loader";
 
 export default function Home() {
   const [items, setItems] = useState([]);
@@ -41,7 +42,7 @@ export default function Home() {
         dataLength={items.length}
         next={fetchMoreData}
         hasMore={hasMore}
-        loader={<p className="text-center">Loading</p>}
+        loader={<Loader />}
       >
         {items.map((item, index) => (
           <Post
