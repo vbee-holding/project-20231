@@ -77,9 +77,12 @@ def fetch_data(url):
                         separator=' ', strip=True)
 
             text_content_element = item.find('div', class_="bbWrapper")
+            content_element = str(text_content_element)
             for blockquote in text_content_element.find_all('blockquote'):
                 blockquote.extract()
-            text_content = text_content_element.get_text(
+            for img in text_content_element.find_all('img'):
+                img.extract()
+            content = text_content_element.get_text(
                 separator=' ', strip=True)
 
             bbImage = item.find('img', class_="bbImage")
@@ -90,7 +93,7 @@ def fetch_data(url):
 
             threadId = url[17:].split('/')[0]
 
-            result.append({'reply_id': reply_id, 'author': author, 'avatar_url': avatar_url, 'author_title': author_title, 'text_content': text_content,
+            result.append({'reply_id': reply_id, 'author': author, 'avatar_url': avatar_url, 'author_title': author_title, 'content': content, 'content_element': content_element,
                            'img_url': img_url, 'reply_detail': {'reply_detail_id': reply_detail_id, 'title': title, 'reply_detail_content': reply_detail_content, 'reply_detail_img_url': reply_detail_img_url}, 'threadId': threadId, 'createdAt': createdAt, 'createdTime': createdTime})
 
             print(
@@ -111,6 +114,7 @@ def scrape_data():
     for child in data:
         url = "https://voz.vn/t/" + \
             child['threadId'] + "/page-" + child['last_page']
+        # url = "https://voz.vn/t/" + child['threadId']
         fetched_data = fetch_data(url)
         if fetched_data:
             all_results.extend(fetched_data)

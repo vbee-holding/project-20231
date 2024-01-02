@@ -87,10 +87,6 @@ def scrape_data():
             all_results.extend(fetched_data)
 
     if all_results:
-        # Xóa hết dữ liệu cũ trong collection similarThread
-        collection_similar_thread.delete_many({})
-
-        # Thêm dữ liệu mới vào collection similarThread
         collection_similar_thread.insert_many(all_results)
         print("Đã thêm dữ liệu mới vào collection similarThread")
     else:
