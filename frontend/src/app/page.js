@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { faBoltLightning } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Post from "@/components/post";
@@ -36,15 +36,14 @@ export default function Home() {
   };
 
   return (
-    <main>
-      <div>
-        <InfiniteScroll
-          dataLength={items.length}
-          next={fetchMoreData}
-          hasMore={hasMore}
-          loader={<p className="text-center">Loading</p>}
-        >
-          {items.map((item, index) => (
+    <div>
+      <InfiniteScroll
+        dataLength={items.length}
+        next={fetchMoreData}
+        hasMore={hasMore}
+        loader={<p className="text-center">Loading</p>}
+      >
+        {items.map((item, index) => (
           <Post
             key={index}
             linkImg={item.avatar_url}
@@ -52,14 +51,12 @@ export default function Home() {
             created={item.createdAt}
             title={item.title}
             // overView={item.overView}
-            comment={item.replies}
+            comment={item.total_replies}
             view={item.views}
             // like={item.like}
           />
         ))}
-        </InfiniteScroll>
-        
-      </div>
-    </main>
+      </InfiniteScroll>
+    </div>
   );
 }
