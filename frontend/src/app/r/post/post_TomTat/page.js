@@ -2,6 +2,7 @@ import { faBoltLightning } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Post_TomTat from '../post_TomTat/post_TomTat';
 import Link from 'next/link'
+import BackBar from "@/components/backBar";
 
 export default function Home() {
   const datas = [
@@ -29,6 +30,7 @@ export default function Home() {
   return (
     <main>
       <div>
+      <BackBar/>
         {datas.map((item) => (
           <div key={item.id}>
             <Post_TomTat

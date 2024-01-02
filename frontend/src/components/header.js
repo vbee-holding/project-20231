@@ -4,20 +4,16 @@ import { AvatarUser } from "./authButton";
 import { GoogleLogin } from "@react-oauth/google";
 import { decodeJwt } from "jose";
 import axios from '@/utils/axios'
+import { Icons } from "./icons";
 
 const HeaderContainer = ({ children }) => {
   return (
     <header className="bg-header fixed top-0 z-10 w-full h-16">
       <div className=" relative h-full max-w-4xl mx-auto px-4 py-2 flex justify-between items-center">
         <div className="grow">
-          <Image
-            src="/assets/images/VozIcon.png"
-            alt="logo"
-            width={80}
-            height={80}
-            style={{ width: "auto", height: "50px" }}
-            priority={false}
-          />
+          <a href="/">
+            <Icons.logo className="h-8 w-8 sm:h-6 sm:w-6" />
+          </a>
         </div>
         <div className="flex">{children}</div>
       </div>

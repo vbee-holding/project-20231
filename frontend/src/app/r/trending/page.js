@@ -1,4 +1,5 @@
 "use client"
+import MenuBar from "@/components/menuBar";
 import Post from "@/components/post";
 import {useState } from "react";
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -94,6 +95,7 @@ const Trending = () => {
   const [items, setItems] = useState([...datas]);
   return (
     <div>
+      <MenuBar/>
       {items.map((item,index) => (
           <Post
             key={index}

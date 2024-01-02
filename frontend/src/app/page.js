@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import axios from "@/utils/axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Loader from "@/components/loader";
+import MenuBar from "@/components/menuBar";
 
 export default function Home() {
   const [items, setItems] = useState([]);
@@ -38,6 +39,7 @@ export default function Home() {
 
   return (
     <div>
+      <MenuBar/>
       <InfiniteScroll
         dataLength={items.length}
         next={fetchMoreData}
