@@ -1,7 +1,7 @@
 const Thread = require('../models/Thread');
 const { OpenAI } = require('openai');
 const openai = new OpenAI({
-  apiKey: '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',
+  apiKey: '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',
 });
 class ThreadController{
   // [GET] /threads?page=<pageNumber>
@@ -23,12 +23,15 @@ class ThreadController{
         return res.status(404).send('404 - No threads found!');
       }
       // Giới hạn content của threads chỉ có tối đa 20 từ
-      threads = threads.map(thread => {
-        if (thread.content && thread.content.split(' ').length > 20) {
-          thread.content = thread.content.split(' ').slice(0, 20).join(' ');
+      threads.forEach(thread => {
+        let content = thread.replys[0].content;
+        if (thread.replys[0].content.split(' ').length > 20) {
+          let threadContent = thread.replys[0].content;
+          content = threadContent.split(' ').slice(0, 20).join(' ');
         }
-        return thread;
+        thread.content = content;
       });
+
       const response = {
         totalPages: Math.ceil(totalThreads / threadsPerPage),
         threads
@@ -43,12 +46,13 @@ class ThreadController{
   // [GET] /threads/:threadId
   async showThread(req, res, next){
     try{
-      let threads = await Thread.findOne({ threadId: req.params.threadId })
+      let thread = await Thread.findOne({ threadId: req.params.threadId })
       .lean();
-      if(!threads){
+      if(!thread){
         return res.status(404).send('404 - No threads found!');
       }
-        return res.status(200).json(threads);
+      thread.content = thread.replys[0].content;
+      return res.status(200).json(thread);
     }
     catch(error){
       next(error);
@@ -60,7 +64,7 @@ class ThreadController{
     try{
       let threads = await Thread.findOne({ threadId: req.params.threadId })
       .lean();
-      let content = threads.content;
+      let content = threads.replys[0].content;
       const prompt = "Summarize content you are provided with in Vietnamese in exactly 100 words";
       if(content.length < 200){
         return res.json(content);
@@ -130,6 +134,13 @@ class ThreadController{
             }
           });
           thread.relevanceScore = relevanceScore
+          // Giới hạn content của threads chỉ có tối đa 20 từ
+          let content = thread.replys[0].content;
+          if (thread.replys[0].content.split(' ').length > 20) {
+            let threadContent = thread.replys[0].content;
+            content = threadContent.split(' ').slice(0, 20).join(' ');
+          }
+          thread.content = content;
         });
         threads.sort((a, b) => b.relevanceScore - a.relevanceScore);
         const startIndex = page * threadsPerPage;
@@ -155,6 +166,14 @@ class ThreadController{
         return res.status(404).send('404 - No threads found!');
       }
       // return res.status(200).json(replies);
+      threads.forEach(thread => {
+        let content = thread.replys[0].content;
+        if (thread.replys[0].content.split(' ').length > 20) {
+          let threadContent = thread.replys[0].content;
+          content = threadContent.split(' ').slice(0, 20).join(' ');
+        }
+        thread.content = content;
+      });
       const response = {
         totalPages: Math.ceil(totalThreads / threadsPerPage),
         threads
