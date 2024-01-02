@@ -1,14 +1,14 @@
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime, timedelta
-import pymongo
+from datetime import datetime
+from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
 # Kết nối với mongodb
-client = pymongo.MongoClient(os.getenv("MONGODB_URL_DEV"))
+client = MongoClient(os.getenv("MONGODB_URL_DEV"))
 database = client["test"]
 collection_thread = database["threads"]
 collection_reply = database["replies"]
@@ -20,8 +20,7 @@ def fetch_data(url):
         "Accept": "*/*",
         "User-Agent": "Thunder Client (https://www.thunderclient.com)"
     }
-    payload = ""
-    response = requests.request("GET", url, data=payload, headers=headersList)
+    response = requests.request("GET", url, data='', headers=headersList)
 
     # Sử dụng thư viện BeautifulSoup để lấy những nội dung cần thiết
     soup = BeautifulSoup(response.content, 'html.parser')
