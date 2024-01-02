@@ -1,3 +1,4 @@
+import BackBar from "@/components/backBar";
 import Post_ChiTiet from "./post_ChiTiet";
 export default function Home() {
   const datas = [
@@ -37,6 +38,7 @@ export default function Home() {
   return (
     <main>
       <div>
+        <BackBar/>
         {datas.map((item) => (
           <div key={item.id}>
             <Post_ChiTiet
