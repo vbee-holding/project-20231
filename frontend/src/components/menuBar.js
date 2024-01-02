@@ -4,6 +4,7 @@ import { Icons } from "./icons";
 import ButtonGroupMenu from "./buttonGroupMenu";
 import { TextField } from "@mui/material";
 import SearchBar from "./ui/searchBar";
+import { useRouter } from "next/navigation";
 
 const MenuBar = () => {
   const [search, setSearch] = React.useState({
@@ -58,7 +59,7 @@ const MenuBar = () => {
           </div>
           <div className="flex justify-end items-center">
             <button onClick={handleSearching}>
-              <Icons.search className="relative w-300 h-40 border-r-5 bg-" />
+              <Icons.search className="relative w-300 h-40 border-r-5" />
             </button>
           </div>
         </div>
@@ -75,7 +76,7 @@ const MenuBar = () => {
           </div>
           <div className="flex justify-end items-center">
             <button onClick={handleSearch}>
-              <Icons.search className="relative w-300 h-40 border-r-5 bg-" />
+              <Icons.search className="relative w-300 h-40 border-r-5" />
             </button>
           </div>
         </div>
