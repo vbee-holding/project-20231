@@ -1,14 +1,14 @@
 "use client";
 import * as React from "react";
 import { Icons } from "./icons";
-import SearchBar from "@mkyy/mui-search-bar";
 import ButtonGroupMenu from "./buttonGroupMenu";
 import { TextField } from "@mui/material";
+import SearchBar from "./ui/searchBar";
 
 const MenuBar = () => {
   const [search, setSearch] = React.useState({
     isSearching: false,
-    searchContent: "Search",
+    searchContent: "",
   });
 
   const handleSearch = () => {
@@ -18,18 +18,24 @@ const MenuBar = () => {
     });
   };
 
-  const handleSearching = (e) => {
-    console.log(e.target.value);
+  const handleSearching = () => {
     setSearch({
-      searchContent: e,
+      ...search,
       isSearching: !search.isSearching,
     });
   };
 
   const handleInput = (e) => {
-    console.log(e.target.value);
     setSearch({
+      ...search,
       searchContent: e,
+    });
+  };
+
+  const handleCancel = () => {
+    setSearch({
+      ...search,
+      searchContent: "",
     });
   };
 
@@ -43,8 +49,11 @@ const MenuBar = () => {
 
           <div className="col-span-9">
             <SearchBar
+              value={search.searchContent}
               className="w-full"
-              onChange={() => handleInput}
+              onChange={handleInput}
+              onSearch={handleSearching}
+              onCancelResearch={handleCancel}
             />
           </div>
           <div className="flex justify-end items-center">
@@ -59,7 +68,7 @@ const MenuBar = () => {
           <div className="col-span-3">
             <TextField
               variant="standard"
-              className="w-fit"
+              className="w-fit text-xs"
               onClick={handleSearch}
               placeholder={search.searchContent}
             />

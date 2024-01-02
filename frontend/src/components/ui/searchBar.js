@@ -2,7 +2,6 @@ import React from 'react';
 import { useState } from 'react';
 import { alpha, styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
-import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import PropTypes from 'prop-types';
 import useAutocomplete from '@mui/material/useAutocomplete';
@@ -38,7 +37,7 @@ const CloseIconWrapper = styled('div')(() => ({
 const StyledInputBase = styled(InputBase)(() => ({
   color: 'inherit',
   width: '100%',
-  paddingLeft: '40px',
+  paddingLeft: '0px',
   paddingRight: '40px',
   paddingTop: '3px',
   height: '100%',
@@ -136,9 +135,6 @@ const SearchBar = ({
         style={{ ...style, width: width || '300px', height: height || '40px' }}
         className={`SearchBarComponent-root ${className ? className : null}`}
       >
-        <SearchIconWrapper>
-          <SearchIcon />
-        </SearchIconWrapper>
         <StyledInputBase
           inputProps={{ ...getInputProps(), onChange: handleChange, value: internalValue }}
           placeholder={placeholder || 'Search'}
