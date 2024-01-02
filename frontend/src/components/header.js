@@ -3,6 +3,7 @@ import Image from "next/image";
 import { AvatarUser } from "./authButton";
 import { GoogleLogin } from "@react-oauth/google";
 import { decodeJwt } from "jose";
+import axios from '@/utils/axios'
 
 const HeaderContainer = ({ children }) => {
   return (
@@ -43,6 +44,18 @@ const Header = () => {
                   name: payload.name,
                 };
                 localStorage.setItem("userSession", JSON.stringify(userSess));
+                
+                axios.post('user/profile', {
+                  email: payload.email,
+                  image: payload.picture,
+                  name: payload.name,
+                  isNotifi: 0,
+                })
+                .then()
+                .catch((error) => {
+                  console.log(error);
+                });
+
               }
               window.location.reload();
             }}
