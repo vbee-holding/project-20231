@@ -58,6 +58,11 @@ def crawl_thread():  # Hàm crawl data thread
 
         check = 0
 
+        total_replies = post_content.find(
+            "dl", class_="pairs--justified").dd.text
+
+        views = post_content.find("dl", class_="structItem-minor").dd.text
+
         # Kiểm tra tiêu đề đã có trong collection thread chưa
         if existing_thread:
             # Nếu title đã tồn tại và updatedTime mới hơn latest_time, cập nhật lại updatedTime, updatedAt
@@ -70,8 +75,12 @@ def crawl_thread():  # Hàm crawl data thread
                     {"title": title}, {"$set": {"check": 1}})
                 collection.update_one(
                     {"title": title}, {"$set": {"last_page": last_page}})
+                collection.update_one(
+                    {"title": title}, {"$set": {"total_replies": total_replies}})
+                collection.update_one(
+                    {"title": title}, {"$set": {"views": views}})
                 print(
-                    f"Đã cập nhật updatedTime, updatedAt, last_page và check cho thread: {title}")
+                    f"Đã cập nhật updatedTime, updatedAt, total_replies, views, last_page và check cho thread: {title}")
             else:
                 collection.update_one(
                     {"title": title}, {"$set": {"check": 0}})
@@ -92,11 +101,6 @@ def crawl_thread():  # Hàm crawl data thread
 
             createdAt = post_content.find("time", class_="u-dt")["title"]
             createdTime = datetime.strptime(createdAt, date_format)
-
-            total_replies = post_content.find(
-                "dl", class_="pairs--justified").dd.text
-
-            views = post_content.find("dl", class_="structItem-minor").dd.text
 
             author = (
                 post_content.find("a", class_="username").span.text.strip()
