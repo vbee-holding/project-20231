@@ -11,9 +11,6 @@ const Search = styled('div')(() => ({
   borderRadius: '5px',
   backgroundColor: '#fefefe',
   position: 'relative',
-  width: '300px',
-  height: '40px',
-
   '&:hover': {
     backgroundColor: alpha('#fefefe', 0.85),
   },
@@ -131,7 +128,6 @@ const SearchBar = ({
       <Search
         {...getRootProps()}
         key={'SearchBarComponent-root'}
-        style={{ ...style, width: width || '300px', height: height || '40px' }}
         className={`SearchBarComponent-root ${className ? className : null}`}
       >
         <StyledInputBase

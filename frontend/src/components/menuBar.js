@@ -6,21 +6,21 @@ import SearchBar from "./ui/searchBar";
 
 const MenuBar = () => {
   const [search, setSearch] = React.useState({
-    isSearch: false,
+    isSearching: false,
     searchContent: "",
   });
 
   const handleSearch = () => {
     setSearch({
       ...search,
-      isSearch: !search.isSearch,
+      isSearching: !search.isSearching,
     });
   };
 
-  const handleSearching = () => {
+  const confirmSearch = () => {
     setSearch({
       ...search,
-      isSearch: !search.isSearch,
+      isSearching: !search.isSearching,
     });
   };
 
@@ -28,7 +28,7 @@ const MenuBar = () => {
     setSearch({
       ...search,
       searchContent: e,
-      isSearch: true,
+      isSearching: true,
     });
   };
 
@@ -42,7 +42,7 @@ const MenuBar = () => {
   return (
     <div className="inset-x-0 h-fit bg-zinc-100 border-b border-zinc-300 z-[10] py-2">
       <div className="grid grid-cols-11 items-center px-4 flex-none">
-        {search.isSearch ? (
+        {search.isSearching ? (
           <button onClick={handleSearch}>
             <Icons.back className="mr-2 h-4 w-4" />
           </button>
@@ -50,18 +50,18 @@ const MenuBar = () => {
           <ButtonGroupMenu />
         )}
 
-        <div className={search.isSearch ? "col-span-9" : "col-span-3"}>
+        <div className={search.isSearching ? "col-span-9" : "col-span-3"}>
           <SearchBar
             value={search.searchContent}
             className="w-full py-0"
             onChange={handleInput}
-            onSearch={handleSearching}
+            onSearch={confirmSearch}
             onCancelResearch={handleCancel}
           />
         </div>
 
         <div className="flex justify-end items-center">
-          <button onClick={handleSearching}>
+          <button onClick={search.isSearching ? confirmSearch : handleSearch}>
             <Icons.search className="relative w-300 h-40 border-r-5" />
           </button>
         </div>
