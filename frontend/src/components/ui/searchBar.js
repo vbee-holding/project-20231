@@ -39,7 +39,6 @@ const StyledInputBase = styled(InputBase)(() => ({
   width: '100%',
   paddingLeft: '0px',
   paddingRight: '40px',
-  paddingTop: '3px',
   height: '100%',
 }));
 
