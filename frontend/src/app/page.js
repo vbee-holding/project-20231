@@ -1,6 +1,4 @@
 "use client";
-import { faBoltLightning } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Post from "@/components/post";
 import { useEffect, useState } from "react";
 import axios from "@/utils/axios";
@@ -53,7 +51,7 @@ export default function Home() {
             name={item.author}
             created={item.createdAt}
             title={item.title}
-            // overView={item.overView}
+            overView={item.content}
             comment={item.total_replies}
             view={item.views}
             // like={item.like}

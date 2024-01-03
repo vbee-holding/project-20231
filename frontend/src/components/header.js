@@ -39,7 +39,6 @@ const Header = () => {
                   image: payload.picture,
                   name: payload.name,
                 };
-                localStorage.setItem("userSession", JSON.stringify(userSess));
                 
                 axios.post('user/profile', {
                   email: payload.email,
@@ -47,7 +46,11 @@ const Header = () => {
                   name: payload.name,
                   isNotifi: 0,
                 })
-                .then()
+                .then(
+                  () => {
+                    localStorage.setItem("userSession", JSON.stringify(userSess));
+                  }
+                )
                 .catch((error) => {
                   console.log(error);
                 });
