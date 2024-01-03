@@ -29,8 +29,8 @@ const hotTrendThreads = async (req, res) => {
     const topThreads = await Thread.find({
       threadId: { $in: threadIds.map((result) => result._id) },
     });
-
-    return res.status(200).json(topThreads);
+``
+    return res.status(200).json({ topThreads: topThreads });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Server error" });
