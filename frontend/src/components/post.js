@@ -54,6 +54,9 @@ const Post = (props) => {
         </div>
         <div>
           <h1 className="font-bold text-2xl my-2">{props.title}</h1>
+          <div>
+            <p className="inline">{props.overView}</p>
+          </div>
         </div>
         <div className="flex mt-2">
           <Item icon={faComment} amout={props.comment} text="comments" />
