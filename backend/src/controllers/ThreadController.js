@@ -27,10 +27,10 @@ class ThreadController{
       // Giới hạn content của threads chỉ có tối đa 20 từ
       threads.forEach(thread => {
         if (thread.replys && thread.replys.length > 0) {
-          let content = thread.replys[0].content || null;
-          if (content = thread.replys[0].content && thread.replys[0].content.split(' ').length > 20) {
+          let content = thread.replys[0].content;
+          if (thread.replys[0].content.split(' ').length > 20) {
             let threadContent = thread.replys[0].content;
-            content = threadContent.split(' ').slice(0, 20).join(' ');
+            content = threadContent.split(' ').slice(0, 20).join(' ') + ' ...';
           }
           thread.content = content;
         }
