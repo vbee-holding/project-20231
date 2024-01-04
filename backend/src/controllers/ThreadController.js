@@ -66,12 +66,22 @@ class ThreadController{
   // [GET] /threads/:threadId/summary
   async showSummarizedThread(req, res, next){
     try{
-      let threads = await Thread.findOne({ threadId: req.params.threadId })
-      .lean();
-      let content = threads.replys[0].content;
+      let thread = await Thread.findOne({ threadId: req.params.threadId }).lean();
+
+      if(!thread){
+        return res.status(404).send('404 - No thread is found to summarize!');
+      }
+
+      let content = thread.replys[0].content;
+      let summarizedContent = "";
+      // Nếu đã có nội dung tóm tắt thì trả về luôn
+      if(thread.summarized_content){
+        return res.json(thread);
+      }
+      // Nếu chưa có 
       const prompt = "Summarize content you are provided with in Vietnamese in exactly 100 words";
       if(content.length < 200){
-        return res.json(content);
+        return res.json(thread.lean());
       }
       else{
         const response = await openai.chat.completions.create({
@@ -89,7 +99,12 @@ class ThreadController{
           temperature: 0,
           top_p: 1,
         });
-        return res.json(response);
+
+        summarizedContent = response.choices[0].message.content;
+        thread.summarized_content = summarizedContent;
+        // Lưu vào trong database
+        await Thread.findOneAndUpdate({ threadId: req.params.threadId }, { summarized_content: summarizedContent });
+        return res.json(thread);
       }
     }
     catch(error){
@@ -139,12 +154,14 @@ class ThreadController{
           });
           thread.relevanceScore = relevanceScore
           // Giới hạn content của threads chỉ có tối đa 20 từ
-          let content = thread.replys[0].content;
-          if (thread.replys[0].content.split(' ').length > 20) {
-            let threadContent = thread.replys[0].content;
-            content = threadContent.split(' ').slice(0, 20).join(' ');
+          if (thread.replys && thread.replys.length > 0) {
+            let content = thread.replys[0].content;
+            if (thread.replys[0].content.split(' ').length > 20) {
+              let threadContent = thread.replys[0].content;
+              content = threadContent.split(' ').slice(0, 20).join(' ') + ' ...';
+            }
+            thread.content = content;
           }
-          thread.content = content;
         });
         threads.sort((a, b) => b.relevanceScore - a.relevanceScore);
         const startIndex = page * threadsPerPage;
@@ -171,12 +188,14 @@ class ThreadController{
       }
       // return res.status(200).json(replies);
       threads.forEach(thread => {
-        let content = thread.replys[0].content;
-        if (thread.replys[0].content.split(' ').length > 20) {
-          let threadContent = thread.replys[0].content;
-          content = threadContent.split(' ').slice(0, 20).join(' ');
+        if (thread.replys && thread.replys.length > 0) {
+          let content = thread.replys[0].content;
+          if (thread.replys[0].content.split(' ').length > 20) {
+            let threadContent = thread.replys[0].content;
+            content = threadContent.split(' ').slice(0, 20).join(' ') + ' ...';
+          }
+          thread.content = content;
         }
-        thread.content = content;
       });
       const response = {
         totalPages: Math.ceil(totalThreads / threadsPerPage),
