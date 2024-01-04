@@ -81,7 +81,7 @@ class ThreadController{
       // Nếu chưa có 
       const prompt = "Summarize content you are provided with in Vietnamese in exactly 100 words";
       if(content.length < 200){
-        return res.json(thread.lean());
+        return res.json(thread);
       }
       else{
         const response = await openai.chat.completions.create({
