@@ -6,5 +6,6 @@ module.exports = {
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
   CALLBACK_URL: process.env.CALLBACK_URL,
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY,
   SECRET_KEY: process.env.SECRET_KEY,
 };
