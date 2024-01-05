@@ -8,7 +8,8 @@ import os
 load_dotenv()
 
 # Kết nối với mongodb
-client = pymongo.MongoClient(os.getenv("MONGODB_URL_DEV"))
+# client = pymongo.MongoClient(os.getenv("MONGODB_URL_DEV"))
+client = pymongo.MongoClient("mongodb://localhost:27017/")
 database = client["test"]
 collection = database["threads"]
 
@@ -114,16 +115,15 @@ def crawl_thread():  # Hàm crawl data thread
                 {
                     "title": title,
                     "author": author,
-                    "avatar_url": avatar_url,
+                    "avatarUrl": avatar_url,
                     "threadId": threadId,
-                    "total_replies": total_replies,
+                    "totalReplies": total_replies,
                     "views": views,
-                    "last_page": last_page,
+                    "lastPage": last_page,
                     "check": check,
-                    "createdAt": createdAt,
-                    "updatedAt": updatedAt,
                     "createdTime": createdTime,
                     "updatedTime": updatedTime,
+                    "timestamp": datetime.utcnow()
                 }
             )
             print(

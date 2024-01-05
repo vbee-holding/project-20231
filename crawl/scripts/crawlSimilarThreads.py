@@ -8,7 +8,8 @@ import os
 load_dotenv()
 
 # Kết nối với mongodb
-client = MongoClient(os.getenv("MONGODB_URL_DEV"))
+# client = MongoClient(os.getenv("MONGODB_URL_DEV"))
+client = MongoClient("mongodb://localhost:27017/")
 database = client["test"]
 collection_thread = database["threads"]
 collection_similar_thread = database["similarThread"]
@@ -62,8 +63,8 @@ def crawl_semilar_thread(url):
             createdAt = item.find("time", class_="u-dt")["title"]
             createdTime = datetime.strptime(createdAt, date_format)
 
-            result.append({'similar_id': similar_id, 'author': author, 'title': title, 'avatar_url': avatar_url, 'Replies': Replies, 'views': views, 'threadId': threadId,
-                          'createdAt': createdAt, 'createdTime': createdTime})
+            result.append({'similarId': similar_id, 'author': author, 'title': title, 'avatarUrl': avatar_url,
+                          'replies': Replies, 'views': views, 'threadId': threadId, 'createdTime': createdTime, "timestamp": datetime.utcnow()})
             print(
                 f"Đã thêm mới vào collection similarThread dữ liệu có similar_id: {similar_id}")
 
