@@ -15,10 +15,6 @@ class ReplyController{
       if(!thread){
         return res.status(404).send('404 - No thread is found to summarize replies!');
       }
-
-      if(thread.replys.length < 10){
-        return res.json(thread.replys);
-      }
       
       // Tổng hợp comment
       let content = "";
@@ -26,18 +22,18 @@ class ReplyController{
         content += thread.replys[i].content + ' ||';
       }
       // Nếu đã có nội dung tóm tắt thì trả về luôn
-      if(thread.summarized_replies_content){
+      if(thread.summarizedRepliesContent){
         return res.json(thread);
       }
       // Nếu chưa có 
-      const prompt = "Summarize comments you are provided with into an overview in Vietnamese like 'Phần lớn comment là ..., số khác lại cho là ..., một số ít cho là ..., đặc biệt ...' in exactly 100 words\n" + content;
+      const prompt = "Summarize comments you are provided with into an overview in Vietnamese like 'Phần lớn comment là ..., số khác lại cho là ..., một số ít cho là ..., hơn nữa ...' in exactly 100 words\n" + content;
       const result = await model.generateContent(prompt);
       const response = result.response;
       let summarizedRepliesContent = response.text();
-      thread.summarized_replies_content = summarizedRepliesContent;
+      thread.summarizedRepliesContent = summarizedRepliesContent;
       
       // Lưu vào trong database
-      await Thread.findOneAndUpdate({ threadId: req.params.threadId }, { summarized_replies_content: summarizedRepliesContent });
+      await Thread.findOneAndUpdate({ threadId: req.params.threadId }, { summarizedRepliesContent: summarizedRepliesContent });
       return res.json(thread);
     }
     catch(error){

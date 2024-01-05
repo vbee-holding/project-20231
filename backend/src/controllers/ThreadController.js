@@ -30,7 +30,7 @@ class ThreadController{
           let content = thread.replys[0].content;
           if (thread.replys[0].content.split(' ').length > 20) {
             let threadContent = thread.replys[0].content;
-            content = threadContent.split(' ').slice(0, 20).join(' ') + ' ...';
+            content = threadContent.split(' ').slice(0, 20).join(' ') + '...';
           }
           thread.content = content;
         }
@@ -75,13 +75,13 @@ class ThreadController{
       let content = thread.replys[0].content;
       let summarizedContent = "";
       // Nếu đã có nội dung tóm tắt thì trả về luôn
-      if(thread.summarized_content){
+      if(thread.summarizedContent){
         return res.json(thread);
       }
       // Nếu chưa có 
-      const prompt = "Summarize content you are provided with in Vietnamese in exactly 100 words";
-      if(content.length < 400){
-        thread.summarized_content = content;
+      const prompt = "Summarize content you are provided with in Vietnamese as if you are the writer in exactly 100 words";
+      if(content.length < 300){
+        thread.summarizedContent = content;
         return res.json(thread);
       }
       else{
@@ -102,9 +102,9 @@ class ThreadController{
         });
 
         summarizedContent = response.choices[0].message.content;
-        thread.summarized_content = summarizedContent;
+        thread.summarizedContent = summarizedContent;
         // Lưu vào trong database
-        await Thread.findOneAndUpdate({ threadId: req.params.threadId }, { summarized_content: summarizedContent });
+        await Thread.findOneAndUpdate({ threadId: req.params.threadId }, { summarizedContent: summarizedContent });
         return res.json(thread);
       }
     }
@@ -159,7 +159,7 @@ class ThreadController{
             let content = thread.replys[0].content;
             if (thread.replys[0].content.split(' ').length > 20) {
               let threadContent = thread.replys[0].content;
-              content = threadContent.split(' ').slice(0, 20).join(' ') + ' ...';
+              content = threadContent.split(' ').slice(0, 20).join(' ') + '...';
             }
             thread.content = content;
           }
@@ -193,7 +193,7 @@ class ThreadController{
           let content = thread.replys[0].content;
           if (thread.replys[0].content.split(' ').length > 20) {
             let threadContent = thread.replys[0].content;
-            content = threadContent.split(' ').slice(0, 20).join(' ') + ' ...';
+            content = threadContent.split(' ').slice(0, 20).join(' ') + '...';
           }
           thread.content = content;
         }

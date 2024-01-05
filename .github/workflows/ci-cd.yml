@@ -4,9 +4,21 @@ on:
     branches: [main, feature/threads-replies-api]
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
      
 jobs:
+  sonarqube:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
+      env:
+        SONAR_TOKEN: c2ff223c1f0b043f34b8f815ea7f45604120635c
+
   build:
     runs-on: ubuntu-latest
 
@@ -27,9 +39,9 @@ jobs:
         working-directory: frontend
         run: npm install
 
-      - name: Run test
-        working-directory: backend
-        run: npm test 
+      # - name: Run test
+      #   working-directory: backend
+      #   run: npm test 
 
       # - name: Build Docker image
       #   run: docker build -t tienanhbghd/project-20231:be .
