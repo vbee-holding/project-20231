@@ -102,12 +102,17 @@ def scrape_data():
 
     for child in data:
         n = child['lastPage']
-        for i in range(1, n + 1):
-            url = f"https://voz.vn/t/{child['threadId']}/page-{i}"
-            fetched_data = fetch_data(url)
-            print(url)
-            if fetched_data:
-                all_results.extend(fetched_data)
+        url = f"https://voz.vn/t/{child['threadId']}/page-{n}"
+        fetched_data = fetch_data(url)
+        print(url)
+        if fetched_data:
+            all_results.extend(fetched_data)
+        # for i in range(1, n + 1):
+        #     url = f"https://voz.vn/t/{child['threadId']}/page-{i}"
+        #     fetched_data = fetch_data(url)
+        #     print(url)
+        #     if fetched_data:
+        #         all_results.extend(fetched_data)
 
     if all_results:
         try:
