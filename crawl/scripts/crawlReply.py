@@ -8,7 +8,8 @@ import os
 load_dotenv()
 
 # Kết nối với mongodb
-client = MongoClient(os.getenv("MONGODB_URL_DEV"))
+# client = MongoClient(os.getenv("MONGODB_URL_DEV"))
+client = MongoClient("mongodb://localhost:27017/")
 database = client["test"]
 collection_thread = database["threads"]
 collection_reply = database["replies"]
@@ -32,11 +33,19 @@ def fetch_data(url):
     # Xử lý dữ liệu
     result = []
     for item in items:
-        reply_id = item.find('div', class_='message-userContent')['data-lb-id']
-        # Kiểm tra xem reply_id đã có trong collection reply hay chưa
+        reply_id = None
+        reply_element = item.find('div', class_='message-userContent')
+        if reply_element and 'data-lb-id' in reply_element.attrs:
+            reply_id = reply_element['data-lb-id']
+
         existing_reply = collection_reply.find_one({"reply_id": reply_id})
 
-        if existing_reply is None:
+        blockquote = None
+
+        if item.find('div', class_="bbWrapper").blockquote:
+            blockquote = item.find('div', class_="bbWrapper").blockquote
+
+        if blockquote is None and existing_reply is None and reply_id is not None:
             # Lấy thời gian tạo
             createdAt = item.find('time', class_='u-dt')['title']
             createdTime = datetime.strptime(createdAt, date_format)
@@ -54,28 +63,6 @@ def fetch_data(url):
                 avatar_url = avatar_url_element.a.img.get(
                     'src') if avatar_url_element.a.img else avatar_url_element.a.span.text.strip()
 
-            # Lấy reply_detail
-            blockquote = item.find('div', class_="bbWrapper").blockquote
-            reply_detail_id = ''
-            title = ''
-            reply_detail_img_url = ''
-            reply_detail_content = ''
-            if blockquote:
-                reply_id_element = blockquote.find('div', 'bbCodeBlock-title')
-                if reply_id_element and reply_id_element.a:
-                    reply_detail_id = reply_id_element.a['href']
-                    title = reply_id_element.a.text.strip()
-                reply_content_element = blockquote.find(
-                    'div', 'bbCodeBlock-expandContent')
-
-                if reply_content_element:
-                    reply_img_element = reply_content_element.img
-                    if reply_img_element:
-                        reply_detail_img_url = reply_img_element.get('src')
-                        reply_img_element.extract()
-                    reply_detail_content = reply_content_element.get_text(
-                        separator=' ', strip=True)
-
             text_content_element = item.find('div', class_="bbWrapper")
             content_element = str(text_content_element)
             for blockquote in text_content_element.find_all('blockquote'):
@@ -85,16 +72,10 @@ def fetch_data(url):
             content = text_content_element.get_text(
                 separator=' ', strip=True)
 
-            bbImage = item.find('img', class_="bbImage")
-            if bbImage:
-                img_url = 'https://voz.vn' + bbImage.get('src')
-            else:
-                img_url = ''
-
             threadId = url[17:].split('/')[0]
 
-            result.append({'reply_id': reply_id, 'author': author, 'avatar_url': avatar_url, 'author_title': author_title, 'content': content, 'content_element': content_element,
-                           'img_url': img_url, 'reply_detail': {'reply_detail_id': reply_detail_id, 'title': title, 'reply_detail_content': reply_detail_content, 'reply_detail_img_url': reply_detail_img_url}, 'threadId': threadId, 'createdAt': createdAt, 'createdTime': createdTime})
+            result.append({'replyId': reply_id, 'author': author, 'avatarUrl': avatar_url, 'authorTitle': author_title, 'content': content,
+                          'contentElement': content_element, 'threadId': threadId, 'createdTime': createdTime, "timestamp": datetime.utcnow()})
 
             print(
                 f"Đã thêm mới vào collection reply dữ liệu có reply_id: {reply_id}")
@@ -109,11 +90,11 @@ def scrape_data():
     all_results = []
 
     data = collection_thread.find(
-        {"check": 1}, {"threadId": 1, "last_page": 1})
+        {"check": 1}, {"threadId": 1, "lastPage": 1})
 
     for child in data:
         url = "https://voz.vn/t/" + \
-            child['threadId'] + "/page-" + child['last_page']
+            child['threadId'] + "/page-" + child['lastPage']
         # url = "https://voz.vn/t/" + child['threadId']
         fetched_data = fetch_data(url)
         if fetched_data:

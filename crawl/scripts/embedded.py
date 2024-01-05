@@ -6,7 +6,8 @@ load_dotenv()
 
 
 def join_collections():
-    client = MongoClient(os.getenv("MONGODB_URL_DEV"))
+    # client = MongoClient(os.getenv("MONGODB_URL_DEV"))
+    client = MongoClient("mongodb://localhost:27017/")
     database = client["test"]
 
     threads = database["threads"]
