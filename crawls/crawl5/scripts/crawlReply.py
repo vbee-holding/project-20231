@@ -8,8 +8,8 @@ import os
 load_dotenv()
 
 # Kết nối với mongodb
-client = MongoClient(os.getenv("MONGODB_URL_DEV"))
-# client = MongoClient("mongodb://localhost:27017/")
+# client = MongoClient(os.getenv("MONGODB_URL_DEV"))
+client = MongoClient("mongodb://localhost:27017/")
 database = client["test"]
 collection_thread = database["threads"]
 collection_reply = database["replies"]
@@ -78,7 +78,6 @@ def fetch_data(url):
 
                     result.append({'replyId': reply_id, 'author': author, 'avatarUrl': avatar_url, 'authorTitle': author_title, 'content': content,
                                    'contentElement': content_element, 'threadId': threadId, 'createdTime': createdTime, "timestamp": datetime.utcnow()})
-
                 else:
                     existing_reply = None
 
@@ -94,16 +93,16 @@ def fetch_data(url):
 def scrape_data():
     all_results = []
 
-    data = collection_thread.find(
-        {"check": 1}, {"threadId": 1, "lastPage": 1})
+    data = collection_thread.find({"check": 2}, {"threadId": 1, "lastPage": 1})
 
     for child in data:
         n = child['lastPage']
-        url = f"https://voz.vn/t/{child['threadId']}/page-{n}"
-        fetched_data = fetch_data(url)
-        print(url)
-        if fetched_data:
-            all_results.extend(fetched_data)
+        for i in range(1, n + 1):
+            url = f"https://voz.vn/t/{child['threadId']}/page-{i}"
+            fetched_data = fetch_data(url)
+            print(url)
+            if fetched_data:
+                all_results.extend(fetched_data)
 
     if all_results:
         try:
