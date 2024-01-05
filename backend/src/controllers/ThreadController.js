@@ -80,7 +80,8 @@ class ThreadController{
       }
       // Nếu chưa có 
       const prompt = "Summarize content you are provided with in Vietnamese in exactly 100 words";
-      if(content.length < 200){
+      if(content.length < 400){
+        thread.summarized_content = content;
         return res.json(thread);
       }
       else{
