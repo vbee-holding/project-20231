@@ -62,7 +62,7 @@ def fetch_data(url):
             reply_detail_content = ''
             if blockquote:
                 reply_id_element = blockquote.find('div', 'bbCodeBlock-title')
-                if reply_id_element:
+                if reply_id_element and reply_id_element.a:
                     reply_detail_id = reply_id_element.a['href']
                     title = reply_id_element.a.text.strip()
                 reply_content_element = blockquote.find(

@@ -42,7 +42,7 @@ const Post = (props) => {
               />
             ) : (
               <div className="w-12 h-12 rounded-full bg-blue-700 flex justify-center items-center">
-                <p className="font-bold text-lg text-white">T</p>
+                <p className="font-bold text-lg text-white">{props.linkImg}</p>
               </div>
             )}
 
