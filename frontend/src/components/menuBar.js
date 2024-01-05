@@ -57,6 +57,7 @@ const MenuBar = () => {
             onChange={handleInput}
             onSearch={confirmSearch}
             onCancelResearch={handleCancel}
+            disabled={!search.isSearching}
           />
         </div>
 

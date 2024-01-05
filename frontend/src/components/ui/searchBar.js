@@ -21,7 +21,6 @@ const CloseIconWrapper = styled('div')(() => ({
   height: '100%',
   right: 0,
   top: 0,
-  padding: '0 10px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -35,7 +34,7 @@ const StyledInputBase = styled(InputBase)(() => ({
   color: 'inherit',
   width: '100%',
   paddingLeft: '0px',
-  paddingRight: '40px',
+  paddingRight: '25px',
   height: '100%',
 }));
 
@@ -132,7 +131,6 @@ const SearchBar = ({
       >
         <StyledInputBase
           inputProps={{ ...getInputProps(), onChange: handleChange, value: internalValue }}
-          placeholder={placeholder || 'Search'}
           onKeyUp={handleKeyUp}
           disabled={disabled}
         />
