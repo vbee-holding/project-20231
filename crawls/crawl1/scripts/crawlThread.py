@@ -8,8 +8,8 @@ import os
 load_dotenv()
 
 # Kết nối với mongodb
-# client = pymongo.MongoClient(os.getenv("MONGODB_URL_DEV"))
-client = pymongo.MongoClient("mongodb://localhost:27017/")
+client = pymongo.MongoClient(os.getenv("MONGODB_URL_DEV"))
+# client = pymongo.MongoClient("mongodb://localhost:27017/")
 database = client["test"]
 collection = database["threads"]
 
@@ -38,8 +38,6 @@ def crawl_thread():
                         "div", class_="structItem-title").a.text.strip()
                     existing_thread = None
                     existing_thread = collection.find_one({"title": title})
-
-                    check = 2
 
                     if existing_thread is None:
                         # Nếu title chưa tồn tại trong collection thread, thêm dữ liệu mới
@@ -84,7 +82,7 @@ def crawl_thread():
                                 if all_links[-1].text:
                                     last_page = int(all_links[-1].text)
 
-                        check = 0
+                        check = 2
 
                         result.append(
                             {
