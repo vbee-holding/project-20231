@@ -10,7 +10,7 @@ const HeaderContainer = ({ children }) => {
   return (
     <header className="bg-header fixed top-0 z-10 w-full h-16">
       <div className=" relative h-full max-w-4xl mx-auto px-4 py-2 flex justify-between items-center">
-        <div className="grow">
+        <div >
           <a href="/">
             <Icons.logo className="h-8 w-8 sm:h-6 sm:w-6" />
           </a>
