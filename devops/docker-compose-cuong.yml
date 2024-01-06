@@ -1,0 +1,44 @@
+services:
+  vozbackend:
+    working_dir: /usr/project20231/vozbackend
+    image: node:lts-alpine
+    container_name: vozbackend
+    ports:
+      - 3003:3003
+    # env_file:
+    #   - fileName: .env
+    environment:
+      - PORT=3003
+      - BASE_URL= backend-mch37eh7na-uc.a.run.app
+      - MONGODB_URL_DEV=mongodb+srv://project-20231:20231@project-20231.wmwqcgv.mongodb.net
+      - MONGODB_URL_PRODUCT= mongodb+srv://project-20231:20231@project-20231.ybwldgm.mongodb.net
+      - GOOGLE_CLIENT_ID=406226991107-63n18mi29l79893ah79nj0294thngrsg.apps.googleusercontent.com
+      - GOOGLE_CLIENT_SECRET=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
+      - CALLBACK_URL=http://localhost:3003/auth/google/callback
+      - SECRET_KEY=SECRET_KEY
+      - OPENAI_API_KEY=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
+      - GEMINI_API_KEY=AIzaSyAumupRyzuW_e7SBNqJX6debuVF-R9sYPg
+    volumes:
+      - C:\Users\NMCuong\OneDrive\Desktop\CODE\project-20231\backend:/usr/project20231/vozbackend:ro
+    networks:
+      - voznetwork
+    command: sh -c "pwd && ls && npm install --force && npm install @google/generative-ai && npm start"
+  vozfrontend:
+    working_dir: /usr/project20231/vozfrontend
+    image: node:lts-alpine
+    container_name: vozfrontend
+    ports:
+      - 3000:3000
+    # env_file:
+    #   - fileName: 
+    #     - ../backend/.env
+    environment:
+      - GOOGLE_CLIENT_ID=588585800172-82mkcvu279odgi65elmmljg2uemh7ehb.apps.googleusercontent.com
+    volumes:
+      - C:\Users\NMCuong\OneDrive\Desktop\CODE\project-20231\frontend:/usr/project20231/vozfrontend:ro
+    networks:
+      - voznetwork
+    command: sh -c "pwd && ls && npm install --force && npm install next && npm run dev"
+networks:
+  voznetwork:
+    driver: bridge
