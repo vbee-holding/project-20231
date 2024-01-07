@@ -12,6 +12,8 @@ EXPOSE ${PORT}
 
 COPY package.json .
 
-RUN npm install
+RUN npm --force install
 
 COPY . .
+
+CMD ["npm","start"]
