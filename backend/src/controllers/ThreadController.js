@@ -1,10 +1,8 @@
 require("dotenv").config();
 const Thread = require('../models/Thread');
-const { OpenAI } = require('openai');
-const { OPENAI_API_KEY } = require('../config');
-const openai = new OpenAI({
-  apiKey: OPENAI_API_KEY,
-});
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GEMINI_API_KEY } = require('../config');
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 class ThreadController{
   // [GET] /threads?page=<pageNumber>
   async showAll(req, res, next){
@@ -67,7 +65,7 @@ class ThreadController{
   async showSummarizedThread(req, res, next){
     try{
       let thread = await Thread.findOne({ threadId: req.params.threadId }).lean();
-
+      const model = genAI.getGenerativeModel({model: "gemini-pro"});
       if(!thread){
         return res.status(404).send('404 - No thread is found to summarize!');
       }
@@ -79,29 +77,15 @@ class ThreadController{
         return res.json(thread);
       }
       // Nếu chưa có 
-      const prompt = "Summarize content you are provided with in Vietnamese as if you are the writer in exactly 100 words";
+      const prompt = "Summarize content you are provided with in Vietnamese as if you are the writer in exactly 100 words\n" + content;
       if(content.length < 300){
         thread.summarizedContent = content;
         return res.json(thread);
       }
       else{
-        const response = await openai.chat.completions.create({
-          model: "gpt-3.5-turbo",
-          messages: [
-            { 
-              "role": "system", 
-              "content": prompt
-            },
-            {
-              "role": "user",
-              "content": content
-            }
-          ],
-          temperature: 0,
-          top_p: 1,
-        });
-
-        summarizedContent = response.choices[0].message.content;
+        const result = await model.generateContent(prompt);
+        const response = result.response;
+        let summarizedContent = response.text();
         thread.summarizedContent = summarizedContent;
         // Lưu vào trong database
         await Thread.findOneAndUpdate({ threadId: req.params.threadId }, { summarizedContent: summarizedContent });
