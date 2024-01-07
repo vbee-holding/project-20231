@@ -49,7 +49,7 @@ const TrendingTopics = () => {
     <div>
       <MenuBar/>
       <div>
-        <h1 class="text-4xl text-gray-800 font-extrabold text-center my-5">
+        <h1 className="text-4xl text-gray-800 font-extrabold text-center my-5">
           Topics
         </h1>
       </div>
