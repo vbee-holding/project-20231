@@ -1,7 +1,6 @@
-import { Search, Undo, User } from "@mui/icons-material";
+import { Search, Undo } from "@mui/icons-material";
 
 export const Icons = {
-  user:User,
   logo: () => (
     <svg
       version="1.0"
