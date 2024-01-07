@@ -47,12 +47,12 @@ export default function Home() {
         {items.map((item, index) => (
           <Post
             key={index}
-            linkImg={item.avatar_url}
+            linkImg={item.avatarUrl}
             name={item.author}
-            created={item.createdAt}
+            created={item.createdTime}
             title={item.title}
-            overView={item.content}
-            comment={item.total_replies}
+            // overView={item.content}
+            comment={item.totalReplies}
             view={item.views}
             // like={item.like}
           />

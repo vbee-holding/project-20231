@@ -53,9 +53,9 @@ const Post = (props) => {
           </div>
         </div>
         <div>
-          <h1 className="font-bold text-2xl my-2">{props.title}</h1>
+          <h1 className="font-semibold text-sm md:text-lg my-2">{props.title}</h1>
           <div>
-            <p className="inline">{props.overView}</p>
+            {/* <p className="inline">{props.overView}</p> */}
           </div>
         </div>
         <div className="flex mt-2">
@@ -63,7 +63,7 @@ const Post = (props) => {
           <Item icon={faEye} amout={props.view} text="views" />
         </div>
       </div>
-      <div className="bg-gray-400 h-0.5 max-w-2xl mx-auto"></div>
+      <hr className="max-w-2xl mx-auto border-0 border-b-sm border-solid border-b-gray-300" />
     </div>
   );
 };
