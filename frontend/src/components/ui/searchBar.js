@@ -1,65 +1,71 @@
-import React from 'react';
-import { useState } from 'react';
-import { alpha, styled } from '@mui/material/styles';
-import InputBase from '@mui/material/InputBase';
-import CloseIcon from '@mui/icons-material/Close';
-import PropTypes from 'prop-types';
-import useAutocomplete from '@mui/material/useAutocomplete';
-import { autocompleteClasses } from '@mui/material/Autocomplete';
+import React from "react";
+import { useState } from "react";
+import { alpha, styled } from "@mui/material/styles";
+import InputBase from "@mui/material/InputBase";
+import CloseIcon from "@mui/icons-material/Close";
+import PropTypes from "prop-types";
+import useAutocomplete from "@mui/material/useAutocomplete";
+import { autocompleteClasses } from "@mui/material/Autocomplete";
 
-const Search = styled('div')(() => ({
-  borderRadius: '5px',
-  backgroundColor: '#fefefe',
-  position: 'relative',
-  '&:hover': {
-    backgroundColor: alpha('#fefefe', 0.85),
+const Search = styled("div")(() => ({
+  borderRadius: "5px",
+  backgroundColor: "#fefefe",
+  position: "relative",
+  "&:hover": {
+    backgroundColor: alpha("#fefefe", 0.85),
   },
 }));
 
-const CloseIconWrapper = styled('div')(() => ({
-  position: 'absolute',
-  height: '100%',
+const CloseIconWrapper = styled("div")(() => ({
+  position: "absolute",
+  height: "100%",
   right: 0,
   top: 0,
-  padding: '0 10px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  padding: "0 10px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 
-  '&:hover': {
-    cursor: 'pointer',
+  "&:hover": {
+    cursor: "pointer",
   },
 }));
 
 const StyledInputBase = styled(InputBase)(() => ({
-  color: 'inherit',
-  width: '100%',
-  paddingLeft: '0px',
-  paddingRight: '40px',
-  height: '100%',
+  color: "inherit",
+  width: "100%",
+  paddingLeft: "0px",
+  paddingRight: "40px",
+  height: "100%",
 }));
 
-const Listbox = styled('ul')(() => ({
-  width: '100%',
+const StyledSubInputBase = styled(InputBase)(() => ({
+  color: "inherit",
+  width: "100%",
+  height: "100%",
+}));
+
+const Listbox = styled("ul")(() => ({
+  width: "100%",
   margin: 0,
   padding: 0,
   zIndex: 1,
-  position: 'absolute',
-  listStyle: 'none',
-  backgroundColor: '#f1f1f1',
-  overflow: 'auto',
+  position: "absolute",
+  listStyle: "none",
+  backgroundColor: "#f1f1f1",
+  overflow: "auto",
   maxHeight: 200,
-  borderRadius: '0 0 10px 10px',
-  border: '1px solid rgba(0,0,0,.25)',
-  '& li': { textAlign: 'left', paddingLeft: '10px' },
+  borderRadius: "0 0 10px 10px",
+  border: "1px solid rgba(0,0,0,.25)",
+  "& li": { textAlign: "left", paddingLeft: "10px" },
   [`& li.${autocompleteClasses.focused}`]: {
-    backgroundColor: '#4a8df6',
-    color: 'white',
-    cursor: 'pointer',
+    backgroundColor: "#4a8df6",
+    color: "white",
+    cursor: "pointer",
   },
-  '& li:active': {
-    backgroundColor: '#2977f5',
-    color: 'white',
+  "& li:active": {
+    backgroundColor: "#2977f5",
+    color: "white",
   },
 }));
 
@@ -70,30 +76,36 @@ const SearchBar = ({
   placeholder,
   height,
   onCancelResearch,
+  onClick,
   onSearch,
   className,
   style,
   disabled,
   options,
 }) => {
-  const [internalValue, setInternalValue] = useState(value || '');
+  const [internalValue, setInternalValue] = useState(value || "");
 
-  const { getRootProps, getInputProps, getListboxProps, getOptionProps, groupedOptions } =
-    useAutocomplete({
-      id: 'use-autocomplete',
-      freeSolo: true,
-      options: options || [],
-      getOptionLabel: option => option,
-      filterOptions: options => {
-        if (options === undefined) return [];
-        let newOptions = options.filter(option => {
-          return option.toLowerCase().includes(internalValue.toLowerCase());
-        });
-        return newOptions.slice(0, 5);
-      },
-    });
+  const {
+    getRootProps,
+    getInputProps,
+    getListboxProps,
+    getOptionProps,
+    groupedOptions,
+  } = useAutocomplete({
+    id: "use-autocomplete",
+    freeSolo: true,
+    options: options || [],
+    getOptionLabel: (option) => option,
+    filterOptions: (options) => {
+      if (options === undefined) return [];
+      let newOptions = options.filter((option) => {
+        return option.toLowerCase().includes(internalValue.toLowerCase());
+      });
+      return newOptions.slice(0, 5);
+    },
+  });
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setInternalValue(e.target.value);
     if (onChange) {
       onChange(e.target.value);
@@ -101,13 +113,13 @@ const SearchBar = ({
   };
 
   const handleCancel = () => {
-    setInternalValue('');
+    setInternalValue("");
     if (onCancelResearch) {
       onCancelResearch(internalValue);
     }
   };
 
-  const handleClickOption = e => {
+  const handleClickOption = (e) => {
     setInternalValue(e.target.textContent);
     if (onChange) {
       onChange(e.target.textContent);
@@ -115,28 +127,51 @@ const SearchBar = ({
     if (onSearch) return onSearch(e.target.textContent);
   };
 
-  const handleKeyUp = e => {
-    if (e.keyCode === 13 || (e.code === 'Enter' && onSearch)) {
+  const handleKeyUp = (e) => {
+    if (e.keyCode === 13 || (e.code === "Enter" && onSearch)) {
       onSearch();
-    } else if (e.keyCode === 27 || e.code === 'Escape') {
+    } else if (e.keyCode === 27 || e.code === "Escape") {
       handleCancel();
     }
   };
+
+  const handleClick = (e) => {
+    onClick();
+  }
 
   return (
     <>
       <Search
         {...getRootProps()}
-        key={'SearchBarComponent-root'}
+        key={"SearchBarComponent-root"}
         className={`SearchBarComponent-root ${className ? className : null}`}
       >
-        <StyledInputBase
-          inputProps={{ ...getInputProps(), onChange: handleChange, value: internalValue }}
-          placeholder={placeholder || 'Search'}
-          onKeyUp={handleKeyUp}
-          disabled={disabled}
-        />
-        {internalValue ? (
+        {!disabled ? (
+          <StyledInputBase
+            inputProps={{
+              ...getInputProps(),
+              onChange: handleChange,
+              value: internalValue,
+            }}
+            placeholder={placeholder || "Search"}
+            onKeyUp={handleKeyUp}
+            disabled={disabled}
+          />
+        ) : (
+          <StyledSubInputBase
+            inputProps={{
+              ...getInputProps(),
+              onChange: handleChange,
+              onClick:handleClick,
+              value: internalValue,
+            }}
+            placeholder={placeholder || "Search"}
+            onKeyUp={handleKeyUp}
+            disabled={disabled}
+          />
+        )}
+
+        {(internalValue && !disabled) ? (
           <CloseIconWrapper onClick={handleCancel}>
             <CloseIcon />
           </CloseIconWrapper>
@@ -145,7 +180,10 @@ const SearchBar = ({
         {groupedOptions.length > 0 && internalValue.length ? (
           <Listbox {...getListboxProps()}>
             {groupedOptions.map((option, index) => (
-              <li {...getOptionProps({ option, index })} onClick={handleClickOption}>
+              <li
+                {...getOptionProps({ option, index })}
+                onClick={handleClickOption}
+              >
                 <strong>{option}</strong>
               </li>
             ))}
@@ -174,6 +212,7 @@ SearchBar.propTypes = {
   // fired when press enter
   onSearch: PropTypes.func,
   // override styles of the root element
+  onClick: PropTypes.func,
   style: PropTypes.object,
   // disable text field
   disabled: PropTypes.bool,

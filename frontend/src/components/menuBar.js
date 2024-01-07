@@ -28,7 +28,6 @@ const MenuBar = () => {
     setSearch({
       ...search,
       searchContent: e,
-      isSearching: true,
     });
   };
 
@@ -50,13 +49,21 @@ const MenuBar = () => {
           <ButtonGroupMenu />
         )}
 
-        <div className={search.isSearching ? "col-span-9" : "col-span-3"}>
+        <div
+          className={
+            search.isSearching
+              ? "flex justify-end items-center col-span-9"
+              : "flex justify-end items-center col-span-3"
+          }
+        >
           <SearchBar
             value={search.searchContent}
             className="w-full py-0"
             onChange={handleInput}
             onSearch={confirmSearch}
             onCancelResearch={handleCancel}
+            onClick={handleSearch}
+            disabled={!search.isSearching}
           />
         </div>
 
