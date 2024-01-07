@@ -4,7 +4,8 @@
 
 ```bash
 $ git clone https://github.com/vbee-holding/project-20231.git
-$ cd crawl
+$ cd crawls
+$ cd crawl8
 ```
 
 - Then, run the following command to install dependencies

@@ -7,6 +7,7 @@ const hotTrendThreads = require("../controllers/HotTrendThreadsController");
 
 router.get("/hot-trend-threads", hotTrendThreads);
 router.get("/search", threadController.searchThread);
+router.get("/:threadId/replies/summary", replyController.showSummarizedReplies);
 router.get("/:threadId/replies/search", replyController.searchReply);
 router.get("/:threadId/replies", replyController.showReply);
 router.get("/:threadId/summary", threadController.showSummarizedThread);

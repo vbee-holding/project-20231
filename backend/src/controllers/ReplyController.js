@@ -1,6 +1,45 @@
+require('dotenv').config()
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GEMINI_API_KEY } = require('../config');
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 const Reply = require('../models/Reply');
+const Thread = require('../models/Thread');
 
 class ReplyController{
+  // [GET] /threads/:threadId/replies/summary
+  async showSummarizedReplies(req, res, next){
+    try{
+      let thread = await Thread.findOne({ threadId: req.params.threadId }).lean();
+      const model = genAI.getGenerativeModel({model: "gemini-pro"});
+
+      if(!thread){
+        return res.status(404).send('404 - No thread is found to summarize replies!');
+      }
+      
+      // Tổng hợp comment
+      let content = "";
+      for(var i = 1; i < thread.replys.length; i++){
+        content += thread.replys[i].content + ' ||';
+      }
+      // Nếu đã có nội dung tóm tắt thì trả về luôn
+      if(thread.summarizedRepliesContent){
+        return res.json(thread);
+      }
+      // Nếu chưa có 
+      const prompt = "Summarize comments you are provided with into an overview in Vietnamese like 'Phần lớn comment là ..., số khác lại cho là ..., một số ít cho là ..., hơn nữa ...' in exactly 100 words\n" + content;
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      let summarizedRepliesContent = response.text();
+      thread.summarizedRepliesContent = summarizedRepliesContent;
+      
+      // Lưu vào trong database
+      await Thread.findOneAndUpdate({ threadId: req.params.threadId }, { summarizedRepliesContent: summarizedRepliesContent });
+      return res.json(thread);
+    }
+    catch(error){
+      next(error);
+    }
+  }
   // [GET] /threads/:threadId/replies?page=<pageNumber>
   async showReply(req, res, next){
     const page = req.query.page || 0;
@@ -102,6 +141,7 @@ class ReplyController{
     }
     return res.status(200).json(response);
   }
+
 }
 
 module.exports = new ReplyController();
