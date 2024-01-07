@@ -5,6 +5,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { decodeJwt } from "jose";
 import axios from '@/utils/axios'
 import { Icons } from "./icons";
+import { useEffect, useState } from "react";
 
 const HeaderContainer = ({ children }) => {
   return (
@@ -21,8 +22,14 @@ const HeaderContainer = ({ children }) => {
   );
 };
 const Header = () => {
-  const userSession = JSON.parse(localStorage.getItem("userSession"));
-
+  const [userSession,setUserSession] = useState();
+  useEffect(() => {
+    // Kiểm tra xem có đang chạy ở môi trường client-side không
+    // if (typeof window !== 'undefined') {
+      // const 
+      setUserSession(JSON.parse(localStorage.getItem("userSession")));
+    // }
+  }, []);
   return (
     <>
       <HeaderContainer>
