@@ -62,13 +62,6 @@ passportService(passport);
 app.use(authRoutes);
 route(app);
 
-<<<<<<< HEAD
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`);
-});
-
-module.exports = app;
-=======
 if (isDevelopment) {
   app.listen(PORT, () => {
     console.log(`Example app listening on port ${PORT}`);
@@ -78,4 +71,3 @@ if (isDevelopment) {
     console.log(`Server is running on ${BASE_URL}`);
   });
 }
->>>>>>> 03b3cd4 (đặt url backend)

@@ -116,7 +116,7 @@ services:
   #   networks:
   #     - project20231
 
-    app-project20231:
+  app-project20231:
     build : 
       context: ../backend
       dockerfile: Dockerfile
