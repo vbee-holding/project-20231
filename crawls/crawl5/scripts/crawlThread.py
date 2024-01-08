@@ -39,8 +39,6 @@ def crawl_thread():
                     existing_thread = None
                     existing_thread = collection.find_one({"title": title})
 
-                    check = 2
-
                     if existing_thread is None:
                         # Nếu title chưa tồn tại trong collection thread, thêm dữ liệu mới
                         threadId = post_content.find(
