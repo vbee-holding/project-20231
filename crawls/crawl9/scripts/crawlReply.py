@@ -39,7 +39,7 @@ def fetch_data(url):
                     reply_id = reply_element['data-lb-id']
 
                 existing_reply = collection_reply.find_one(
-                    {"reply_id": reply_id})
+                    {"replyId": reply_id})
 
                 blockquote = None
 

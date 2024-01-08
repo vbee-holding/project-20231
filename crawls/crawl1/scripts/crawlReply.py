@@ -39,7 +39,7 @@ def fetch_data(url):
                     reply_id = reply_element['data-lb-id']
 
                 existing_reply = collection_reply.find_one(
-                    {"reply_id": reply_id})
+                    {"replyId": reply_id})
 
                 blockquote = None
 
@@ -96,7 +96,7 @@ def scrape_data():
     for child in data:
         all_results = []
         n = child['lastPage']
-        
+
         for i in range(1, n + 1):
             url = f"https://voz.vn/t/{child['threadId']}/page-{i}"
             fetched_data = fetch_data(url)
