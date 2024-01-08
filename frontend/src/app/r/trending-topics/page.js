@@ -1,3 +1,4 @@
+import MenuBar from "@/components/menuBar";
 import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -46,8 +47,9 @@ const TrendingTopics = () => {
   ];
   return (
     <div>
+      <MenuBar/>
       <div>
-        <h1 class="text-4xl text-gray-800 font-extrabold text-center my-5">
+        <h1 className="text-4xl text-gray-800 font-extrabold text-center my-5">
           Topics
         </h1>
       </div>

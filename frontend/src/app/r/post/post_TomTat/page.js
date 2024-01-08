@@ -1,11 +1,7 @@
 
 import Post_TomTat from '../post_TomTat/post_TomTat';
 import Link from 'next/link'
-<<<<<<< Updated upstream
-
-=======
 import Summary from '../post_TomTat/summary'
->>>>>>> Stashed changes
 export default function Home() {
   const datas = [
     {

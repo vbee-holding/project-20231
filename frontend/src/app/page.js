@@ -1,10 +1,10 @@
-"use client"
-import { faBoltLightning } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+"use client";
 import Post from "@/components/post";
 import { useEffect, useState } from "react";
 import axios from "@/utils/axios";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Loader from "@/components/loader";
+import MenuBar from "@/components/menuBar";
 
 export default function Home() {
   const [items, setItems] = useState([]);
@@ -36,30 +36,28 @@ export default function Home() {
   };
 
   return (
-    <main>
-      <div>
-        <InfiniteScroll
-          dataLength={items.length}
-          next={fetchMoreData}
-          hasMore={hasMore}
-          loader={<p className="text-center">Loading</p>}
-        >
-          {items.map((item, index) => (
+    <div>
+      <MenuBar/>
+      <InfiniteScroll
+        dataLength={items.length}
+        next={fetchMoreData}
+        hasMore={hasMore}
+        loader={<Loader />}
+      >
+        {items.map((item, index) => (
           <Post
             key={index}
-            linkImg={item.avatar_url}
+            linkImg={item.avatarUrl}
             name={item.author}
-            created={item.createdAt}
+            created={item.createdTime}
             title={item.title}
-            // overView={item.overView}
-            comment={item.replies}
+            // overView={item.content}
+            comment={item.totalReplies}
             view={item.views}
             // like={item.like}
           />
         ))}
-        </InfiniteScroll>
-        
-      </div>
-    </main>
+      </InfiniteScroll>
+    </div>
   );
 }

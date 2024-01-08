@@ -1,5 +1,8 @@
+require("dotenv").config();
 const Thread = require('../models/Thread');
-
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GEMINI_API_KEY } = require('../config');
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 class ThreadController{
   // [GET] /threads?page=<pageNumber>
   async showAll(req, res, next){
@@ -19,6 +22,18 @@ class ThreadController{
       if(!threads){
         return res.status(404).send('404 - No threads found!');
       }
+      // Giới hạn content của threads chỉ có tối đa 20 từ
+      threads.forEach(thread => {
+        if (thread.replys && thread.replys.length > 0) {
+          let content = thread.replys[0].content;
+          if (thread.replys[0].content.split(' ').length > 20) {
+            let threadContent = thread.replys[0].content;
+            content = threadContent.split(' ').slice(0, 20).join(' ') + '...';
+          }
+          thread.content = content;
+        }
+      });
+
       const response = {
         totalPages: Math.ceil(totalThreads / threadsPerPage),
         threads
@@ -33,19 +48,54 @@ class ThreadController{
   // [GET] /threads/:threadId
   async showThread(req, res, next){
     try{
-      let threads = await Thread.findOne({ threadId: req.params.threadId })
-      .sort({ createdTime: -1 })
+      let thread = await Thread.findOne({ threadId: req.params.threadId })
       .lean();
-      if(!threads){
+      if(!thread){
         return res.status(404).send('404 - No threads found!');
       }
-        return res.status(200).json(threads);
+      thread.content = thread.replys[0].content;
+      return res.status(200).json(thread);
     }
     catch(error){
       next(error);
     }
   }
 
+  // [GET] /threads/:threadId/summary
+  async showSummarizedThread(req, res, next){
+    try{
+      let thread = await Thread.findOne({ threadId: req.params.threadId }).lean();
+      const model = genAI.getGenerativeModel({model: "gemini-pro"});
+      if(!thread){
+        return res.status(404).send('404 - No thread is found to summarize!');
+      }
+
+      let content = thread.replys[0].content;
+      let summarizedContent = "";
+      // Nếu đã có nội dung tóm tắt thì trả về luôn
+      if(thread.summarizedContent){
+        return res.json(thread);
+      }
+      // Nếu chưa có 
+      const prompt = "Summarize content you are provided with in Vietnamese as if you are the writer in exactly 100 words\n" + content;
+      if(content.length < 300){
+        thread.summarizedContent = content;
+        return res.json(thread);
+      }
+      else{
+        const result = await model.generateContent(prompt);
+        const response = result.response;
+        let summarizedContent = response.text();
+        thread.summarizedContent = summarizedContent;
+        // Lưu vào trong database
+        await Thread.findOneAndUpdate({ threadId: req.params.threadId }, { summarizedContent: summarizedContent });
+        return res.json(thread);
+      }
+    }
+    catch(error){
+      next(error);
+    }
+  }
     // [GET] /threads/search?text=<từ khóa cần tìm>&newer=<YY-MM-DD>&older=<YY-MM-DD>&order=<type>?page=<pageNumber>
   async searchThread(req, res, next){
     const text = req.query.text;
@@ -88,6 +138,15 @@ class ThreadController{
             }
           });
           thread.relevanceScore = relevanceScore
+          // Giới hạn content của threads chỉ có tối đa 20 từ
+          if (thread.replys && thread.replys.length > 0) {
+            let content = thread.replys[0].content;
+            if (thread.replys[0].content.split(' ').length > 20) {
+              let threadContent = thread.replys[0].content;
+              content = threadContent.split(' ').slice(0, 20).join(' ') + '...';
+            }
+            thread.content = content;
+          }
         });
         threads.sort((a, b) => b.relevanceScore - a.relevanceScore);
         const startIndex = page * threadsPerPage;
@@ -113,6 +172,16 @@ class ThreadController{
         return res.status(404).send('404 - No threads found!');
       }
       // return res.status(200).json(replies);
+      threads.forEach(thread => {
+        if (thread.replys && thread.replys.length > 0) {
+          let content = thread.replys[0].content;
+          if (thread.replys[0].content.split(' ').length > 20) {
+            let threadContent = thread.replys[0].content;
+            content = threadContent.split(' ').slice(0, 20).join(' ') + '...';
+          }
+          thread.content = content;
+        }
+      });
       const response = {
         totalPages: Math.ceil(totalThreads / threadsPerPage),
         threads

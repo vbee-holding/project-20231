@@ -1,6 +1,5 @@
-<<<<<<< Updated upstream
+
 import Post_ChiTiet from "./post_ChiTiet";
-=======
 import { faBoltLightning } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Post_ChiTiet from '../post_ChiTiet/post_ChiTiet';
@@ -8,7 +7,7 @@ import Link from 'next/link'
 import { comment } from "postcss";
 import Replies from "../post_ChiTiet/replies"
 
->>>>>>> Stashed changes
+
 export default function Home() {
   const datas = [
     {

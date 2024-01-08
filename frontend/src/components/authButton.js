@@ -68,6 +68,18 @@ export function AvatarUser({ image, name, email }) {
             <Menu.Item>
               {({ active }) => (
                 <button
+                  className={classNames(
+                    active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+                    "block w-full px-4 py-2 text-left text-sm"
+                  )}
+                >
+                  Notification settings
+                </button>
+              )}
+            </Menu.Item>
+            <Menu.Item>
+              {({ active }) => (
+                <button
                   onClick={handleClick}
                   className={classNames(
                     active ? "bg-gray-100 text-gray-900" : "text-gray-700",
