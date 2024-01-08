@@ -1,8 +1,11 @@
-import { faBoltLightning } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import Post_TomTat from '../post_TomTat/post_TomTat';
 import Link from 'next/link'
+<<<<<<< Updated upstream
 
+=======
+import Summary from '../post_TomTat/summary'
+>>>>>>> Stashed changes
 export default function Home() {
   const datas = [
     {
@@ -10,22 +13,21 @@ export default function Home() {
       linkImg: "/assets/images/avatarIcon.png",
       name: "thuyvan",
       created: "7/12/2023",
-      title: "Report for F17 !",
+      title: "Report for F17 ! "
+          
+      ,
       overView:
         "Thread chỉ nhận report, nghiêm cấm mọi hành vi spam post, thảo luận/ tranh cãi/ chửi bới Học hỏi, mmds",
       view: 50,
-      like: 50,
+      comments: 11,
     },
-
   ];
 
-  const generateComments = () => {
-    const comments = [];
-    for (let i = 1; i <= 20; i++) {
-      comments.push({ id: i, content: `Comment ${i}`, user: `User ${i}` });
-    }
-    return comments;
-  };
+  const summary = [
+    {
+        content : "Viết về 1 thứ gì đó, ................ Đây là bản tóm tắt tất cả các comments"
+    },
+  ];
   return (
     <main>
       <div>
@@ -39,16 +41,14 @@ export default function Home() {
               overView={item.overView}
               comments={item.comments}
               view={item.view}
-              like={item.like}
-            />
-            <div className="bg-blue-500 text-white p-4 rounded-md mt-4 flex items-start mx-2">
-                <FontAwesomeIcon icon={faBoltLightning} className="w-5 h-5 mr-2" />
-                <span className="ml-2">Summary</span>
-            </div>
 
+            />   
+            {summary.map((key) => (   
+                <Summary content={key.content}/>
+            ))}
       
           </div>
-        ))}
+        ))}      
       </div>
     </main>
   );
