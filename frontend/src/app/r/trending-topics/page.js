@@ -46,9 +46,9 @@ const TrendingTopics = () => {
     <div>
       <MenuBar />
 
-      <div class="flex items-left max-w-md mx-auto">
-        <h1 class="text-4xl text-gray-800 font-extrabold text-left m-7">Topics</h1>
-        <div class="bg-gray-400 h-0.5 grow mt-12"></div>
+      <div className="flex items-left max-w-md mx-auto">
+        <h1 className="text-4xl text-gray-800 font-extrabold text-left m-7">Topics</h1>
+        <div className="bg-gray-400 h-0.5 grow mt-12"></div>
       </div>
 
       <div>

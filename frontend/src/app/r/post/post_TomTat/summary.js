@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Summary(props) {
     return (
-      <div>
+      <div key={props.key}>
         <div className="max-w-2xl p-4 mx-auto">
   
             <div className="bg-amber-200 text-white p-4 rounded-md mt-1 flex items-start mx-3">
