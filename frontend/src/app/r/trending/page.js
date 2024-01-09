@@ -16,12 +16,12 @@ const Trending = () => {
   }, []);
   // Ham lay ra 20 chu cai dau tien
   const truncate = (str) => {
-    const words = str.split(' ');
+    const words = str.split(" ");
     if (words.length <= 20) {
       return str;
     } else {
       const truncatedWords = words.slice(0, 20);
-      return `${truncatedWords.join(' ')}...`;
+      return `${truncatedWords.join(" ")}...`;
     }
   };
   return (
@@ -30,12 +30,12 @@ const Trending = () => {
       {items.map((item, index) => (
         <Post
           key={index}
-          linkImg={item.avatar_url}
+          linkImg={item.avatarUrl}
           name={item.author}
-          created={item.createdAt}
+          created={item.createdTime}
           title={item.title}
-          overView={truncate(item.replys[0].content)}
-          comment={item.total_replies}
+          // overView={truncate(item.replys[0].content)}
+          comment={item.totalReplies}
           view={item.views}
           // like={item.like}
         />

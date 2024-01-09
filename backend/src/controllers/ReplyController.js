@@ -18,8 +18,8 @@ class ReplyController{
       
       // Tổng hợp comment
       let content = "";
-      for(var i = 1; i < thread.replys.length; i++){
-        content += thread.replys[i].content + ' ||';
+      for(var i = 1; i < thread.replys.length && content.length < 30000; i++){
+        content += thread.replys[i].content + '|';
       }
       // Nếu đã có nội dung tóm tắt thì trả về luôn
       if(thread.summarizedRepliesContent){
@@ -29,7 +29,7 @@ class ReplyController{
       const prompt = "Summarize comments you are provided with into an overview in Vietnamese like 'Phần lớn comment là ..., số khác lại cho là ..., một số ít cho là ..., hơn nữa ...' in exactly 100 words\n" + content;
       const result = await model.generateContent(prompt);
       const response = result.response;
-      let summarizedRepliesContent = response.text();
+      let summarizedRepliesContent = response.text(); 
       thread.summarizedRepliesContent = summarizedRepliesContent;
       
       // Lưu vào trong database

@@ -5,17 +5,16 @@ import { GoogleLogin } from "@react-oauth/google";
 import { decodeJwt } from "jose";
 import axios from '@/utils/axios'
 import { Icons } from "./icons";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const HeaderContainer = ({ children }) => {
-  const router = useRouter();
   return (
     <header className="bg-header fixed top-0 z-10 w-full h-16">
       <div className=" relative h-full max-w-4xl mx-auto px-4 py-2 flex justify-between items-center">
-        <div className="grow">
-          <button onClick={() => router.push("/")}>
+        <div >
+          <a href="/">
             <Icons.logo className="h-8 w-8 sm:h-6 sm:w-6" />
-          </button>
+          </a>
         </div>
         <div className="flex">{children}</div>
       </div>
@@ -23,8 +22,14 @@ const HeaderContainer = ({ children }) => {
   );
 };
 const Header = () => {
-  const userSession = JSON.parse(localStorage.getItem("userSession"));
-
+  const [userSession,setUserSession] = useState();
+  useEffect(() => {
+    // Kiểm tra xem có đang chạy ở môi trường client-side không
+    // if (typeof window !== 'undefined') {
+      // const 
+      setUserSession(JSON.parse(localStorage.getItem("userSession")));
+    // }
+  }, []);
   return (
     <>
       <HeaderContainer>
