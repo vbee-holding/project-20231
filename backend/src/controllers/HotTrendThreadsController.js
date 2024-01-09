@@ -1,5 +1,6 @@
 const Thread = require("../models/Thread");
 const Reply = require("../models/Reply");
+const logger = require("../utils/logger");
 
 const hotTrendThreads = async (req, res) => {
   try {
@@ -57,10 +58,10 @@ const hotTrendThreads = async (req, res) => {
       threadId: { $in: threadIds.map((result) => result._id) },
     });
 
-    return res.status(200).json({ topThreads: topThreads });
+    return res.status(200).json({ topThreads: topThreads }) && logger.info({ status: 200, threadIds: threadIds, data: topThreads, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" }) && logger.error({ status: 500, message: err,  url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers});
   }
 };
 
