@@ -1,8 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-        domains: ['lh3.googleusercontent.com','data.voz.vn','secure.gravatar.com'],
-      },
-}
+  images: {
+    remotePatterns: [
+      { hostname: 'lh3.googleusercontent.com' },
+      { hostname: 'data.voz.vn' },
+      { hostname: 'secure.gravatar.com' },
+    ],
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

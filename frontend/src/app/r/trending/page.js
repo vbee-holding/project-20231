@@ -6,6 +6,7 @@ import axios from "@/utils/axios";
 
 const Trending = () => {
   const [items, setItems] = useState([]);
+  const [loadedAxios, SetLoaded] = useState(false)
   useEffect(() => {
     axios
       .get("threads/hot-trend-threads")
@@ -13,6 +14,7 @@ const Trending = () => {
         setItems(response.data.topThreads);
       })
       .catch((error) => console.log(error));
+    SetLoaded(true)
   }, []);
   // Ham lay ra 20 chu cai dau tien
   const truncate = (str) => {
@@ -40,6 +42,9 @@ const Trending = () => {
           // like={item.like}
         />
       ))}
+      {items.length === 0 && loadedAxios
+      && <p className="text-center mt-5">Không có bài viết nào</p>
+      }
     </div>
   );
 };
