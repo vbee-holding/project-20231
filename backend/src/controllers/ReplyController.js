@@ -4,7 +4,8 @@ const { GEMINI_API_KEY } = require('../config');
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 const Reply = require('../models/Reply');
 const Thread = require('../models/Thread');
-
+const logger = require('../utils/logger');
+const { error } = require('winston');
 class ReplyController{
   // [GET] /threads/:threadId/replies/summary
   async showSummarizedReplies(req, res, next){
@@ -13,9 +14,9 @@ class ReplyController{
       const model = genAI.getGenerativeModel({model: "gemini-pro"});
 
       if(!thread){
-        return res.status(404).send('404 - No thread is found to summarize replies!');
+        return res.status(404).send('404 - No thread is found to summarize replies!') 
+        && logger.warn({status:404, message: "No thread is found to summarize replies!", stack : error.stack, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers});
       }
-      
       // Tổng hợp comment
       let content = "";
       for(var i = 1; i < thread.replys.length && content.length < 30000; i++){
@@ -23,7 +24,8 @@ class ReplyController{
       }
       // Nếu đã có nội dung tóm tắt thì trả về luôn
       if(thread.summarizedRepliesContent){
-        return res.json(thread);
+        return res.json(thread) 
+        && logger.info({ status: 200, data: thread, message:"Da ton tai noi dung tom tat", url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
       }
       // Nếu chưa có 
       const prompt = "Summarize comments you are provided with into an overview in Vietnamese like 'Phần lớn comment là ..., số khác lại cho là ..., một số ít cho là ..., hơn nữa ...' in exactly 100 words\n" + content;
@@ -34,10 +36,11 @@ class ReplyController{
       
       // Lưu vào trong database
       await Thread.findOneAndUpdate({ threadId: req.params.threadId }, { summarizedRepliesContent: summarizedRepliesContent });
-      return res.json(thread);
+      return res.json(thread) 
+      && logger.info({ status: 200, data: response, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
     }
     catch(error){
-      next(error);
+      logger.warn({status:404, message: "No thread is found to summarize replies!", url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers});
     }
   }
   // [GET] /threads/:threadId/replies?page=<pageNumber>
@@ -48,7 +51,8 @@ class ReplyController{
     try{
       let totalReplies = await Reply.countDocuments({threadId: req.params.threadId})
       if(page > Math.ceil(totalReplies / repliesPerPage)){
-        return res.status(404).send('404 - No replies found!');
+        return res.status(404).send('404 - No replies found!') 
+        && logger.warn({ status: 404, message: "No replies found!", url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
       }
       let replies = await Reply.find({threadId: req.params.threadId})
       .sort({ createdTime: -1 })
@@ -56,14 +60,17 @@ class ReplyController{
       .limit(repliesPerPage)
       .lean();
       if(replies.length === 0){
-        return res.status(404).send('404 - No replies found!');
+        return res.status(404).send('404 - No replies found!') 
+        && logger.warn({ status: 404, message: "No replies found!", url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
       }
       // return res.status(200).json(replies);
       const response = {
         totalPages: Math.ceil(totalReplies / repliesPerPage),
         replies
       }
-      return res.status(200).json(response);
+      return res.status(200).json(response) 
+      && logger.info({ status: 200, data: response, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
+
     }
     catch(error){
       next(error);
@@ -86,7 +93,8 @@ class ReplyController{
     let query = Reply.find({ content: { $in: regexKeyWords } });
     let totalReplies = await Reply.countDocuments({ content: { $in: regexKeyWords } });
     if(page > Math.ceil(totalReplies / repliesPerPage)){
-      return res.status(404).send('404 - No replies found!');
+      return res.status(404).send('404 - No replies found!') 
+      && logger.warn({ status: 404, message: "No replies found!", url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
     }
     if (newerThan && olderThan) {
       query = query.where('createdTime').gte(new Date(newerThan)).lte(new Date(olderThan));
@@ -120,10 +128,11 @@ class ReplyController{
           totalPages: Math.ceil(totalReplies / repliesPerPage),
           paginatedReplies
         }
-        return res.status(200).json(response);
+        return res.status(200).json(response) 
+        && logger.info({ status: 200, data: response , url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers});
       })
       .catch(next);
-      return;
+      return logger.error({ status: 404, message: error.message, stack : error.stack, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });;
     }
 
     const replies = await query
@@ -132,16 +141,17 @@ class ReplyController{
     .limit(repliesPerPage)
     .lean();
     if(replies.length === 0){
-      return res.status(404).send('404 - No replies found!');
+      return res.status(404).send('404 - No replies found!') 
+      && logger.warn({ status: 404, message: "No replies found!", data : replies, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
     }
     // return res.status(200).json(replies);
     const response = {
       totalPages: Math.ceil(totalReplies / repliesPerPage),
       replies
     }
-    return res.status(200).json(response);
+    return res.status(200).json(response) 
+    && logger.info({ status: 200, data: response, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
   }
-
 }
 
 module.exports = new ReplyController();
