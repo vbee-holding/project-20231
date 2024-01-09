@@ -21,6 +21,7 @@
     "@mui/icons-material": "^5.15.2",
     "@mui/material": "^5.15.2",
     "@react-oauth/google": "^0.12.1",
+    "@tanstack/react-query": "^5.17.9",
     "axios": "^1.6.3",
     "cmdk": "^0.2.0",
     "flowbite-react": "^0.7.2",

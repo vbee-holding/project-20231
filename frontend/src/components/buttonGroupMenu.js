@@ -1,13 +1,14 @@
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const ButtonGroupMenu = () => {
   const router = useRouter();
+  const pathname = usePathname();
 
   return (
     <div className="col-span-7 space-x-1">
       <button
         className={
-          window.location.pathname === "/"
+          pathname === "/"
             ? "bg-purple-950 text-white font-bold py-2 px-2 rounded-full text-xs"
             : "bg-purple-600 hover:bg-purple-950 text-white font-bold py-2 px-2 rounded-full text-xs"
         }
@@ -18,7 +19,7 @@ const ButtonGroupMenu = () => {
 
       <button
         className={
-          window.location.pathname === "/r/trending"
+          pathname === "/r/trending"
             ? "bg-purple-950 text-white font-bold py-2 px-2 rounded-full text-xs"
             : "bg-purple-600 hover:bg-purple-950 text-white font-bold py-2 px-2 rounded-full text-xs"
         }
@@ -29,7 +30,7 @@ const ButtonGroupMenu = () => {
 
       <button
         className={
-          window.location.pathname === "/r/trending-topics"
+          pathname === "/r/trending-topics"
             ? "bg-purple-950 text-white font-bold py-2 px-2 rounded-full text-xs"
             : "bg-purple-600 hover:bg-purple-950 text-white font-bold py-2 px-2 rounded-full text-xs"
         }

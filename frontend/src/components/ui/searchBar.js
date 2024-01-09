@@ -137,7 +137,7 @@ const SearchBar = ({
 
   const handleClick = (e) => {
     onClick();
-  }
+  };
 
   return (
     <>
@@ -148,6 +148,7 @@ const SearchBar = ({
       >
         {!disabled ? (
           <StyledInputBase
+            className="outline-none focus:border-none focus:outline-none"
             inputProps={{
               ...getInputProps(),
               onChange: handleChange,
@@ -159,10 +160,11 @@ const SearchBar = ({
           />
         ) : (
           <StyledSubInputBase
+            className="outline-none focus:border-none focus:outline-none"
             inputProps={{
               ...getInputProps(),
               onChange: handleChange,
-              onClick:handleClick,
+              onClick: handleClick,
               value: internalValue,
             }}
             placeholder={placeholder || "Search"}
@@ -171,7 +173,7 @@ const SearchBar = ({
           />
         )}
 
-        {(internalValue && !disabled) ? (
+        {internalValue && !disabled ? (
           <CloseIconWrapper onClick={handleCancel}>
             <CloseIcon />
           </CloseIconWrapper>

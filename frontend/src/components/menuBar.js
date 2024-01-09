@@ -3,12 +3,31 @@ import * as React from "react";
 import { Icons } from "./icons";
 import ButtonGroupMenu from "./buttonGroupMenu";
 import SearchBar from "./ui/searchBar";
+import axios from "axios";
 
 const MenuBar = () => {
   const [search, setSearch] = React.useState({
     isSearching: false,
     searchContent: "",
   });
+
+  const [option, setOption] = React.useState({
+    isSearching: false,
+    searchContent: "",
+  });
+
+  const searching = () => {
+    axios
+    .get("/threads/search", {
+      params: {
+        Text: search.searchContent,
+      },
+    })
+    .then((res) => {
+    })
+    .catch((err) => console.log(err));
+  }
+
 
   const handleSearch = () => {
     setSearch({
@@ -58,7 +77,7 @@ const MenuBar = () => {
         >
           <SearchBar
             value={search.searchContent}
-            className="w-full py-0"
+            className="w-full py-0 outline-none focus:border-none focus:outline-none"
             onChange={handleInput}
             onSearch={confirmSearch}
             onCancelResearch={handleCancel}
@@ -69,7 +88,7 @@ const MenuBar = () => {
 
         <div className="flex justify-end items-center">
           <button onClick={search.isSearching ? confirmSearch : handleSearch}>
-            <Icons.search className="relative w-300 h-40 border-r-5" />
+            <Icons.search className="relative border-r-5" />
           </button>
         </div>
       </div>
