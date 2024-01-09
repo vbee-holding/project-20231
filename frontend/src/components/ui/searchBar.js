@@ -145,7 +145,7 @@ const SearchBar = ({
         {groupedOptions.length > 0 && internalValue.length ? (
           <Listbox {...getListboxProps()}>
             {groupedOptions.map((option, index) => (
-              <li {...getOptionProps({ option, index })} onClick={handleClickOption}>
+              <li key={index} {...getOptionProps({ option, index })} onClick={handleClickOption}>
                 <strong>{option}</strong>
               </li>
             ))}

@@ -39,8 +39,8 @@ export default function Home() {
               view={item.view}
 
             />   
-            {summary.map((key) => (   
-                <Summary content={key.content}/>
+            {summary.map((item,index) => (   
+                <Summary key={index} content={item.content}/>
             ))}
       
           </div>

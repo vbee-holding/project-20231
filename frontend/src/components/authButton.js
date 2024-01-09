@@ -23,6 +23,7 @@ export function AvatarUser({ image, name, email }) {
                 alt="avatar"
                 width={45}
                 height={45}
+                priority={true}
               />
             </div>
           </div>
