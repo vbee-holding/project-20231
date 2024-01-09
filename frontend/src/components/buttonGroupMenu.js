@@ -1,39 +1,43 @@
+import { usePathname, useRouter } from "next/navigation";
+
 const ButtonGroupMenu = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+
   return (
-    <div className="col-span-7">
-      <a href="/" className="py-2 px-0.5">
-        <button
-          className={
-            window.location.pathname === "/"
-              ? "bg-purple-950 text-white font-bold py-2 px-2 rounded-full text-xs"
-              : "bg-purple-600 hover:bg-purple-950 text-white font-bold py-2 px-2 rounded-full text-xs"
-          }
-        >
-          Home
-        </button>
-      </a>
-      <a href="/r/trending" className="py-2 px-0.5">
-        <button
-          className={
-            window.location.pathname === "/r/trending"
-              ? "bg-purple-950 text-white font-bold py-2 px-2 rounded-full text-xs"
-              : "bg-purple-600 hover:bg-purple-950 text-white font-bold py-2 px-2 rounded-full text-xs"
-          }
-        >
-          Trending
-        </button>
-      </a>
-      <a href="/r/trending-topics" className="py-2 px-0.5">
-        <button
-          className={
-            window.location.pathname === "/r/trending-topics"
-              ? "bg-purple-950 text-white font-bold py-2 px-2 rounded-full text-xs"
-              : "bg-purple-600 hover:bg-purple-950 text-white font-bold py-2 px-2 rounded-full text-xs"
-          }
-        >
-          Trending topics
-        </button>
-      </a>
+    <div className="col-span-7 space-x-1">
+      <button
+        className={
+          pathname === "/"
+            ? "bg-purple-950 text-white font-bold py-2 px-2 rounded-full text-xs"
+            : "bg-purple-600 hover:bg-purple-950 text-white font-bold py-2 px-2 rounded-full text-xs"
+        }
+        onClick={() => router.push("/")}
+      >
+        Home
+      </button>
+
+      <button
+        className={
+          pathname === "/r/trending"
+            ? "bg-purple-950 text-white font-bold py-2 px-2 rounded-full text-xs"
+            : "bg-purple-600 hover:bg-purple-950 text-white font-bold py-2 px-2 rounded-full text-xs"
+        }
+        onClick={() => router.push("/r/trending")}
+      >
+        Trending
+      </button>
+
+      <button
+        className={
+          pathname === "/r/trending-topics"
+            ? "bg-purple-950 text-white font-bold py-2 px-2 rounded-full text-xs"
+            : "bg-purple-600 hover:bg-purple-950 text-white font-bold py-2 px-2 rounded-full text-xs"
+        }
+        onClick={() => router.push("/r/trending-topics")}
+      >
+        Trending topics
+      </button>
     </div>
   );
 };

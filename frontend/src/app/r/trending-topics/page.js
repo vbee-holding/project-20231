@@ -1,27 +1,20 @@
 import MenuBar from "@/components/menuBar";
-import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Item=({title})=>{
-    return(
-        <div className="flex items-center pl-8 mb-12 max-w-md mx-auto">
-            <div>
-                <FontAwesomeIcon
-                  icon={faCaretRight}
-                  style={{
-                    width: 30,
-                    height: 30
-                  }}
-                />
-            </div>
-            <div>
-                <h2 className="text-3xl text-gray-800 font-extrabold mx-4 
-                cursor-pointer hover:underline">{title}</h2>
-            </div>
-            <div className="bg-gray-400 h-0.5 grow"></div>
+
+const Item = ({ title }) => {
+  return (
+    <div className="flex-column items-center pl-8 mb-1 mx-2 overflow-hidden float-left ">
+      <a href="./trending-topics-detail">
+        <div>
+          <div className="w-[143px] h-[87px] bg-zinc-300 rounded-[5px] border border-black color-inherit decoration-none outline-none;" />
+          <h2 className="text-xl text-gray-800 mt-1 font-bold cursor-pointer text-center color-inherit decoration-none outline-none" >{title}</h2>
         </div>
-    )
+      </a>
+      <h2 className="text-0.5 mb-0.5 text-gray-800 cursor-pointer text-center" >10 bài viết </h2>
+    </div >
+  )
 }
+
 const TrendingTopics = () => {
   const datas = [
     {
@@ -30,7 +23,7 @@ const TrendingTopics = () => {
     },
     {
       id: 2,
-      title: "Sport",
+      title: "Space",
     },
     {
       id: 3,
@@ -44,21 +37,26 @@ const TrendingTopics = () => {
       id: 5,
       title: "Black Friday",
     },
+    {
+      id: 6,
+      title: "Sport",
+    },
   ];
   return (
     <div>
-      <MenuBar/>
-      <div>
-        <h1 class="text-4xl text-gray-800 font-extrabold text-center my-5">
-          Topics
-        </h1>
+      <MenuBar />
+
+      <div className="flex items-left max-w-md mx-auto">
+        <h1 className="text-4xl text-gray-800 font-extrabold text-left m-7">Topics</h1>
+        <div className="bg-gray-400 h-0.5 grow mt-12"></div>
       </div>
+
       <div>
         {datas.map(child => (
-            <Item key={child.id} title={child.title}/>
+          <Item key={child.id} title={child.title} />
         ))}
       </div>
-    </div>
+    </div >
   );
 };
 export default TrendingTopics;

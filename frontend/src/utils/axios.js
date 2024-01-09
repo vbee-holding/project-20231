@@ -1,7 +1,16 @@
-import axios from 'axios'
+import axios from 'axios';
+
+const isDevelopment = process.env.NODE_ENV !== 'production';
+let baseURL;
+
+if (isDevelopment) {
+  baseURL = 'http://localhost:3003/';
+} else {
+  baseURL = 'https://vozbackend-dot-voz-2023-410302.et.r.appspot.com/';
+}
 
 const instance = axios.create({
-    baseURL: process.env.BASE_URL || 'http://localhost:3003/',
+  baseURL: baseURL
 });
 
 export default instance;

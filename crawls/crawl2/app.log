@@ -1,0 +1,1 @@
+2024-01-09 10:35:17,826 - ERROR - L\u1ed7i k\u1ebft n\u1ed1i: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))

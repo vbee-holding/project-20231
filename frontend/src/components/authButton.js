@@ -23,6 +23,7 @@ export function AvatarUser({ image, name, email }) {
                 alt="avatar"
                 width={45}
                 height={45}
+                priority={true}
               />
             </div>
           </div>
@@ -73,7 +74,7 @@ export function AvatarUser({ image, name, email }) {
                     "block w-full px-4 py-2 text-left text-sm"
                   )}
                 >
-                  Notification settings
+                  Cài đặt thông báo
                 </button>
               )}
             </Menu.Item>
@@ -86,7 +87,7 @@ export function AvatarUser({ image, name, email }) {
                     "block w-full px-4 py-2 text-left text-sm"
                   )}
                 >
-                  Sign out
+                  Đăng xuất
                 </button>
               )}
             </Menu.Item>
