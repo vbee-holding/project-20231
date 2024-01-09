@@ -6,11 +6,11 @@ const Item = (props) => {
   return (
     <div
       className="flex items-center 
-      bg-neutral-200
+      bg-neutral-100
       mr-4 py-1 px-2 
       rounded-3xl cursor-pointer"
     >
-      <FontAwesomeIcon
+      {/* <FontAwesomeIcon
         icon={props.icon}
         style={{
           color: "black",
@@ -19,8 +19,9 @@ const Item = (props) => {
           marginRight: 4,
           color: "#33363F",
         }}
-      />
-      <p className="text-sm">{`${props.amout} ${props.text}`}</p>
+      /> */}
+      <Image src={props.src} alt="eye" width={20} height={20} />
+      <p className=" ml-2 text-sm">{`${props.amout} ${props.text}`}</p>
       {/* {props.amout && <p className="inline">{props.amout}</p>}
       {props.text && <p className="inline">{`${props.text}`}</p>} */}
     </div>
@@ -59,8 +60,12 @@ const Post = (props) => {
           </div>
         </div>
         <div className="flex mt-2">
-          <Item icon={faComment} amout={props.comment} text="comments" />
-          <Item icon={faEye} amout={props.view} text="views" />
+          <Item 
+          // icon={faComment} 
+          src='/comment.svg' amout={props.comment} text="bình luận" />
+          <Item 
+          // icon={faEye} 
+          src='/eye.svg' amout={props.view} text="lượt xem" />
         </div>
       </div>
       <hr className="max-w-2xl mx-auto border-0 border-b-sm border-solid border-b-gray-300" />
