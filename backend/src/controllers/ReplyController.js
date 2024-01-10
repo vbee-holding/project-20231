@@ -2,6 +2,11 @@ require('dotenv').config()
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { GEMINI_API_KEY } = require('../config');
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+const { OpenAI } = require('openai');
+const { OPENAI_API_KEY } = require('../config');
+const openai = new OpenAI({
+  apiKey: OPENAI_API_KEY,
+});
 const Reply = require('../models/Reply');
 const Thread = require('../models/Thread');
 const logger = require('../utils/logger');
@@ -12,7 +17,6 @@ class ReplyController{
     try{
       let thread = await Thread.findOne({ threadId: req.params.threadId }).lean();
       const model = genAI.getGenerativeModel({model: "gemini-pro"});
-
       if(!thread){
         return res.status(404).send('404 - No thread is found to summarize replies!') 
         && logger.warn({status:404, message: "No thread is found to summarize replies!", stack : error.stack, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers});
@@ -31,16 +35,42 @@ class ReplyController{
       const prompt = "Summarize comments you are provided with into an overview in Vietnamese like 'Phần lớn comment là ..., số khác lại cho là ..., một số ít cho là ..., hơn nữa ...' in exactly 100 words\n" + content;
       const result = await model.generateContent(prompt);
       const response = result.response;
-      let summarizedRepliesContent = response.text(); 
-      thread.summarizedRepliesContent = summarizedRepliesContent;
+      let summarizedRepliesContent = "";
+      // Thử tóm tắt bằng Gemini
+      try{
+        summarizedRepliesContent = response.text(); 
+      }
       
+      // Nếu gặp lỗi BLOCKED DUE TO SAFETY thì dùng chatGPT
+      catch(error) {
+        const promptGPT = "Summarize comments you are provided with into an overview in Vietnamese like 'Phần lớn comment là ..., số khác lại cho là ..., một số ít cho là ..., hơn nữa ...' in exactly 100 words";
+        const response = await openai.chat.completions.create({
+          model: "gpt-3.5-turbo-1106",
+          messages: [
+            { 
+              "role": "system", 
+              "content": promptGPT
+            },
+            {
+              "role": "user",
+              "content": content
+            }
+          ],
+          temperature: 0,
+          top_p: 1,
+        });
+        summarizedRepliesContent = response.choices[0].message.content;
+      }
+      
+      thread.summarizedRepliesContent = summarizedRepliesContent;
       // Lưu vào trong database
       await Thread.findOneAndUpdate({ threadId: req.params.threadId }, { summarizedRepliesContent: summarizedRepliesContent });
       return res.json(thread) 
       && logger.info({ status: 200, data: response, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
     }
     catch(error){
-      logger.warn({status:404, message: "No thread is found to summarize replies!", url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers});
+      next(error);
+      logger.warn({status:404, message: "Không thể tóm tắt replies bằng cả Gemini lẫn ChatGPT", url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers});
     }
   }
   // [GET] /threads/:threadId/replies?page=<pageNumber>
