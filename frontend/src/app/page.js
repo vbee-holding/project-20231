@@ -51,7 +51,7 @@ export default function Home() {
             name={item.author}
             created={item.createdTime}
             title={item.title}
-            // overView={item.content}
+            overView={item.content}
             comment={item.totalReplies}
             view={item.views}
             // like={item.like}
