@@ -3,6 +3,11 @@ const Thread = require('../models/Thread');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { GEMINI_API_KEY } = require('../config');
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+const { OpenAI } = require('openai');
+const { OPENAI_API_KEY } = require('../config');
+const openai = new OpenAI({
+  apiKey: OPENAI_API_KEY,
+});
 const logger = require("../utils/logger");
 class ThreadController{
   // [GET] /threads?page=<pageNumber>
@@ -88,9 +93,36 @@ class ThreadController{
         return res.json(thread) && logger.info({status: 200, message : "Nội dung không cần tóm tắt", data: thread, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers});
       }
       else{
+
         const result = await model.generateContent(prompt);
         const response = result.response;
-        let summarizedContent = response.text();
+        let summarizedContent = "";
+        // Thử tóm tắt bằng Gemini
+        try{
+          summarizedContent = response.text(); 
+        }
+
+        // Nếu gặp lỗi BLOCKED DUE TO SAFETY thì dùng chatGPT
+        catch(error) {
+          const promptGPT = "Summarize content you are provided with in Vietnamese as if you are the writer in exactly 100 words";
+          const response = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo-1106",
+            messages: [
+              { 
+                "role": "system", 
+                "content": promptGPT
+              },
+              {
+                "role": "user",
+                "content": content
+              }
+            ],
+            temperature: 0,
+            top_p: 1,
+          });
+          summarizedContent = response.choices[0].message.content;
+        }
+
         thread.summarizedContent = summarizedContent;
         // Lưu vào trong database
         await Thread.findOneAndUpdate({ threadId: req.params.threadId }, { summarizedContent: summarizedContent });
