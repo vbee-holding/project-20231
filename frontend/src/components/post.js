@@ -28,6 +28,27 @@ const Item = (props) => {
   );
 };
 const Post = (props) => {
+  function formatTimeDifference(isoTimeString) {
+    const inputDate = new Date(isoTimeString);
+    const currentDate = new Date();
+
+    const timeDifferenceInMilliseconds = currentDate - inputDate;
+    const timeDifferenceInSeconds = timeDifferenceInMilliseconds / 1000;
+
+    if (timeDifferenceInSeconds < 3600) {
+      // Nếu thời gian chênh lệch < 1 giờ, trả về số phút
+      const minutes = Math.floor(timeDifferenceInSeconds / 60);
+      return `${minutes} phút`;
+    } else if (timeDifferenceInSeconds < 86400) {
+      // Nếu thời gian chênh lệch < 1 ngày, trả về số giờ
+      const hours = Math.floor(timeDifferenceInSeconds / 3600);
+      return `${hours} giờ`;
+    } else {
+      // Nếu thời gian chênh lệch >= 1 ngày, trả về định dạng ngày/tháng/năm
+      const options = { year: "numeric", month: "numeric", day: "numeric" };
+      return inputDate.toLocaleDateString("vi-VN", options);
+    }
+  }
   return (
     <div>
       <div className="max-w-2xl p-4 mx-auto">
@@ -50,22 +71,30 @@ const Post = (props) => {
             <p className="font-bold mx-2 cursor-pointer hover:underline">
               {props.name}
             </p>
-            <p className="text-sm">{props.created}</p>
+            <p className="text-sm">{formatTimeDifference(props.created)}</p>
           </div>
         </div>
         <div>
-          <h1 className="font-semibold text-sm md:text-lg my-2">{props.title}</h1>
+          <h1 className="font-semibold text-base md:text-lg my-2">
+            {props.title}
+          </h1>
           <div>
-            {/* <p className="inline">{props.overView}</p> */}
+            <p className="inline text-sm">{props.overView}</p>
           </div>
         </div>
         <div className="flex mt-2">
-          <Item 
-          // icon={faComment} 
-          src='/comment.svg' amout={props.comment} text="bình luận" />
-          <Item 
-          // icon={faEye} 
-          src='/eye.svg' amout={props.view} text="lượt xem" />
+          <Item
+            // icon={faComment}
+            src="/comment.svg"
+            amout={props.comment}
+            text="bình luận"
+          />
+          <Item
+            // icon={faEye}
+            src="/eye.svg"
+            amout={props.view}
+            text="lượt xem"
+          />
         </div>
       </div>
       <hr className="max-w-2xl mx-auto border-0 border-b-sm border-solid border-b-gray-300" />
