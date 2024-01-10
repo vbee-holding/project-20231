@@ -3,31 +3,14 @@ import * as React from "react";
 import { Icons } from "./icons";
 import ButtonGroupMenu from "./buttonGroupMenu";
 import SearchBar from "./ui/searchBar";
-import axios from "axios";
+import axios from "@/utils/axios";
 
 const MenuBar = () => {
   const [search, setSearch] = React.useState({
     isSearching: false,
     searchContent: "",
+    options: [],
   });
-
-  const [option, setOption] = React.useState({
-    isSearching: false,
-    searchContent: "",
-  });
-
-  const searching = () => {
-    axios
-    .get("/threads/search", {
-      params: {
-        Text: search.searchContent,
-      },
-    })
-    .then((res) => {
-    })
-    .catch((err) => console.log(err));
-  }
-
 
   const handleSearch = () => {
     setSearch({
@@ -36,24 +19,48 @@ const MenuBar = () => {
     });
   };
 
-  const confirmSearch = () => {
+  const confirmSearch = async () => {
+    const response = await axios
+      .get("threads/search", {
+        params: {
+          text: search.searchContent,
+        },
+      })
+      .catch((err) => console.log(err));
+    console.log(response);
     setSearch({
       ...search,
       isSearching: !search.isSearching,
     });
   };
 
-  const handleInput = (e) => {
-    setSearch({
-      ...search,
-      searchContent: e,
-    });
+  const handleInput = async (e) => {
+    axios
+      .get("threads/search", {
+        params: {
+          text: e,
+        },
+      })
+      .then((response) =>
+        setSearch({
+          ...search,
+          searchContent: e,
+          options: response.data.threads,
+        })
+      )
+      .catch(() =>
+        setSearch({
+          ...search,
+          options: [],
+        })
+      );
   };
 
   const handleCancel = () => {
     setSearch({
       ...search,
       searchContent: "",
+      options: [],
     });
   };
 
@@ -83,6 +90,7 @@ const MenuBar = () => {
             onCancelResearch={handleCancel}
             onClick={handleSearch}
             disabled={!search.isSearching}
+            options={search.options}
           />
         </div>
 

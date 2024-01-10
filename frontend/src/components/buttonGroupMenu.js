@@ -14,7 +14,7 @@ const ButtonGroupMenu = () => {
         }
         onClick={() => router.push("/")}
       >
-        Home
+        Trang chủ
       </button>
 
       <button
@@ -25,7 +25,7 @@ const ButtonGroupMenu = () => {
         }
         onClick={() => router.push("/r/trending")}
       >
-        Trending
+        Xu hướng
       </button>
 
       <button
@@ -36,7 +36,7 @@ const ButtonGroupMenu = () => {
         }
         onClick={() => router.push("/r/trending-topics")}
       >
-        Trending topics
+        Chủ đề hot
       </button>
     </div>
   );
