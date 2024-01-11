@@ -1,5 +1,5 @@
 
-import Post_ChiTiet from "./post_ChiTiet";
+
 import { faBoltLightning } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Post_ChiTiet from '../post_ChiTiet/post_ChiTiet';

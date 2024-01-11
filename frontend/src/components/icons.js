@@ -67,4 +67,5 @@ export const Icons = {
   eye: VisibilityOutlined,
   back: Undo,
   comment: ChatBubbleOutlineOutlined,
+  
 };
