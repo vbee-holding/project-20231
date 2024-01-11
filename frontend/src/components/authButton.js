@@ -3,15 +3,18 @@ import Image from "next/image";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import ModalNotify from "./modalNotify";
+import { useRouter } from "next/navigation";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-export function AvatarUser({ image, name, email }) {
+export function AvatarUser({ image, name, email, setUserSession }) {
   const [showSetting, setShowSetting] = useState(false);
+  const router = useRouter()
   const handleClick = () => {
     localStorage.removeItem("userSession");
-    window.location.reload();
+    router.refresh();
+    setUserSession()
   };
   return (
     <div>

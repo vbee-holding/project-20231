@@ -1,15 +1,15 @@
 import MenuBar from "@/components/menuBar";
-
+import Link from "next/link"
 
 const Item = ({ title }) => {
   return (
     <div className="flex-column items-center pl-8 mb-1 mx-2 overflow-hidden float-left ">
-      <a href="./trending-topics-detail">
+      <Link href="./trending-topics-detail">
         <div>
           <div className="w-[143px] h-[87px] bg-zinc-300 rounded-[5px] border border-black color-inherit decoration-none outline-none;" />
           <h2 className="text-xl text-gray-800 mt-1 font-bold cursor-pointer text-center color-inherit decoration-none outline-none" >{title}</h2>
         </div>
-      </a>
+      </Link>
       <h2 className="text-0.5 mb-0.5 text-gray-800 cursor-pointer text-center" >10 bài viết </h2>
     </div >
   )
