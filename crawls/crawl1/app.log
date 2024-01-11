@@ -1,0 +1,1 @@
+2024-01-12 05:16:23,394 - ERROR - L\u1ed7i khi th\u1ef1c hi\u1ec7n crawl và lýu d\u1eef li\u1ec7u vào MongoDB: cursor id 1192463162605818869 not found, full error: {'ok': 0.0, 'errmsg': 'cursor id 1192463162605818869 not found', 'code': 43, 'codeName': 'CursorNotFound'}
