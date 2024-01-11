@@ -6,6 +6,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import PropTypes from "prop-types";
 import useAutocomplete from "@mui/material/useAutocomplete";
 import { autocompleteClasses } from "@mui/material/Autocomplete";
+import Suggestion from "../suggestion";
 
 const Search = styled("div")(() => ({
   borderRadius: "5px",
@@ -85,25 +86,12 @@ const SearchBar = ({
 }) => {
   const [internalValue, setInternalValue] = useState(value || "");
 
-  const {
-    getRootProps,
-    getInputProps,
-    getListboxProps,
-    getOptionProps,
-    groupedOptions,
-  } = useAutocomplete({
-    id: "use-autocomplete",
-    freeSolo: true,
-    options: options || [],
-    getOptionLabel: (option) => option,
-    filterOptions: (options) => {
-      if (options === undefined) return [];
-      let newOptions = options.filter((option) => {
-        return option.toLowerCase().includes(internalValue.toLowerCase());
-      });
-      return newOptions.slice(0, 5);
-    },
-  });
+  const { getRootProps, getInputProps, getListboxProps, groupedOptions } =
+    useAutocomplete({
+      id: "use-autocomplete",
+      freeSolo: true,
+      options: options || [],
+    });
 
   const handleChange = (e) => {
     setInternalValue(e.target.value);
@@ -148,6 +136,7 @@ const SearchBar = ({
       >
         {!disabled ? (
           <StyledInputBase
+            key={"StyledInputBase"}
             className="outline-none focus:border-none focus:outline-none"
             inputProps={{
               ...getInputProps(),
@@ -160,6 +149,7 @@ const SearchBar = ({
           />
         ) : (
           <StyledSubInputBase
+            key={"StyledSubInputBase"}
             className="outline-none focus:border-none focus:outline-none"
             inputProps={{
               ...getInputProps(),
@@ -174,21 +164,31 @@ const SearchBar = ({
         )}
 
         {internalValue && !disabled ? (
-          <CloseIconWrapper onClick={handleCancel}>
+          <CloseIconWrapper key={"CloseIconWrapper"} onClick={handleCancel}>
             <CloseIcon />
           </CloseIconWrapper>
         ) : null}
 
-        {groupedOptions.length > 0 && internalValue.length ? (
-          <Listbox {...getListboxProps()}>
+        {!disabled && groupedOptions.length > 0 && internalValue.length ? (
+          <Listbox {...getListboxProps()} key={"ListboxOptions"}>
             {groupedOptions.map((option, index) => (
-              <li
-                {...getOptionProps({ option, index })}
+              <Suggestion
+                key={index}
+                linkImg={option.avatarUrl}
+                name={option.author}
+                title={option.title}
                 onClick={handleClickOption}
-              >
-                <strong>{option}</strong>
-              </li>
+              />
             ))}
+          </Listbox>
+        ) : !disabled && internalValue.length ? (
+          <Listbox {...getListboxProps()} key={"ListboxOptions"}>
+            <div
+              className="items-center px-4 py-2 flex-none space-x-4"
+              key={"notFound"}
+            >
+              Không tìm thấy bài viết
+            </div>
           </Listbox>
         ) : null}
       </Search>
