@@ -1,4 +1,4 @@
-import { Search, Undo } from "@mui/icons-material";
+import { ChatBubbleOutlineOutlined, Search, Settings, Undo, VisibilityOutlined } from "@mui/icons-material";
 
 export const Icons = {
   logo: () => (
@@ -42,6 +42,7 @@ export const Icons = {
     </svg>
   ),
   search: Search,
+  setting: Settings,
   google: () => (
     <svg {...props} viewBox="0 0 24 24">
       <path
@@ -63,5 +64,7 @@ export const Icons = {
       <path d="M1 1h22v22H1z" fill="none" />
     </svg>
   ),
+  eye: VisibilityOutlined,
   back: Undo,
+  comment: ChatBubbleOutlineOutlined,
 };
