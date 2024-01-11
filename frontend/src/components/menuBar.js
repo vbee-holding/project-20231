@@ -4,6 +4,8 @@ import { Icons } from "./icons";
 import ButtonGroupMenu from "./buttonGroupMenu";
 import SearchBar from "./ui/searchBar";
 import axios from "@/utils/axios";
+import { useRouter } from "next/navigation";
+
 
 const MenuBar = () => {
   const [search, setSearch] = React.useState({
@@ -11,6 +13,7 @@ const MenuBar = () => {
     searchContent: "",
     options: [],
   });
+  const router = useRouter()
 
   const handleSearch = () => {
     setSearch({
@@ -20,18 +23,7 @@ const MenuBar = () => {
   };
 
   const confirmSearch = async () => {
-    const response = await axios
-      .get("threads/search", {
-        params: {
-          text: search.searchContent,
-        },
-      })
-      .catch((err) => console.log(err));
-    console.log(response);
-    setSearch({
-      ...search,
-      isSearching: !search.isSearching,
-    });
+    router.push("/r/search/" + (search.searchContent))
   };
 
   const handleInput = async (e) => {
