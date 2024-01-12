@@ -2,13 +2,9 @@
 import { faArrowLeft, faComment, faEye,faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import ToggleButton from "../post_ChiTiet/togglebutton";
+import ToggleButton from "./togglebutton";
 import { useRouter } from "next/navigation"; // Import the useRouter hook
-
-
-
-
-
+import axios from "@/utils/axios"
 const Item = (props) => {
 
   return (
@@ -34,6 +30,7 @@ const Item = (props) => {
 };
 
 const Post_ChiTiet = (props) => {
+  console.log(props.id)
   const router = useRouter(); 
   const handleBack = () => {
     router.push("/"); 
@@ -66,13 +63,16 @@ const Post_ChiTiet = (props) => {
             </p>
             <p>{props.created}</p>
           </div>
-          <ToggleButton />
+          <ToggleButton threadId={props.id}/>
         </div>
         <div>
           <h1 className="font-bold text-3xl my-2">{props.title}</h1>
         </div>
+        <div>
+          <h1 className="font-normal text-sm my-2">{props.overView}</h1>
+        </div>
         <div className="flex mt-2">
-          <Item icon={faComment} amout={props.comments} text="Bình luận" />
+          <Item icon={faComment} amout={props.comment} text="Bình luận" />
           <Item icon={faEye} amout={props.view} text="Lượt xem" />
           <div className="ml-auto">
             {/* Additional content */}

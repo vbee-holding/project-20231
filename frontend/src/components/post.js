@@ -1,17 +1,17 @@
+"use client"
 import { faComment, faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import { Icons } from "./icons";
-
+import { useRouter } from "next/navigation";
 const Item = (props) => {
   return (
     <div
       className="flex items-center 
-      bg-neutral-100
+      bg-neutral-200
       mr-4 py-1 px-2 
       rounded-3xl cursor-pointer"
     >
-      {/* <FontAwesomeIcon
+      <FontAwesomeIcon
         icon={props.icon}
         style={{
           color: "black",
@@ -20,16 +20,29 @@ const Item = (props) => {
           marginRight: 4,
           color: "#33363F",
         }}
-      /> */}
-      {props.src == "eye" ? <Icons.eye width={20} height={20} /> : null}
-      {props.src == "comment" ? <Icons.comment width={20} height={20} /> : null}
-      <p className=" ml-2 text-sm">{`${props.amout} ${props.text}`}</p>
+      />
+      <p className="text-sm">{`${props.amout} ${props.text}`}</p>
       {/* {props.amout && <p className="inline">{props.amout}</p>}
       {props.text && <p className="inline">{`${props.text}`}</p>} */}
     </div>
   );
 };
+
 const Post = (props) => {
+
+  const router = useRouter();
+  const handleClick = () => {
+    router.push(`/r/post/${props.threadId}`);
+  };
+
+  const handleClick1 = () => {
+
+    router.push(`/r/post/summary/${props.threadId_summary}`);
+    console.log(props.threadId)
+  };
+
+
+
   function formatTimeDifference(isoTimeString) {
     const inputDate = new Date(isoTimeString);
     const currentDate = new Date();
@@ -51,9 +64,11 @@ const Post = (props) => {
       return inputDate.toLocaleDateString("vi-VN", options);
     }
   }
+
+
   return (
     <div>
-      <div className="max-w-2xl p-4 mx-auto hover:bg-neutral-50 cursor-pointer">
+      <div className="max-w-2xl p-4 mx-auto">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             {props.linkImg.startsWith("https://") ? (
@@ -70,37 +85,45 @@ const Post = (props) => {
               </div>
             )}
 
-            <p className="font-bold mx-2">
+            <p className="font-bold mx-2 cursor-pointer hover:underline">
               {props.name}
             </p>
-            <p className="text-sm">{formatTimeDifference(props.created)}</p>
+            <p className="text-sm">{props.created}</p>
           </div>
         </div>
         <div>
-          <h1 className="font-semibold text-base md:text-lg my-2">
-            {props.title}
-          </h1>
+          <h1 className="font-semibold text-sm md:text-lg my-2">{props.title}</h1>
           <div>
-            <p className="inline text-sm">{props.overView}</p>
+            {/* <p className="inline">{props.overView}</p> */}
           </div>
         </div>
         <div className="flex mt-2">
+
+          <Item icon={faComment} amout={props.comment} text="comments" />
+          <Item icon={faEye} amout={props.view} text="views" />
+
           <Item
             // icon={faComment}
-            src="comment"
+            src="/comment.svg"
             amout={props.comment}
             text="bình luận"
           />
           <Item
             // icon={faEye}
-            src="eye"
+            src="/eye.svg"
             amout={props.view}
             text="lượt xem"
           />
+        <div>
+            <button onClick={handleClick}>post_ChiTiet</button>
+            <button onClick={handleClick1}>post_TomTat</button>
+          </div>
+
         </div>
       </div>
       <hr className="max-w-2xl mx-auto border-0 border-b-sm border-solid border-b-gray-300" />
     </div>
+    
   );
 };
 export default Post;

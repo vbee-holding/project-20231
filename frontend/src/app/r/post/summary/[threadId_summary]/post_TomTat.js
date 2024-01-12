@@ -4,7 +4,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import ToggleButton from "../post_TomTat/togglebutton"
+import ToggleButton from "../[threadId_summary]/togglebutton"
 
 const Item = (props) => {
   return (
@@ -57,7 +57,7 @@ const Post_TomTat = (props) => {
           <h1 className="font-regular text-3x1 my-2">{props.overView}</h1>
         </div>
         <div className="flex mt-2">
-          <Item icon={faComment} amout={props.comments} text="Bình luận"/>
+          <Item icon={faComment} amout={props.comment} text="Bình luận"/>
           <Item icon={faEye} amout={props.view} text="Lượt xem" />
           <div className="ml-auto">
             
