@@ -53,7 +53,7 @@ const Post = (props) => {
   }
   return (
     <div>
-      <div className="max-w-2xl p-4 mx-auto">
+      <div className="max-w-2xl p-4 mx-auto hover:bg-neutral-50 cursor-pointer">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             {props.linkImg.startsWith("https://") ? (
@@ -70,7 +70,7 @@ const Post = (props) => {
               </div>
             )}
 
-            <p className="font-bold mx-2 cursor-pointer hover:underline">
+            <p className="font-bold mx-2">
               {props.name}
             </p>
             <p className="text-sm">{formatTimeDifference(props.created)}</p>
