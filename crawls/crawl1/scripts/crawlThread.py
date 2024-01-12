@@ -18,10 +18,11 @@ def crawl_thread():
         # Kết nối với MongoDB
         # client = pymongo.MongoClient(os.getenv("MONGODB_URL_DEV"))
         client = pymongo.MongoClient(os.getenv("MONGODB_URL_PRODUCT"))
+        print(client)
         database = client["test"]
         collection = database["threads"]
 
-        for i in range(100, 105):
+        for i in range(105, 200):
             url = f"https://voz.vn/f/chuyen-tro-linh-tinh.17/page-{i}"
             print(url)
             headersList = {
@@ -87,7 +88,7 @@ def crawl_thread():
                                 if all_links[-1].text:
                                     last_page = int(all_links[-1].text)
 
-                        check = 100
+                        check = 105
 
                         result.append(
                             {

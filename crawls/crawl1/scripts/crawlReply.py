@@ -95,14 +95,13 @@ def fetch_data(url):
 def scrape_data():
     try:
         data = collection_thread.find(
-            {"check": 100}, {"threadId": 1, "lastPage": 1})
+            {"check": 105}, {"threadId": 1, "lastPage": 1})
 
         for child in data:
-            
+            all_results = []
             n = child['lastPage']
 
             for i in range(1, n + 1):
-                all_results = []
                 url = f"https://voz.vn/t/{child['threadId']}/page-{i}"
                 fetched_data = fetch_data(url)
                 print(url)
@@ -110,11 +109,11 @@ def scrape_data():
                 if fetched_data and len(fetched_data) > 0:
                     all_results.extend(fetched_data)
 
-                if all_results:
-                    collection_reply.insert_many(all_results)
-                    print("Đã lưu dữ liệu vào MongoDB")
-                else:
-                    print("Hiện tại không có dữ liệu mới nào được thêm vào")
+            if all_results:
+                collection_reply.insert_many(all_results)
+                print("Đã lưu dữ liệu vào MongoDB")
+            else:
+                print("Hiện tại không có dữ liệu mới nào được thêm vào")
     except Exception as e:
         logging.error(
             f"Lỗi khi thực hiện crawl và lưu dữ liệu vào MongoDB: {e}")
