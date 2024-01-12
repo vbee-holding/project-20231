@@ -18,7 +18,7 @@ const ToggleButton = (props) => {
     setIsToggled(!isToggled);
 
     // Use template literals to dynamically generate the URL with threadId
-    const summaryUrl = `/r/${props.threadId}/${isToggled ? '' : 'summary'}`;
+    const summaryUrl = `/r/post/${isToggled ? '' : 'summary'}/${props.threadId}`;
 
     router.push(summaryUrl);
   };
