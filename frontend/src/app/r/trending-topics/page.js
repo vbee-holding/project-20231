@@ -1,19 +1,23 @@
 import MenuBar from "@/components/menuBar";
-
+import Link from "next/link";
 
 const Item = ({ title }) => {
   return (
     <div className="flex-column items-center pl-8 mb-1 mx-2 overflow-hidden float-left ">
-      <a href="./trending-topics-detail">
+      <Link href="./trending-topics-detail">
         <div>
           <div className="w-[143px] h-[87px] bg-zinc-300 rounded-[5px] border border-black color-inherit decoration-none outline-none;" />
-          <h2 className="text-xl text-gray-800 mt-1 font-bold cursor-pointer text-center color-inherit decoration-none outline-none" >{title}</h2>
+          <h2 className="text-xl text-gray-800 mt-1 font-bold cursor-pointer text-center color-inherit decoration-none outline-none">
+            {title}
+          </h2>
         </div>
-      </a>
-      <h2 className="text-0.5 mb-0.5 text-gray-800 cursor-pointer text-center" >10 bài viết </h2>
-    </div >
-  )
-}
+        <h2 className="text-0.5 mb-0.5 text-gray-800 cursor-pointer text-center">
+          10 bài viết{" "}
+        </h2>
+      </Link>
+    </div>
+  );
+};
 
 const TrendingTopics = () => {
   const datas = [
@@ -45,18 +49,18 @@ const TrendingTopics = () => {
   return (
     <div>
       <MenuBar />
-
       <div className="flex items-left max-w-md mx-auto">
-        <h1 className="text-4xl text-gray-800 font-extrabold text-left m-7">Topics</h1>
+        <h1 className="text-4xl text-gray-800 font-extrabold text-left m-7">
+          Topics
+        </h1>
         <div className="bg-gray-400 h-0.5 grow mt-12"></div>
       </div>
-
       <div>
-        {datas.map(child => (
+        {datas.map((child) => (
           <Item key={child.id} title={child.title} />
         ))}
       </div>
-    </div >
+    </div>
   );
 };
 export default TrendingTopics;

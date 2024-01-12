@@ -1,18 +1,17 @@
 from pymongo import MongoClient
 from dotenv import load_dotenv
+from pymongo.errors import ExecutionTimeout
 import os
 
 load_dotenv()
 
 
 def join_collections():
-    # client = MongoClient(os.getenv("MONGODB_URL_DEV"))
     client = MongoClient(os.getenv("MONGODB_URL_PRODUCT"))
-    # client = MongoClient("mongodb://localhost:27017/")
     database = client["test"]
 
     threads = database["threads"]
-    database["replies"]
+    replies = database["replies"]
 
     pipeline = [
         {
@@ -24,11 +23,6 @@ def join_collections():
             }
         },
         {
-            "$match": {
-                "replys": {"$exists": False}
-            }
-        },
-        {
             "$merge": {
                 "into": "threads",
                 "whenMatched": "merge"
@@ -36,8 +30,11 @@ def join_collections():
         }
     ]
 
-    threads.aggregate(pipeline)
-    print("Embedded thành công")
+    try:
+        threads.aggregate(pipeline, maxTimeMS=120000)
+        print("Embedded thành công")
+    except ExecutionTimeout as e:
+        print("Lỗi timeout:", e)
 
 
 join_collections()
