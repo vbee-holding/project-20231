@@ -95,7 +95,7 @@ def fetch_data(url):
 def scrape_data():
     try:
         data = collection_thread.find(
-            {"check": 105}, {"threadId": 1, "lastPage": 1})
+            {"check": 200}, {"threadId": 1, "lastPage": 1})
 
         for child in data:
             all_results = []
