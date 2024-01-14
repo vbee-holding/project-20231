@@ -1,54 +1,34 @@
-import {
-  faComment,
-  faEye,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import ToggleButton from "../[threadId_summary]/togglebutton"
+import TimeAgo from "@/components/timeago";
+import { Icons } from "@/components/icons";
 
-const Item = (props) => {
-  return (
-    <div
-      className="flex items-center 
-      bg-neutral-200
-      mr-4 py-1 px-2 
-      rounded-3xl cursor-pointer"
-    >
-      <FontAwesomeIcon
-        icon={props.icon}
-        style={{
-          color: "black",
-          width: 20,
-          height: 20,
-          marginRight: 4,
-          color: "#33363F",
-        }}
-      />
-      <p className="text-sm">{`${props.amout} ${props.text}`}</p>
-      {/* {props.amout && <p className="inline">{props.amout}</p>}
-      {props.text && <p className="inline">{`${props.text}`}</p>} */}
-    </div>
-  );
-};
 const Post_TomTat = (props) => {
   return (
     <div>
       <div className="max-w-2xl p-4 mx-auto">
-        <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center">
           <div className="flex items-center">
             <Image
-              className="cursor-pointer"
+              className="cursor-pointer rounded-full"
               src={props.linkImg}
               alt="avatar"
               width={60}
               height={60}
             />
-            <p className="font-bold mx-2 cursor-pointer hover:underline">
-              {props.name}
-            </p>
-            <p>{props.created}</p>
+            <div className="flex flex-col ml-2">
+              <p className="font-bold cursor-pointer hover:underline">
+                {props.name}
+              </p>
+              <p>
+                <TimeAgo created={props.created} />
+              </p>
+            </div>
           </div>
-          <ToggleButton />
+          <div className="flex flex-col ">
+              <p className="mb-2">Tóm Tắt</p>
+              <ToggleButton threadId={props.id} />
+            </div>
         </div>
         <div>
           <h1 className="font-bold text-3xl my-2">{props.title}</h1>
@@ -57,10 +37,13 @@ const Post_TomTat = (props) => {
           <h1 className="font-regular text-3x1 my-2">{props.overView}</h1>
         </div>
         <div className="flex mt-2">
-          <Item icon={faComment} amout={props.comment} text="Bình luận"/>
-          <Item icon={faEye} amout={props.view} text="Lượt xem" />
-          <div className="ml-auto">
-            
+          <div className="flex items-center  bg-neutral-200 mr-4 py-1 px-2 rounded-3xl cursor-pointer">
+            <Icons.comment/>
+            <p className="text-sm">{`${props.comment} Bình luận`}</p>
+          </div>
+          <div className="flex items-center  bg-neutral-200 mr-4 py-1 px-2 rounded-3xl cursor-pointer">
+            <Icons.eye/>
+            <p className="text-sm">{`${props.view} Lượt xem`} </p>
           </div>
         </div>
       </div>

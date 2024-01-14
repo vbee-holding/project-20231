@@ -42,7 +42,7 @@ export default function Home() {
         dataLength={items.length}
         next={fetchMoreData}
         hasMore={hasMore}
-        loader={<Loader />}
+        loader={fetchMoreData ? <Loader /> : null}
       >
         {items.map((item, index) => (
           <Post

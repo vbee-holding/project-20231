@@ -2,7 +2,6 @@
 import { faComment, faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 const Item = (props) => {
   return (
     <div
@@ -29,19 +28,6 @@ const Item = (props) => {
 };
 
 const Post = (props) => {
-
-  const router = useRouter();
-  const handleClick = () => {
-    router.push(`/r/post/${props.threadId}`);
-  };
-
-  const handleClick1 = () => {
-
-    router.push(`/r/post/summary/${props.threadId_summary}`);
-    console.log(props.threadId)
-  };
-
-
 
   function formatTimeDifference(isoTimeString) {
     const inputDate = new Date(isoTimeString);
@@ -114,11 +100,6 @@ const Post = (props) => {
             amout={props.view}
             text="lượt xem"
           />
-        <div>
-            <button onClick={handleClick}>post_ChiTiet</button>
-            <button onClick={handleClick1}>post_TomTat</button>
-          </div>
-
         </div>
       </div>
       <hr className="max-w-2xl mx-auto border-0 border-b-sm border-solid border-b-gray-300" />
