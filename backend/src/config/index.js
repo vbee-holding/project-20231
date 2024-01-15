@@ -8,5 +8,5 @@ module.exports = {
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   GEMINI_API_KEY: process.env.GEMINI_API_KEY,
   SECRET_KEY: process.env.SECRET_KEY,
-  BASE_URL : process.env.BASE_URL || 'http://localhost',
+  // BASE_URL : process.env.BASE_URL || 'http://localhost',
 };
