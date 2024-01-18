@@ -13,7 +13,8 @@ logging.basicConfig(filename='app.log', filemode='w',
                     format='%(asctime)s - %(levelname)s - %(message)s', level=logging.ERROR)
 
 # Kết nối với MongoDB
-client = MongoClient(os.getenv("MONGODB_URL_DEV"))
+# client = MongoClient(os.getenv("MONGODB_URL_DEV"))
+client = MongoClient(os.getenv("MONGODB_URL_PRODUCT"))
 database = client["test"]
 collection_thread = database["threads"]
 collection_reply = database["replies"]
@@ -94,7 +95,7 @@ def fetch_data(url):
 def scrape_data():
     try:
         data = collection_thread.find(
-            {"check": 56}, {"threadId": 1, "lastPage": 1})
+            {"check": 713}, {"threadId": 1, "lastPage": 1})
 
         for child in data:
             all_results = []

@@ -3,15 +3,18 @@ import Image from "next/image";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import ModalNotify from "./modalNotify";
+import { useRouter } from "next/navigation";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-export function AvatarUser({ image, name, email }) {
+export function AvatarUser({ image, name, email, setUserSession }) {
   const [showSetting, setShowSetting] = useState(false);
+  const router = useRouter()
   const handleClick = () => {
     localStorage.removeItem("userSession");
-    window.location.reload();
+    router.refresh();
+    setUserSession()
   };
   return (
     <div>
@@ -49,7 +52,7 @@ export function AvatarUser({ image, name, email }) {
                   <p
                     className={classNames(
                       active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                      "block px-4 py-1 text-sm"
+                      "block px-4 py-1 font-medium"
                     )}
                   >
                     {name}
@@ -62,7 +65,7 @@ export function AvatarUser({ image, name, email }) {
                     href="#"
                     className={classNames(
                       active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                      "block px-4 pt-1 pb-2 text-sm"
+                      "block w-[200px] truncate px-4 pt-1 pb-4 text-sm"
                     )}
                   >
                     {email}

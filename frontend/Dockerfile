@@ -8,6 +8,8 @@ ENV PORT ${PORT}
 
 EXPOSE ${PORT}
 
+ENV NODE_ENV=production
+
 COPY package.json .
 
 RUN npm install

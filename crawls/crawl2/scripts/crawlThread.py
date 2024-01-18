@@ -16,11 +16,12 @@ logging.basicConfig(filename='app.log', filemode='w',
 def crawl_thread():
     try:
         # Kết nối với MongoDB
-        client = pymongo.MongoClient(os.getenv("MONGODB_URL_DEV"))
+        # client = pymongo.MongoClient(os.getenv("MONGODB_URL_DEV"))
+        client = pymongo.MongoClient(os.getenv("MONGODB_URL_PRODUCT"))
         database = client["test"]
         collection = database["threads"]
 
-        for i in range(775, 800):
+        for i in range(930, 935):
             url = f"https://voz.vn/f/chuyen-tro-linh-tinh.17/page-{i}"
             print(url)
             headersList = {
@@ -86,7 +87,7 @@ def crawl_thread():
                                 if all_links[-1].text:
                                     last_page = int(all_links[-1].text)
 
-                        check = 56
+                        check = 713
 
                         result.append(
                             {
