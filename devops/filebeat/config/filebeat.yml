@@ -2,8 +2,21 @@ filebeat.inputs:
 - type: filestream
   enabled: true
   paths:
-    # - /var/log/app/*.log
+    - /var/log/app-project20231/*.log
     - /var/log/nginx/*.log
+    - /usr/src/app/*.log
+
+# filebeat.inputs:
+# - type: docker
+#   enabled: true
+#   containers:
+#     path: "/var/lib/docker/containers"
+#     stream: "stdout"
+#     ids:
+#       - "*"
+# processors:
+#   - add_docker_metadata: ~
+
 output.logstash:
   enabled: true
   hosts: ["logstash:5044"]
