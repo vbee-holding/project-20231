@@ -6,7 +6,7 @@ ARG PORT=3003
 
 ENV PORT ${PORT}
 
-# ENV NODE_ENV=production
+ENV NODE_ENV=production
 
 EXPOSE ${PORT}
 
