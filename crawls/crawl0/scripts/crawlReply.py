@@ -80,7 +80,6 @@ def fetch_data(url):
 
                     result.append({'replyId': reply_id, 'author': author, 'avatarUrl': avatar_url, 'authorTitle': author_title, 'content': content,
                                    'contentElement': content_element, 'threadId': threadId, 'createdTime': createdTime, "timestamp": datetime.utcnow()})
-
                 else:
                     existing_reply = None
 
