@@ -3,12 +3,17 @@ import * as React from "react";
 import { Icons } from "./icons";
 import ButtonGroupMenu from "./buttonGroupMenu";
 import SearchBar from "./ui/searchBar";
+import axios from "@/utils/axios";
+import { useRouter } from "next/navigation";
+
 
 const MenuBar = () => {
   const [search, setSearch] = React.useState({
     isSearching: false,
     searchContent: "",
+    options: [],
   });
+  const router = useRouter()
 
   const handleSearch = () => {
     setSearch({
@@ -17,25 +22,37 @@ const MenuBar = () => {
     });
   };
 
-  const confirmSearch = () => {
-    setSearch({
-      ...search,
-      isSearching: !search.isSearching,
-    });
+  const confirmSearch = async () => {
+    router.push("/r/search/" + (search.searchContent))
   };
 
-  const handleInput = (e) => {
-    setSearch({
-      ...search,
-      searchContent: e,
-      isSearching: true,
-    });
+  const handleInput = async (e) => {
+    axios
+      .get("threads/search", {
+        params: {
+          text: e,
+        },
+      })
+      .then((response) =>
+        setSearch({
+          ...search,
+          searchContent: e,
+          options: response.data.threads,
+        })
+      )
+      .catch(() =>
+        setSearch({
+          ...search,
+          options: [],
+        })
+      );
   };
 
   const handleCancel = () => {
     setSearch({
       ...search,
       searchContent: "",
+      options: [],
     });
   };
 
@@ -50,19 +67,28 @@ const MenuBar = () => {
           <ButtonGroupMenu />
         )}
 
-        <div className={search.isSearching ? "col-span-9" : "col-span-3"}>
+        <div
+          className={
+            search.isSearching
+              ? "flex justify-end items-center col-span-9"
+              : "flex justify-end items-center col-span-3"
+          }
+        >
           <SearchBar
             value={search.searchContent}
-            className="w-full py-0"
+            className="w-full py-0 outline-none focus:border-none focus:outline-none"
             onChange={handleInput}
             onSearch={confirmSearch}
             onCancelResearch={handleCancel}
+            onClick={handleSearch}
+            disabled={!search.isSearching}
+            options={search.options}
           />
         </div>
 
         <div className="flex justify-end items-center">
           <button onClick={search.isSearching ? confirmSearch : handleSearch}>
-            <Icons.search className="relative w-300 h-40 border-r-5" />
+            <Icons.search className="relative border-r-5" />
           </button>
         </div>
       </div>

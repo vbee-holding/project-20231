@@ -1,9 +1,8 @@
 "use client";
-import Image from "next/image";
 import { AvatarUser } from "./authButton";
 import { GoogleLogin } from "@react-oauth/google";
 import { decodeJwt } from "jose";
-import axios from '@/utils/axios'
+import axios from "@/utils/axios";
 import { Icons } from "./icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -24,13 +23,10 @@ const HeaderContainer = ({ children }) => {
   );
 };
 const Header = () => {
-  const [userSession,setUserSession] = useState();
+  const [userSession, setUserSession] = useState();
+  const router = useRouter();
   useEffect(() => {
-    // Kiểm tra xem có đang chạy ở môi trường client-side không
-    // if (typeof window !== 'undefined') {
-      // const 
-      setUserSession(JSON.parse(localStorage.getItem("userSession")));
-    // }
+    setUserSession(JSON.parse(localStorage.getItem("userSession")));
   }, []);
   return (
     <>
@@ -48,24 +44,26 @@ const Header = () => {
                   image: payload.picture,
                   name: payload.name,
                 };
-                
-                axios.post('user/profile', {
-                  email: payload.email,
-                  image: payload.picture,
-                  name: payload.name,
-                  isNotifi: 0,
-                })
-                .then(
-                  () => {
-                    localStorage.setItem("userSession", JSON.stringify(userSess));
-                  }
-                )
-                .catch((error) => {
-                  console.log(error);
-                });
 
+                axios
+                  .post("user/profile", {
+                    email: payload.email,
+                    image: payload.picture,
+                    name: payload.name,
+                    isNotifi: 0,
+                  })
+                  .then(() => {
+                    localStorage.setItem(
+                      "userSession",
+                      JSON.stringify(userSess)
+                    );
+                    setUserSession(userSess);
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
               }
-              window.location.reload();
+              router.refresh();
             }}
             onError={() => {
               console.log("Login Failed");
@@ -78,6 +76,7 @@ const Header = () => {
         )}
         {userSession && (
           <AvatarUser
+            setUserSession={setUserSession}
             image={userSession.image}
             name={userSession.name}
             email={userSession.email}

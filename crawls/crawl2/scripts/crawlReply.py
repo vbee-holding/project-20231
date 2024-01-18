@@ -4,12 +4,17 @@ from datetime import datetime
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
+import logging
 
 load_dotenv()
 
-# Kết nối với mongodb
-client = MongoClient(os.getenv("MONGODB_URL_DEV"))
-# client = MongoClient("mongodb://localhost:27017/")
+# Thiết lập logging
+logging.basicConfig(filename='app.log', filemode='w',
+                    format='%(asctime)s - %(levelname)s - %(message)s', level=logging.ERROR)
+
+# Kết nối với MongoDB
+# client = MongoClient(os.getenv("MONGODB_URL_DEV"))
+client = MongoClient(os.getenv("MONGODB_URL_PRODUCT"))
 database = client["test"]
 collection_thread = database["threads"]
 collection_reply = database["replies"]
@@ -23,15 +28,12 @@ def fetch_data(url):
     try:
         response = requests.get(url, headers=headersList)
         if response.status_code == 200:
-            # Sử dụng thư viện BeautifulSoup để lấy những nội dung cần thiết
             soup = BeautifulSoup(response.content, 'html.parser')
             items = soup.find_all('div', class_="message-inner")
 
-            # Format lại dữ liệu vừa crawl về theo dạng datetime để lưu vào database
             date_format = "%b %d, %Y at %I:%M %p"
-
-            # Xử lý dữ liệu
             result = []
+
             for item in items:
                 reply_id = None
                 reply_element = item.find('div', class_='message-userContent')
@@ -83,36 +85,41 @@ def fetch_data(url):
 
             return result
         else:
-            print(
+            logging.error(
                 f"Yêu cầu tại {url} không thành công: {response.status_code}")
     except requests.RequestException as e:
-        print(f"Lỗi kết nối: {e}")
+        logging.error(f"Lỗi kết nối: {e}")
     return []
 
 
 def scrape_data():
-    data = collection_thread.find(
-        {"check": 51}, {"threadId": 1, "lastPage": 1})
+    try:
+        data = collection_thread.find(
+            {"check": 713}, {"threadId": 1, "lastPage": 1})
 
-    for child in data:
-        all_results = []
-        n = child['lastPage']
+        for child in data:
+            all_results = []
+            n = child['lastPage']
 
-        for i in range(1, n + 1):
-            url = f"https://voz.vn/t/{child['threadId']}/page-{i}"
-            fetched_data = fetch_data(url)
-            print(url)
-            if fetched_data:
-                all_results.extend(fetched_data)
+            for i in range(1, n + 1):
+                url = f"https://voz.vn/t/{child['threadId']}/page-{i}"
+                fetched_data = fetch_data(url)
+                print(url)
+                # Kiểm tra dữ liệu trước khi thêm vào MongoDB
+                if fetched_data and len(fetched_data) > 0:
+                    all_results.extend(fetched_data)
 
-        if all_results:
-            try:
+            if all_results:
                 collection_reply.insert_many(all_results)
                 print("Đã lưu dữ liệu vào MongoDB")
-            except Exception as e:
-                print(f"Lỗi khi lưu dữ liệu vào MongoDB: {e}")
-        else:
-            print("Hiện tại không có dữ liệu mới nào được thêm vào")
+            else:
+                print("Hiện tại không có dữ liệu mới nào được thêm vào")
+    except Exception as e:
+        logging.error(
+            f"Lỗi khi thực hiện crawl và lưu dữ liệu vào MongoDB: {e}")
+
+    finally:
+        client.close()
 
 
 scrape_data()

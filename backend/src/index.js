@@ -8,7 +8,7 @@ const MongoDBStore = require("connect-mongodb-session")(session);
 
 require("dotenv").config();
 const passportService = require("./services/passport");
-const { PORT, MONGODB_URL_DEV,MONGODB_URL_PRODUCT, SECRET_KEY } = require("./config");
+const { PORT, MONGODB_URL_DEV, MONGODB_URL_PRODUCT, SECRET_KEY, BASE_URL } = require("./config");
 const { A_WEEK } = require("./constants");
 const authRoutes = require("./routes/auth");
 const app = express();
@@ -71,4 +71,9 @@ if (isDevelopment) {
   app.listen(PORT, () => {
     console.log(`Example app listening on port ${PORT}`);
   });
-} 
+
+} else {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}

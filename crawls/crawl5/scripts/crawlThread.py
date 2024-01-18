@@ -4,26 +4,30 @@ from datetime import datetime
 import pymongo
 from dotenv import load_dotenv
 import os
+import logging
 
 load_dotenv()
 
-# Kết nối với mongodb
-client = pymongo.MongoClient(os.getenv("MONGODB_URL_DEV"))
-# client = pymongo.MongoClient("mongodb://localhost:27017/")
-database = client["test"]
-collection = database["threads"]
+# Thiết lập logging
+logging.basicConfig(filename='app.log', filemode='w',
+                    format='%(asctime)s - %(levelname)s - %(message)s', level=logging.ERROR)
 
 
 def crawl_thread():
+    try:
+        # Kết nối với MongoDB
+        client = pymongo.MongoClient(os.getenv("MONGODB_URL_DEV"))
+        database = client["test"]
+        collection = database["threads"]
 
-    for i in range(2801, 2810):
-        url = f"https://voz.vn/f/chuyen-tro-linh-tinh.17/page-{i}"
-        print(url)
-        headersList = {
-            "Accept": "*/*",
-            "User-Agent": "Thunder Client (https://www.thunderclient.com)"
-        }
-        try:
+        for i in range(2800, 2810):
+            url = f"https://voz.vn/f/chuyen-tro-linh-tinh.17/page-{i}"
+            print(url)
+            headersList = {
+                "Accept": "*/*",
+                "User-Agent": "Thunder Client (https://www.thunderclient.com)"
+            }
+
             response = requests.get(url, headers=headersList)
 
             if response.status_code == 200:
@@ -105,8 +109,13 @@ def crawl_thread():
             else:
                 print(
                     f"Yêu cầu tại {url} không thành công: {response.status_code}")
-        except requests.RequestException as e:
-            print(f"Lỗi kết nối: {e}")
+
+    except (pymongo.errors.PyMongoError, requests.RequestException) as e:
+        logging.error(f"Lỗi MongoDB hoặc kết nối: {e}")
+
+    finally:
+        # Đảm bảo đóng kết nối với MongoDB sau khi hoàn thành công việc
+        client.close()
 
 
 crawl_thread()

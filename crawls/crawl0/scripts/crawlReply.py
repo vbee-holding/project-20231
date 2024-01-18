@@ -4,10 +4,12 @@ from datetime import datetime
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
+import logging
 
 load_dotenv()
 
 # Kết nối với mongodb
+# client = MongoClient(os.getenv("MONGODB_URL_DEV"))
 client = MongoClient(os.getenv("MONGODB_URL_PRODUCT"))
 # client = MongoClient("mongodb://localhost:27017/")
 database = client["test"]
@@ -91,27 +93,39 @@ def fetch_data(url):
 
 
 def scrape_data():
-    data = collection_thread.find({"check": 2}, {"threadId": 1, "lastPage": 1})
+    try:
+        data = collection_thread.find(
+            {"check": 1}, {"threadId": 1, "lastPage": 1})
 
-    for child in data:
-        all_results = []
-        n = child['lastPage']
+        for child in data:
+            all_results = []
+            n = child['lastPage']
 
-        for i in range(1, n + 1):
-            url = f"https://voz.vn/t/{child['threadId']}/page-{i}"
-            fetched_data = fetch_data(url)
-            print(url)
-            if fetched_data:
-                all_results.extend(fetched_data)
+            # url = f"https://voz.vn/t/{child['threadId']}/page-{n}"
+            # fetched_data = fetch_data(url)
+            # print(url)
+            # if fetched_data:
+            #     all_results.extend(fetched_data)
 
-        if all_results:
-            try:
+            for i in range(1, n + 1):
+                url = f"https://voz.vn/t/{child['threadId']}/page-{i}"
+                fetched_data = fetch_data(url)
+                print(url)
+                # Kiểm tra dữ liệu trước khi thêm vào MongoDB
+                if fetched_data and len(fetched_data) > 0:
+                    all_results.extend(fetched_data)
+
+            if all_results:
                 collection_reply.insert_many(all_results)
                 print("Đã lưu dữ liệu vào MongoDB")
-            except Exception as e:
-                print(f"Lỗi khi lưu dữ liệu vào MongoDB: {e}")
-        else:
-            print("Hiện tại không có dữ liệu mới nào được thêm vào")
+            else:
+                print("Hiện tại không có dữ liệu mới nào được thêm vào")
+    except Exception as e:
+        logging.error(
+            f"Lỗi khi thực hiện crawl và lưu dữ liệu vào MongoDB: {e}")
+
+    finally:
+        client.close()
 
 
 scrape_data()

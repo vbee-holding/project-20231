@@ -1,16 +1,17 @@
 import { faComment, faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
+import { Icons } from "./icons";
 
 const Item = (props) => {
   return (
     <div
       className="flex items-center 
-      bg-neutral-200
+      bg-neutral-100
       mr-4 py-1 px-2 
       rounded-3xl cursor-pointer"
     >
-      <FontAwesomeIcon
+      {/* <FontAwesomeIcon
         icon={props.icon}
         style={{
           color: "black",
@@ -19,17 +20,40 @@ const Item = (props) => {
           marginRight: 4,
           color: "#33363F",
         }}
-      />
-      <p className="text-sm">{`${props.amout} ${props.text}`}</p>
+      /> */}
+      {props.src == "eye" ? <Icons.eye width={20} height={20} /> : null}
+      {props.src == "comment" ? <Icons.comment width={20} height={20} /> : null}
+      <p className=" ml-2 text-sm">{`${props.amout} ${props.text}`}</p>
       {/* {props.amout && <p className="inline">{props.amout}</p>}
       {props.text && <p className="inline">{`${props.text}`}</p>} */}
     </div>
   );
 };
 const Post = (props) => {
+  function formatTimeDifference(isoTimeString) {
+    const inputDate = new Date(isoTimeString);
+    const currentDate = new Date();
+
+    const timeDifferenceInMilliseconds = currentDate - inputDate;
+    const timeDifferenceInSeconds = timeDifferenceInMilliseconds / 1000;
+
+    if (timeDifferenceInSeconds < 3600) {
+      // Nếu thời gian chênh lệch < 1 giờ, trả về số phút
+      const minutes = Math.floor(timeDifferenceInSeconds / 60);
+      return `${minutes} phút`;
+    } else if (timeDifferenceInSeconds < 86400) {
+      // Nếu thời gian chênh lệch < 1 ngày, trả về số giờ
+      const hours = Math.floor(timeDifferenceInSeconds / 3600);
+      return `${hours} giờ`;
+    } else {
+      // Nếu thời gian chênh lệch >= 1 ngày, trả về định dạng ngày/tháng/năm
+      const options = { year: "numeric", month: "numeric", day: "numeric" };
+      return inputDate.toLocaleDateString("vi-VN", options);
+    }
+  }
   return (
     <div>
-      <div className="max-w-2xl p-4 mx-auto">
+      <div className="max-w-2xl p-4 mx-auto hover:bg-neutral-50 cursor-pointer">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             {props.linkImg.startsWith("https://") ? (
@@ -46,21 +70,33 @@ const Post = (props) => {
               </div>
             )}
 
-            <p className="font-bold mx-2 cursor-pointer hover:underline">
+            <p className="font-bold mx-2">
               {props.name}
             </p>
-            <p className="text-sm">{props.created}</p>
+            <p className="text-sm">{formatTimeDifference(props.created)}</p>
           </div>
         </div>
         <div>
-          <h1 className="font-semibold text-sm md:text-lg my-2">{props.title}</h1>
+          <h1 className="font-semibold text-base md:text-lg my-2">
+            {props.title}
+          </h1>
           <div>
-            {/* <p className="inline">{props.overView}</p> */}
+            <p className="inline text-sm">{props.overView}</p>
           </div>
         </div>
         <div className="flex mt-2">
-          <Item icon={faComment} amout={props.comment} text="comments" />
-          <Item icon={faEye} amout={props.view} text="views" />
+          <Item
+            // icon={faComment}
+            src="comment"
+            amout={props.comment}
+            text="bình luận"
+          />
+          <Item
+            // icon={faEye}
+            src="eye"
+            amout={props.view}
+            text="lượt xem"
+          />
         </div>
       </div>
       <hr className="max-w-2xl mx-auto border-0 border-b-sm border-solid border-b-gray-300" />
