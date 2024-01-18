@@ -1,70 +1,101 @@
-# name: ci-cd Node.js app
-# on:
-#   push:
-#     branches: [main, feature/threads-replies-api]
-#   pull_request:
-#     branches: [main]
-#     types: [opened, synchronize, reopened]
-#   workflow_dispatch:
-     
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
+name: CI/CD Project-20231
+on:
+  pull_request:
+    types:
+      - closed
+  workflow_dispatch:
 
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@master
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@master
+      - name: Create .env file for backend
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_PORT: 3003
+          envkey_MONGODB_URL_DEV: ${{ secrets.MONGODB_URL_DEV }}
+          # temporary for testing
+          envkey_MONGODB_URL_PRODUCT: ${{ secrets.MONGODB_URL_DEV }}
+          envkey_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          envkey_GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          envkey_CALLBACK_URL: http://localhost:3003/auth/google/callback
+          envkey_SECRET_KEY: SECRET_KEY
+          envkey_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          envkey_GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          directory: backend
+          
+      - name: Create .env file for frontend
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_PORT: 3000
+          envkey_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID_FRONT_END}}
+          envkey_BASE_URL: ${{secrets.BASE_URL}}
+          directory: frontend
 
-#       - name: Setup Node.js environment
-#         uses: actions/setup-node@v4.0.1
-#         with:
-#           node-version: "20.x"
+      - name: Set up Cloud SDK
+        uses: "google-github-actions/setup-gcloud@v1"
+        with:
+          project_id: ${{ secrets.PROJECT_ID }}
+          service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          export_default_credentials: true
 
-#       - name: Install dependencies for backend
-#         working-directory: backend
-#         run: npm install
+  
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4.0.1
+        with:
+          node-version: "20.x"
 
-#       - name: Install dependencies for frontend
-#         working-directory: frontend
-#         run: npm install
+      - name: Install dependencies for backend
+        working-directory: backend
+        run: npm install
 
-#       - name: Build Docker image
-#         run: docker build -t mjnhmnmm/project-20231:be .
-#       - name: Login to Docker Hub
-#         run: docker login -u mjnhmnmm -p phuong2607
-#       - name: Push Docker image
-#         run: docker push mjnhmnmm/project-20231:be
+      - name: Install dependencies for frontend
+        working-directory: frontend
+        run: |- 
+          npm install && npm install next
+      
+      - name: Docker auth          
+        run: |
+          gcloud auth configure-docker asia-southeast2-docker.pkg.dev --quiet
 
-#   # deploy:
-#   #   env:
-#   #     PROJECT_ID:
-#   #     SERVICE:
-#   #     REGION:
-#   #   runs-on: ubuntu-latest
-#   #   steps:
-#   #     - name: Checkout
-#   #       uses: actions/checkout@master
+      - name: Build Docker image for backend
+        run: docker build -t asia-southeast2-docker.pkg.dev/${{ secrets.PROJECT_ID }}/voz20231/backend:latest . 
+        working-directory: backend
+      
+      - name: Build Docker image for frontend
+        run: docker build -t asia-southeast2-docker.pkg.dev/${{ secrets.PROJECT_ID }}/voz20231/frontend:latest . 
+        working-directory: frontend
 
-#   #     - name: Use Node.js
-#   #       uses: actions/setup-node@master
-#   #       with:
-#   #         node-version: "20.x"
+      - name: Push Docker image for backend to Google Artifact Registry
+        run: docker push asia-southeast2-docker.pkg.dev/${{ secrets.PROJECT_ID }}/voz20231/backend:latest
 
-#   #     - name: Google Auth
-#   #       id: auth
-#   #       uses: 'google-github-actions/auth@v0'
-#   #       with:
-#   #         workload_identity_provider: 
-#   #         service_account: 
+      - name: Push Docker image for frontend to Google Artifact Registry
+        run: docker push asia-southeast2-docker.pkg.dev/${{ secrets.PROJECT_ID }}/voz20231/frontend:latest
 
-#   #     # - name: Deploy to Cloud
-#   #     #   uses: 
+      - name: create credentials
+        run: |-
+          echo > credentials.txt && echo '${{secrets.GOOGLE_APPLICATION_CREDENTIALS}}' >> credentials.txt
 
-#   #     - name: Login to Docker Hub
-#   #       run: docker login -u mjnhmnmm -p phuong2607
-#   #     - name: Pull Docker image
-#   #       run: docker pull tienanhbghd/project-20231:be
-#   #     - name: Start MongoDB container
-#   #       run: docker run -d --name mongodb mongo
-#   #     - name: Start Express.js container
-#   #       run: docker run -d -p 3003:3003 --name express-app --link mongodb tienanhbghd/project-20231:be
+      - name: cat file
+        run: cat credentials.txt
+      - name: gcloud auth login with credentials
+        run : |-
+          gcloud auth login --cred-file=credentials.txt && gcloud config set project "${{secrets.PROJECT_ID}}"
+
+      # - name: auth google github actions
+      #   uses: google-github-actions/auth@v2
+      #   with:
+      #     workload_identity_provider: 'projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
+      #     service_account: 'cuong2905say@gmail.com'
+
+
+      - name: set account github action for gcloud
+        run : gcloud config set account github-actions@${{secrets.project_id}}.iam.gserviceaccount.com 
+
+      - name: deploy backend
+        run:  gcloud run deploy cloudrun-backend-service --image asia-southeast2-docker.pkg.dev/${{secrets.PROJECT_ID}}/voz20231/backend:latest --region asia-southeast2 --allow-unauthenticated --service-account github-actions@${{secrets.project_id}}.iam.gserviceaccount.com --memory 512Mi --cpu-throttling
+
+      - name: deploy frontend
+        run:  gcloud run deploy cloudrun-frontend-service --image asia-southeast2-docker.pkg.dev/${{secrets.PROJECT_ID}}/voz20231/frontend:latest --region asia-southeast2 --allow-unauthenticated --service-account github-actions@${{secrets.project_id}}.iam.gserviceaccount.com --memory 2Gi --cpu-throttling
