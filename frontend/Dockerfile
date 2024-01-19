@@ -1,6 +1,6 @@
 FROM node:lts-alpine
 
-WORKDIR /usr/cuong2905say/frontend
+WORKDIR /usr/frontend
 
 ARG PORT=3000
 
@@ -10,10 +10,8 @@ ENV NODE_ENV=production
 
 EXPOSE ${PORT}
 
-COPY package.json .
+COPY package.json . 
 
-# force to install sharp
-# RUN chown root.root . 
 
 RUN npm install
 
