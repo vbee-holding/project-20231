@@ -2,7 +2,7 @@ const User = require("../models/user");
 const logger = require("../utils/logger");
 
 const saveUser = async (req, res) => {
-  const { email, image, name, isNotifi } = req.body;
+  const { email, image, name, isNotifi, googleId } = req.body;
 
   try {
     const existingUser = await User.findOne({ email });
@@ -19,6 +19,7 @@ const saveUser = async (req, res) => {
         profileImgUrl: image,
         username: name,
         isNotifi: isNotifi,
+        googleId: googleId,
       });
       console.log(image);
       console.log(email);
@@ -65,7 +66,7 @@ const acceptNotify = async (req, res) => {
       return res.status(404).json({ message: "Người dùng không tồn tại" });
     }
 
-    res.json(user);
+    res.json({ message: "Cập nhật thành công!" });
   } catch (error) {
     console.error(error);
     res
