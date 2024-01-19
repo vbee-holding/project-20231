@@ -10,14 +10,8 @@ ENV NODE_ENV=production
 
 EXPOSE ${PORT}
 
-COPY package*.json . 
-
-
+COPY . .
 
 RUN npm install
-
-RUN npm install next
-
-COPY . .
 
 CMD ["npm","run","dev"]
