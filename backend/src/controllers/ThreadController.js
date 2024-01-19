@@ -87,7 +87,7 @@ class ThreadController{
         
       }
       // Nếu chưa có 
-      const prompt = "Summarize content you are provided with in Vietnamese as if you are the writer in exactly 100 words\n" + content;
+      const prompt = "Summarize content you are provided with in Vietnamese as if you are the writer in exactly 100 words, please remember to keep the same way of addressing\n" + content;
       if(content.length < 300){
         thread.summarizedContent = content;
         return res.json(thread) && logger.info({status: 200, message : "Nội dung không cần tóm tắt", data: thread, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers});
@@ -104,7 +104,7 @@ class ThreadController{
 
         // Nếu gặp lỗi BLOCKED DUE TO SAFETY thì dùng chatGPT
         catch(error) {
-          const promptGPT = "Summarize content you are provided with in Vietnamese as if you are the writer in exactly 100 words";
+          const promptGPT = "Summarize content you are provided with in Vietnamese as if you are the writer in exactly 100 words, please remember to keep the same way of addressing";
           const response = await openai.chat.completions.create({
             model: "gpt-3.5-turbo-1106",
             messages: [
