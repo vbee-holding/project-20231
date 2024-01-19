@@ -2,6 +2,7 @@ import { faComment, faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { Icons } from "./icons";
+import Link from "next/link";
 
 const Item = (props) => {
   return (
@@ -52,7 +53,7 @@ const Post = (props) => {
     }
   }
   return (
-    <div>
+    <Link href={`/r/post/${props.threadId}`}>
       <div className="max-w-2xl p-4 mx-auto hover:bg-neutral-50 cursor-pointer">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
@@ -100,7 +101,7 @@ const Post = (props) => {
         </div>
       </div>
       <hr className="max-w-2xl mx-auto border-0 border-b-sm border-solid border-b-gray-300" />
-    </div>
+    </Link>
   );
 };
 export default Post;
