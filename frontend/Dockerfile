@@ -10,8 +10,8 @@ ENV NODE_ENV=production
 
 EXPOSE ${PORT}
 
-COPY package.json .
-
+COPY package.json . 
+ 
 # force to install sharp
 # RUN chown root.root . 
 
