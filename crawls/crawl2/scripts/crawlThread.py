@@ -21,7 +21,7 @@ def crawl_thread():
         database = client["test"]
         collection = database["threads"]
 
-        for i in range(930, 935):
+        for i in range(1150, 1200):
             url = f"https://voz.vn/f/chuyen-tro-linh-tinh.17/page-{i}"
             print(url)
             headersList = {
@@ -87,7 +87,7 @@ def crawl_thread():
                                 if all_links[-1].text:
                                     last_page = int(all_links[-1].text)
 
-                        check = 713
+                        check = 720
 
                         result.append(
                             {
