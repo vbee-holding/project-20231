@@ -1,0 +1,1 @@
+2024-01-13 13:24:57,889 - ERROR - L\u1ed7i khi th\u1ef1c hi\u1ec7n crawl và l\u01b0u d\u1eef li\u1ec7u vào MongoDB: you are over your space quota, using 512 MB of 512 MB, full error: {'ok': 0, 'errmsg': 'you are over your space quota, using 512 MB of 512 MB', 'code': 8000, 'codeName': 'AtlasError'}
