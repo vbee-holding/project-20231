@@ -11,7 +11,8 @@ ENV NODE_ENV=production
 EXPOSE ${PORT}
 
 COPY package.json . 
-
+ 
+ 
 
 RUN npm install
 
