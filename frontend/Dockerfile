@@ -1,6 +1,6 @@
 FROM node:lts-alpine
 
-WORKDIR /usr/cuong2905say/frontend
+WORKDIR /usr/frontend
 
 ARG PORT=3000
 
