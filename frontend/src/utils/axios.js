@@ -8,6 +8,8 @@ if (isDevelopment) {
 } else {
   baseURL = process.env.BASE_URL;
 }
+console.log(baseURL);
+console.log(process.env);
 
 const instance = axios.create({
   baseURL: baseURL

@@ -54,6 +54,7 @@ export default function Home() {
             overView={item.content}
             comment={item.totalReplies}
             view={item.views}
+            threadId={item.threadId}
             // like={item.like}
           />
         ))}
