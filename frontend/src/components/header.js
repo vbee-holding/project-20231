@@ -40,13 +40,16 @@ const Header = () => {
               if (payload) {
                 // console.log(payload);
                 const userSess = {
+                  googleId: payload.sub,
                   email: payload.email,
                   image: payload.picture,
                   name: payload.name,
+                  isNotifi: 0,
                 };
 
                 axios
                   .post("user/profile", {
+                    googleId: payload.sub,
                     email: payload.email,
                     image: payload.picture,
                     name: payload.name,
@@ -80,6 +83,7 @@ const Header = () => {
             image={userSession.image}
             name={userSession.name}
             email={userSession.email}
+            userSession={userSession}
           />
         )}
       </HeaderContainer>
