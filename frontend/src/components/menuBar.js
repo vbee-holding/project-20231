@@ -2,28 +2,25 @@
 import * as React from "react";
 import { Icons } from "./icons";
 import ButtonGroupMenu from "./buttonGroupMenu";
-import SearchBar from "./ui/searchBar";
+import SearchBar from "./searchBar";
 import axios from "@/utils/axios";
-import { useRouter } from "next/navigation";
-
+import { useRouter, useSearchParams } from "next/navigation";
 
 const MenuBar = () => {
-  const [search, setSearch] = React.useState({
-    isSearching: false,
-    searchContent: "",
-    options: [],
-  });
-  const router = useRouter()
+  const [search, setSearch] = React.useState(false);
+  const [searchContent, setSearchContent] = React.useState("");
+  const [options, setOptions] = React.useState([]);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pageSearchContent = searchParams.get("text")
 
   const handleSearch = () => {
-    setSearch({
-      ...search,
-      isSearching: !search.isSearching,
-    });
+    setSearch(!search);
   };
 
   const confirmSearch = async () => {
-    router.push("/r/search/" + (search.searchContent))
+    router.push("/r/search/?text=" + searchContent);
+    setSearch(!search);
   };
 
   const handleInput = async (e) => {
@@ -33,33 +30,20 @@ const MenuBar = () => {
           text: e,
         },
       })
-      .then((response) =>
-        setSearch({
-          ...search,
-          searchContent: e,
-          options: response.data.threads,
-        })
-      )
-      .catch(() =>
-        setSearch({
-          ...search,
-          options: [],
-        })
-      );
+      .then((response) => setOptions(response.data.threads))
+      .catch(() => setOptions([]));
+    setSearchContent(e);
   };
 
   const handleCancel = () => {
-    setSearch({
-      ...search,
-      searchContent: "",
-      options: [],
-    });
+    setSearchContent("");
+    setOptions([]);
   };
 
   return (
     <div className="inset-x-0 h-fit bg-zinc-100 border-b border-zinc-300 z-[10] py-2">
-      <div className="grid grid-cols-11 items-center px-4 flex-none">
-        {search.isSearching ? (
+      <div className="container max-w-7xl h-full mx-auto flex items-center justify-between gap-2 px-4">
+        {search ? (
           <button onClick={handleSearch}>
             <Icons.back className="mr-2 h-4 w-4" />
           </button>
@@ -69,25 +53,25 @@ const MenuBar = () => {
 
         <div
           className={
-            search.isSearching
-              ? "flex justify-end items-center col-span-9"
-              : "flex justify-end items-center col-span-3"
+            search
+              ? "flex justify-center items-center w-full"
+              : "flex justify-center items-center w-1/4"
           }
         >
           <SearchBar
-            value={search.searchContent}
+            value={searchContent? searchContent: pageSearchContent? pageSearchContent: null}
             className="w-full py-0 outline-none focus:border-none focus:outline-none"
             onChange={handleInput}
             onSearch={confirmSearch}
             onCancelResearch={handleCancel}
             onClick={handleSearch}
-            disabled={!search.isSearching}
-            options={search.options}
+            disabled={!search}
+            options={options}
           />
         </div>
 
-        <div className="flex justify-end items-center">
-          <button onClick={search.isSearching ? confirmSearch : handleSearch}>
+        <div className="w-min flex justify-end items-center ">
+          <button onClick={search ? confirmSearch : handleSearch}>
             <Icons.search className="relative border-r-5" />
           </button>
         </div>
