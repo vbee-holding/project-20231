@@ -143,6 +143,7 @@ const SearchBar = ({
             placeholder={placeholder || "Search"}
             onKeyUp={handleKeyUp}
             disabled={disabled}
+            autoFocus
           />
         ) : (
           <StyledSubInputBase
