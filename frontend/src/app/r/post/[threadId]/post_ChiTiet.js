@@ -26,13 +26,19 @@ const Post_ChiTiet = (props) => {
           </button>
           <div className="flex justify-between items-center">
             <div className="flex items-center">
+            {props.linkImg.startsWith("https://") ? (
               <Image
                 className="cursor-pointer rounded-full"
                 src={props.linkImg}
                 alt="avatar"
-                width={60}
-                height={60}
+                width={48}
+                height={48}
               />
+            ) : (
+              <div className="w-12 h-12 rounded-full bg-blue-700 flex justify-center items-center">
+                <p className="font-bold text-lg text-white">{props.linkImg}</p>
+              </div>
+            )}
               <div className="flex flex-col ml-2">
                 <p className="font-bold cursor-pointer hover:underline">
                   {props.name}
@@ -43,7 +49,7 @@ const Post_ChiTiet = (props) => {
               </div>
             </div>
             <div className="flex flex-col ">
-              <p className="mb-2">Tóm Tắt</p>
+              <p className="mb-2">Đọc Nhanh</p>
               <ToggleButton threadId={props.id} />
             </div>
           </div>
@@ -55,11 +61,11 @@ const Post_ChiTiet = (props) => {
         </div>
         <div className="flex mt-2">
           <div className="flex items-center  bg-neutral-200 mr-4 py-1 px-2 rounded-3xl cursor-pointer">
-            <Icons.comment/>
+            <Icons.comment className="mr-1"/>
             <p className="text-sm">{`${props.comment} Bình luận`}</p>
           </div>
           <div className="flex items-center  bg-neutral-200 mr-4 py-1 px-2 rounded-3xl cursor-pointer">
-            <Icons.eye/>
+            <Icons.eye className="mr-1"/>
             <p className="text-sm">{`${props.view} Lượt xem`} </p>
           </div>
         </div>

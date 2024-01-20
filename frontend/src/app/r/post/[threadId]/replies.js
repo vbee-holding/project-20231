@@ -8,13 +8,19 @@ const Post = (props) => {
       <div className="max-w-2xl p-4 mx-auto">
         <div className="flex justify-between items-center">
             <div className="flex items-center">
+            {props.linkImg.startsWith("https://") ? (
               <Image
                 className="cursor-pointer rounded-full"
                 src={props.linkImg}
                 alt="avatar"
-                width={60}
-                height={60}
+                width={48}
+                height={48}
               />
+            ) : (
+              <div className="w-12 h-12 rounded-full bg-blue-700 flex justify-center items-center">
+                <p className="font-bold text-lg text-white">{props.linkImg}</p>
+              </div>
+            )}
               <div className="flex flex-col ml-2">
                 <p className="font-bold cursor-pointer hover:underline">
                   {props.name}
