@@ -5,6 +5,7 @@ import ButtonGroupMenu from "./buttonGroupMenu";
 import SearchBar from "./searchBar";
 import axios from "@/utils/axios";
 import { useRouter, useSearchParams } from "next/navigation";
+import { debounce } from "@mui/material";
 
 const MenuBar = () => {
   const [search, setSearch] = React.useState(false);
@@ -12,7 +13,7 @@ const MenuBar = () => {
   const [options, setOptions] = React.useState([]);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const pageSearchContent = searchParams.get("text")
+  const pageSearchContent = searchParams.get("text");
 
   const handleSearch = () => {
     setSearch(!search);
@@ -23,7 +24,7 @@ const MenuBar = () => {
     setSearch(!search);
   };
 
-  const handleInput = async (e) => {
+  const handleInput = debounce(async (e) => {
     axios
       .get("threads/search", {
         params: {
@@ -33,7 +34,7 @@ const MenuBar = () => {
       .then((response) => setOptions(response.data.threads))
       .catch(() => setOptions([]));
     setSearchContent(e);
-  };
+  }, 300);
 
   const handleCancel = () => {
     setSearchContent("");
@@ -59,7 +60,13 @@ const MenuBar = () => {
           }
         >
           <SearchBar
-            value={searchContent? searchContent: pageSearchContent? pageSearchContent: null}
+            value={
+              searchContent
+                ? searchContent
+                : pageSearchContent
+                ? pageSearchContent
+                : null
+            }
             className="w-full py-0 outline-none focus:border-none focus:outline-none"
             onChange={handleInput}
             onSearch={confirmSearch}
