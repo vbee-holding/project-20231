@@ -6,7 +6,7 @@ let baseURL;
 if (isDevelopment) {
   baseURL = 'http://localhost:3003/';
 } else {
-  baseURL = process.env.BASE_URL;
+  baseURL = 'https://cloudrun-backend-service-tgfeqcujja-et.a.run.app';
 }
 console.log(baseURL);
 console.log(process.env);
