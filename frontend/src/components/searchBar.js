@@ -6,7 +6,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import PropTypes from "prop-types";
 import useAutocomplete from "@mui/material/useAutocomplete";
 import { autocompleteClasses } from "@mui/material/Autocomplete";
-import Suggestion from "../suggestion";
+import Suggestion from "./suggestion";
 
 const Search = styled("div")(() => ({
   borderRadius: "5px",
@@ -72,15 +72,12 @@ const Listbox = styled("ul")(() => ({
 
 const SearchBar = ({
   value,
-  width,
   onChange,
   placeholder,
-  height,
   onCancelResearch,
   onClick,
   onSearch,
   className,
-  style,
   disabled,
   options,
 }) => {
@@ -146,6 +143,7 @@ const SearchBar = ({
             placeholder={placeholder || "Search"}
             onKeyUp={handleKeyUp}
             disabled={disabled}
+            autoFocus
           />
         ) : (
           <StyledSubInputBase
@@ -174,6 +172,7 @@ const SearchBar = ({
             {groupedOptions.map((option, index) => (
               <Suggestion
                 key={index}
+                threadId={option.threadId}
                 linkImg={option.avatarUrl}
                 name={option.author}
                 title={option.title}
@@ -181,16 +180,7 @@ const SearchBar = ({
               />
             ))}
           </Listbox>
-        ) : !disabled && internalValue.length ? (
-          <Listbox {...getListboxProps()} key={"ListboxOptions"}>
-            <div
-              className="items-center px-4 py-2 flex-none space-x-4"
-              key={"notFound"}
-            >
-              Không tìm thấy bài viết
-            </div>
-          </Listbox>
-        ) : null}
+        ): null}
       </Search>
     </>
   );
