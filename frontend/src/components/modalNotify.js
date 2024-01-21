@@ -12,6 +12,18 @@ const ModalNotify = ({ setShow, userSession }) => {
     axios.put(`user/notify/${userSession.googleId}`,{
       isNotifi: noti,
     })
+    .then(
+      ()=>{
+        userSession.isNotifi=noti;
+
+        localStorage.setItem(
+          "userSession",
+          JSON.stringify(userSession)
+        );
+      }
+    ).catch((error) => {
+      console.log(error);
+    });
   };
   return (
     <div
