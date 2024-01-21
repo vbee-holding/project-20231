@@ -1,6 +1,30 @@
+import { useState } from "react";
 import { Icons } from "./icons";
+import axios from '../utils/axios'
 
-const ModalNotify = ({ setShow }) => {
+const ModalNotify = ({ setShow, userSession }) => {
+  const [noti, setNoti] = useState(userSession.isNotifi);
+  const handleNoti = (event) => {
+    setNoti(event.target.value);
+  };
+  const handleSubmit = () => {
+    console.log(noti);
+    axios.put(`user/notify/${userSession.googleId}`,{
+      isNotifi: noti,
+    })
+    .then(
+      ()=>{
+        userSession.isNotifi=noti;
+
+        localStorage.setItem(
+          "userSession",
+          JSON.stringify(userSession)
+        );
+      }
+    ).catch((error) => {
+      console.log(error);
+    });
+  };
   return (
     <div
       className="relative z-10"
@@ -20,7 +44,7 @@ const ModalNotify = ({ setShow }) => {
             <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
               <div className="sm:flex sm:items-start">
                 <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 sm:h-10 sm:w-10">
-                  <Icons.setting className="h-12 w-12"/>
+                  <Icons.setting className="h-12 w-12" />
                 </div>
                 <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                   <h3
@@ -46,6 +70,9 @@ const ModalNotify = ({ setShow }) => {
                               type="radio"
                               className="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-blue-gray-200 text-gray-900 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900 checked:before:bg-gray-900 hover:before:opacity-10"
                               id="on"
+                              value={1}
+                              onChange={handleNoti}
+                              checked={noti == 1}
                             />
                             <span className="absolute transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
                               <svg
@@ -80,6 +107,9 @@ const ModalNotify = ({ setShow }) => {
                               type="radio"
                               className="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-blue-gray-200 text-gray-900 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900 checked:before:bg-gray-900 hover:before:opacity-10"
                               id="off"
+                              value={0}
+                              onChange={handleNoti}
+                              checked={noti == 0}
                             />
                             <span className="absolute transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
                               <svg
@@ -112,6 +142,7 @@ const ModalNotify = ({ setShow }) => {
             </div>
             <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
               <button
+                onClick={() => handleSubmit()}
                 type="button"
                 className="inline-flex w-full justify-center rounded-md bg-green-400 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto"
               >
@@ -122,7 +153,7 @@ const ModalNotify = ({ setShow }) => {
                 type="button"
                 className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
               >
-                Hủy
+                Đóng
               </button>
             </div>
           </div>
