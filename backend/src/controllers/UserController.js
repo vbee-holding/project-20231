@@ -7,9 +7,9 @@ const saveUser = async (req, res) => {
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser)
-      res.status(200).send("Người dùng đã tồn tại") &&
+      res.status(201).send({message:"Người dùng đã tồn tại",user:existingUser}) &&
         logger.info({
-          status: 200,
+          status: 201,
           message: "Người dùng đã tồn tại",
           data: req.body,
         });
@@ -51,6 +51,22 @@ const saveUser = async (req, res) => {
       });
   }
 };
+const getUser= async (req,res)=>{
+  const googleId = req.params.googleId;
+  try{
+    const user = await User.findOne({ googleId: googleId })
+    if (!user) {
+      return res.status(404).json({ message: "Người dùng không tồn tại" });
+    }
+    return res.status(200).json(user);
+  }
+  catch(error){
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Đã xảy ra lỗi trong quá trình xử lý yêu cầu" });
+    }
+}
 
 const acceptNotify = async (req, res) => {
   const googleId = req.params.googleId;
@@ -75,4 +91,4 @@ const acceptNotify = async (req, res) => {
   }
 };
 
-module.exports = { saveUser, acceptNotify };
+module.exports = { saveUser, acceptNotify, getUser };

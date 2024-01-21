@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-export function AvatarUser({ image, name, email, setUserSession }) {
+export function AvatarUser({ image, name, email, setUserSession, userSession }) {
   const [showSetting, setShowSetting] = useState(false);
   const router = useRouter()
   const handleClick = () => {
@@ -102,7 +102,7 @@ export function AvatarUser({ image, name, email, setUserSession }) {
           </Menu.Items>
         </Transition>
       </Menu>
-      {showSetting && <ModalNotify setShow={setShowSetting}/>}
+      {showSetting && <ModalNotify userSession={userSession} setShow={setShowSetting}/>}
     </div>
   );
 }
