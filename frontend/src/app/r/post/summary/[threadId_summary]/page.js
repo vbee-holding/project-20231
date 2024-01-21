@@ -29,15 +29,17 @@ const Home = ({ params }) => {
                   created={items.createdTime}
                   title={items.title}
                   overView={items.summarizedContent}
-                  comment={items.totalReplies}
+                  comment={items.totalReplies }
                   view={items.views}
                   id={items.threadId}
                   
                 />         
                 )}
-                {Object.keys(items).length > 0 && (  
-                <Summary summarizedRepliesContent={items.summarizedRepliesContent}/>
-            )}
+                {/* {Object.keys(items).length > 0 && (   */}
+                <Summary threadId_summary = {params.threadId_summary}
+                //  summarizedRepliesContent={items.summarizedRepliesContent}
+                />
+            {/* )} */}
             </div>
           </main>
         );

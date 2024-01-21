@@ -27,11 +27,25 @@ const TimeAgo = ({ created }) => {
   } else if(daysDiff < 7) {
     timeAgoString = `${daysDiff} ngày trước`;
   } 
+  
   else {
     const hours = newDate.getHours();
     const minutes = newDate.getMinutes();
-    timeAgoString = `${newDate.getDate()} tháng ${newDate.getMonth() + 1}, ${newDate.getFullYear()} lúc ${hours}:${minutes}`
+    if (hours < 10){
+      if(minutes < 10){
+        timeAgoString = `${newDate.getDate()} tháng ${newDate.getMonth() + 1}, ${newDate.getFullYear()} lúc 0${hours}:0${minutes}`
+      }
+      else{
+        timeAgoString = `${newDate.getDate()} tháng ${newDate.getMonth() + 1}, ${newDate.getFullYear()} lúc 0${hours}:${minutes}`
+      }
+    }
+    else{
+      if(minutes < 10){
+        timeAgoString = `${newDate.getDate()} tháng ${newDate.getMonth() + 1}, ${newDate.getFullYear()} lúc ${hours}:0${minutes}`
+    }
+    else{timeAgoString = `${newDate.getDate()} tháng ${newDate.getMonth() + 1}, ${newDate.getFullYear()} lúc ${hours}:${minutes}`}
   }
+}
 
   return <span className='text-sm'>{timeAgoString}</span>;
 };
