@@ -24,7 +24,7 @@ const MenuBar = () => {
     setSearch(!search);
   };
 
-  const handleInput = debounce(async (e) => {
+  const handleInput = async (e) => {
     axios
       .get("threads/search", {
         params: {
@@ -34,7 +34,7 @@ const MenuBar = () => {
       .then((response) => setOptions(response.data.threads))
       .catch(() => setOptions([]));
     setSearchContent(e);
-  }, 300);
+  }
 
   const handleCancel = () => {
     setSearchContent("");

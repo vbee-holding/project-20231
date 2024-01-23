@@ -180,7 +180,7 @@ const SearchBar = ({
               />
             ))}
           </Listbox>
-        ): null}
+        ) : null}
       </Search>
     </>
   );

@@ -7,12 +7,14 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Loader from "@/components/loader";
 import MenuBar from "@/components/menuBar";
 import NotFound from "@/components/notFound";
+import SearchFilter from "@/components/searchFilter";
 
 const Search = ({ params }) => {
   const pathname = usePathname();
   const [items, setItems] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [index, setIndex] = useState(1);
+  const [onQuery, setOnQuery] = useState(true);
   const searchParams = useSearchParams();
   const searchContent = searchParams.get("text");
 
@@ -24,7 +26,8 @@ const Search = ({ params }) => {
         },
       })
       .then((res) => setItems(res.data.threads))
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(()=> setOnQuery(false));
   }, [pathname, searchParams]);
 
   const fetchMoreData = () => {
@@ -53,6 +56,7 @@ const Search = ({ params }) => {
           <h1 className="px-4 text-2xl font-semibold tracking-tight">
             Results for " {searchContent} "
           </h1>
+          <SearchFilter/>
           <InfiniteScroll
             dataLength={items.length}
             next={fetchMoreData}
@@ -70,14 +74,13 @@ const Search = ({ params }) => {
                 comment={item.totalReplies}
                 view={item.views}
                 threadId={item.threadId}
-                // like={item.like}
               />
             ))}
           </InfiniteScroll>
         </div>
-      ) : (
+      ) : !onQuery ?(
         <NotFound />
-      )}
+      ) : <Loader/>}
     </div>
   );
 };
