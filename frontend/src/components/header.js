@@ -27,6 +27,20 @@ const Header = () => {
   const router = useRouter();
   useEffect(() => {
     setUserSession(JSON.parse(localStorage.getItem("userSession")));
+    // axios.get(`/user/profile/${userSession.googleId}`)
+    // .then(
+    //   (res)=>{
+    //     console.log(res.data)
+    //     setUserSession(res.data)
+    //     localStorage.setItem(
+    //       "userSession",
+    //       JSON.stringify(res.data)
+    //     );
+    //   }
+    // )
+    // .catch(
+    //   (err)=>console.log(err)
+    // )
   }, []);
   return (
     <>
@@ -40,24 +54,37 @@ const Header = () => {
               if (payload) {
                 // console.log(payload);
                 const userSess = {
+                  googleId: payload.sub,
                   email: payload.email,
-                  image: payload.picture,
-                  name: payload.name,
+                  profileImgUrl: payload.picture,
+                  username: payload.name,
+                  isNotifi: 0,
                 };
 
                 axios
                   .post("user/profile", {
+                    googleId: payload.sub,
                     email: payload.email,
                     image: payload.picture,
                     name: payload.name,
                     isNotifi: 0,
                   })
-                  .then(() => {
-                    localStorage.setItem(
-                      "userSession",
-                      JSON.stringify(userSess)
-                    );
-                    setUserSession(userSess);
+                  .then((res) => {
+                    if(res.status === 201){
+                      console.log(res.data.user)
+                      localStorage.setItem(
+                        "userSession",
+                        JSON.stringify(res.data.user)
+                      );
+                      setUserSession(res.data.user);
+                    }
+                    else{
+                      localStorage.setItem(
+                        "userSession",
+                        JSON.stringify(userSess)
+                      );
+                      setUserSession(userSess);
+                    }
                   })
                   .catch((error) => {
                     console.log(error);
@@ -77,9 +104,10 @@ const Header = () => {
         {userSession && (
           <AvatarUser
             setUserSession={setUserSession}
-            image={userSession.image}
-            name={userSession.name}
+            image={userSession.profileImgUrl}
+            name={userSession.username}
             email={userSession.email}
+            userSession={userSession}
           />
         )}
       </HeaderContainer>
