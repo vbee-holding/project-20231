@@ -21,29 +21,38 @@ class ReplyController{
         return res.status(404).send('404 - No thread is found to summarize replies!') 
         && logger.warn({status:404, message: "No thread is found to summarize replies!", stack : error.stack, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers});
       }
+      // Nếu thread có ít replies thì không tóm tắt
+      if(thread.replys.length <= 5){
+        thread.latestRepliesLength = thread.replys.length;
+        await Thread.findOneAndUpdate({ threadId: req.params.threadId }, { latestRepliesLength: thread.replys.length });
+        res.json(thread);
+        logger.info({ status: 200, data: thread, message:"Chưa đủ replies để tóm tắt", url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
+        return;
+      }
+      // Nếu đã có nội dung tóm tắt và số lượng replies không đổi thì trả về luôn
+      if(thread.summarizedRepliesContent && thread.latestRepliesLength && thread.replys.length === thread.latestRepliesLength){
+        res.json(thread);
+        logger.info({ status: 200, data: thread, message:"Đã tồn tại nội dung tóm tắt và không có thêm replies mới để tóm tắt lại", url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
+        return;
+      }
       // Tổng hợp comment
       let content = "";
       for(var i = 1; i < thread.replys.length && content.length < 30000; i++){
         content += thread.replys[i].content + '|';
       }
-      // Nếu đã có nội dung tóm tắt thì trả về luôn
-      if(thread.summarizedRepliesContent){
-        return res.json(thread) 
-        && logger.info({ status: 200, data: thread, message:"Da ton tai noi dung tom tat", url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
-      }
       // Nếu chưa có 
-      const prompt = "Summarize comments you are provided with into an overview in Vietnamese like 'Phần lớn comment là ..., số khác lại cho là ..., một số ít cho là ..., hơn nữa ...' in exactly 100 words\n" + content;
-      const result = await model.generateContent(prompt);
-      const response = result.response;
+      const prompt = "Summarize comments you are provided with into an overview in Vietnamese like 'Phần lớn bình luận là ..., số khác lại cho là ..., một số ít cho là ..., hơn nữa ...' in exactly 100 words\n" + content;
       let summarizedRepliesContent = "";
       // Thử tóm tắt bằng Gemini
       try{
+        const result = await model.generateContent(prompt);
+        const response = result.response;
         summarizedRepliesContent = response.text(); 
       }
       
       // Nếu gặp lỗi BLOCKED DUE TO SAFETY thì dùng chatGPT
       catch(error) {
-        const promptGPT = "Summarize comments you are provided with into an overview in Vietnamese like 'Phần lớn comment là ..., số khác lại cho là ..., một số ít cho là ..., hơn nữa ...' in exactly 100 words";
+        const promptGPT = "Summarize comments you are provided with into an overview in Vietnamese like 'Phần lớn bình luận là ..., số khác lại cho là ..., một số ít cho là ..., hơn nữa ...' in exactly 100 words";
         const response = await openai.chat.completions.create({
           model: "gpt-3.5-turbo-1106",
           messages: [
@@ -63,8 +72,10 @@ class ReplyController{
       }
       
       thread.summarizedRepliesContent = summarizedRepliesContent;
+      thread.latestRepliesLength = thread.replys.length;
       // Lưu vào trong database
       await Thread.findOneAndUpdate({ threadId: req.params.threadId }, { summarizedRepliesContent: summarizedRepliesContent });
+      await Thread.findOneAndUpdate({ threadId: req.params.threadId }, { latestRepliesLength: thread.replys.length });
       return res.json(thread) 
       && logger.info({ status: 200, data: response, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
     }

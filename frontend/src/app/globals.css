@@ -5,9 +5,11 @@
 .border-b-sm {
   border-bottom-width: 0.0625rem;
 }
+
 .border-b-neutral-border-weak {
   border-bottom-color: var(--color-neutral-border-weak);
 }
+
 /* :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
