@@ -1,31 +1,48 @@
 "use client";
 
 import { Menu, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment, Suspense, useState } from "react";
 import { Icons } from "./icons";
+import { useRouter, useSearchParams } from "next/navigation";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const SearchFilter = () => {
-  const [filter,setFilter] = useState("Newer")
+const Searchorder = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const presentOrder = searchParams.get("order");
+  const [order, setOrder] = useState(presentOrder || "date");
 
+  const handleClick = (e) => {
+    setOrder(e.target.value);
+    router.push(
+      "/r/search/?text=" + searchParams.get("text") + "&order=" + e.target.value
+    );
+  };
+
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  function SearchBarFallback() {
+    return <></>;
+  }
+  
   return (
     <div className="bg-zinc-100 border-b border-zinc-300 py-2">
       <div className="container max-w-7xl h-full mx-auto flex items-center justify-between gap-2 px-4">
-        <hr class="static bg-gray-800 w-full h-0.5" />
+        <hr className="static bg-gray-800 w-full h-0.5" />
         <Menu as="div" className="relative inline-block mr-2 ">
-            <Menu.Button className="inline-flex justify-center shadow-sm">
+          <Menu.Button className="bg-purple-600 hover:bg-purple-950 text-white font-bold py-2 px-2 rounded-full text-xs w-24">
+            <Suspense fallback={<SearchBarFallback />}>
               <div className="cursor-pointer">
-                <button
-                  className="bg-purple-600 hover:bg-purple-950 text-white font-bold py-1 px-2 rounded-full text-xs w-20"
-                >
-                  {filter}
-                  <Icons.expandMore/>
-                </button>
+                {capitalize(order)}
+                <Icons.expandMore className="h-4 w-4" />
               </div>
-            </Menu.Button>
+            </Suspense>
+          </Menu.Button>
 
           <Transition
             as={Fragment}
@@ -52,26 +69,44 @@ const SearchFilter = () => {
                 </Menu.Item>
                 <Menu.Item>
                   {({ active }) => (
-                    <p
+                    <div
                       className={classNames(
                         active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                        "block px-4 pt-1 pb-4 text-xs"
+                        "block pt-1 pb-4 text-xs"
                       )}
+                      onClick={handleClick}
                     >
-                      Newer
-                    </p>
+                      <button
+                        value="date"
+                        className={order == "date" ? null : "px-4"}
+                      >
+                        {order == "date" ? (
+                          <Icons.right className="h-4 w-4" />
+                        ) : null}
+                        Date
+                      </button>
+                    </div>
                   )}
                 </Menu.Item>
                 <Menu.Item>
                   {({ active }) => (
-                    <p
+                    <div
                       className={classNames(
                         active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                        "block px-4 pt-1 pb-4 text-xs"
+                        "block pt-1 pb-4 text-xs"
                       )}
+                      onClick={handleClick}
                     >
-                      Older
-                    </p>
+                      <button
+                        value="relevance"
+                        className={order == "relevance" ? null : "px-4"}
+                      >
+                        {order == "relevance" ? (
+                          <Icons.right className="h-4 w-4" />
+                        ) : null}
+                        Relevance
+                      </button>
+                    </div>
                   )}
                 </Menu.Item>
               </div>
@@ -82,4 +117,4 @@ const SearchFilter = () => {
     </div>
   );
 };
-export default SearchFilter;
+export default Searchorder;

@@ -1,6 +1,7 @@
 import {
   ChatBubbleOutlineOutlined,
   ExpandMore,
+  NavigateNext,
   Search,
   Settings,
   Undo,
@@ -75,6 +76,7 @@ export const Icons = {
   back: Undo,
   comment: ChatBubbleOutlineOutlined,
   expandMore: ExpandMore,
+  right: NavigateNext,
   arrow_go_back: () => (
     <svg
       xmlns="http://www.w3.org/2000/svg"

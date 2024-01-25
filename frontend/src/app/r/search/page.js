@@ -1,7 +1,7 @@
 "use client";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Post from "@/components/post";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import axios from "@/utils/axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Loader from "@/components/loader";
@@ -16,18 +16,20 @@ const Search = ({ params }) => {
   const [index, setIndex] = useState(1);
   const [onQuery, setOnQuery] = useState(true);
   const searchParams = useSearchParams();
-  const searchContent = searchParams.get("text");
+  const [searchContent, setSearchContent] = useState(searchParams.get("text"));
+  const [searchOrder, setSearchOrder] = useState(searchParams.get("order"));
 
   useEffect(() => {
     axios
       .get("/threads/search", {
         params: {
           text: searchContent,
+          order: searchOrder,
         },
       })
       .then((res) => setItems(res.data.threads))
       .catch((err) => console.log(err))
-      .finally(()=> setOnQuery(false));
+      .finally(() => setOnQuery(false));
   }, [pathname, searchParams]);
 
   const fetchMoreData = () => {
@@ -35,6 +37,7 @@ const Search = ({ params }) => {
       .get("threads/search", {
         params: {
           text: searchContent,
+          order: searchOrder,
           page: index,
         },
       })
@@ -48,15 +51,22 @@ const Search = ({ params }) => {
     setIndex((prevIndex) => prevIndex + 1);
   };
 
+  function SearchBarFallback() {
+    return <></>
+  }
+
   return (
     <div>
       <MenuBar />
       {items.length > 0 ? (
         <div className="flex flex-col space-y-2 pt-2">
-          <h1 className="px-4 text-2xl font-semibold tracking-tight">
-            Results for " {searchContent} "
-          </h1>
-          <SearchFilter/>
+          <Suspense fallback={<SearchBarFallback />}>
+            <h1 className="px-4 text-2xl font-semibold tracking-tight">
+              Results for " {searchContent} "
+            </h1>
+          </Suspense>
+
+          <SearchFilter />
           <InfiniteScroll
             dataLength={items.length}
             next={fetchMoreData}
@@ -78,9 +88,11 @@ const Search = ({ params }) => {
             ))}
           </InfiniteScroll>
         </div>
-      ) : !onQuery ?(
+      ) : !onQuery ? (
         <NotFound />
-      ) : <Loader/>}
+      ) : (
+        <Loader />
+      )}
     </div>
   );
 };

@@ -5,7 +5,7 @@ const ButtonGroupMenu = () => {
   const pathname = usePathname();
 
   return (
-    <div className="space-x-1">
+    <div className="container max-w-7xl h-full mx-auto flex items-center justify-start gap-2">
       <button
         className={
           pathname === "/"

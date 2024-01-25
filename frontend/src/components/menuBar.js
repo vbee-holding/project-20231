@@ -4,7 +4,7 @@ import { Icons } from "./icons";
 import ButtonGroupMenu from "./buttonGroupMenu";
 import SearchBar from "./searchBar";
 import axios from "@/utils/axios";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter} from "next/navigation";
 import { debounce } from "@mui/material";
 
 const MenuBar = () => {
@@ -12,19 +12,18 @@ const MenuBar = () => {
   const [searchContent, setSearchContent] = React.useState("");
   const [options, setOptions] = React.useState([]);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const pageSearchContent = searchParams.get("text");
 
   const handleSearch = () => {
     setSearch(!search);
   };
 
   const confirmSearch = async () => {
-    router.push("/r/search/?text=" + searchContent);
+    if (searchContent) router.push("/r/search/?text=" + searchContent);
     setSearch(!search);
   };
 
   const handleInput = async (e) => {
+    setSearchContent(e);
     axios
       .get("threads/search", {
         params: {
@@ -32,9 +31,8 @@ const MenuBar = () => {
         },
       })
       .then((response) => setOptions(response.data.threads))
-      .catch(() => setOptions([]));
-    setSearchContent(e);
-  }
+      .catch(() => setOptions([]));  
+  };
 
   const handleCancel = () => {
     setSearchContent("");
@@ -43,7 +41,7 @@ const MenuBar = () => {
 
   return (
     <div className="inset-x-0 h-fit bg-zinc-100 border-b border-zinc-300 z-[10] py-2">
-      <div className="container max-w-7xl h-full mx-auto flex items-center justify-between gap-2 px-4">
+      <div className="container max-w-7xl h-10 mx-auto flex items-center justify-between gap-2 px-4">
         {search ? (
           <button onClick={handleSearch}>
             <Icons.back className="mr-2 h-4 w-4" />
@@ -54,30 +52,22 @@ const MenuBar = () => {
 
         <div
           className={
-            search
-              ? "flex justify-center items-center w-full"
-              : "flex justify-center items-center w-1/4"
+            search ? "flex justify-center items-center w-full" : "hidden"
           }
         >
           <SearchBar
-            value={
-              searchContent
-                ? searchContent
-                : pageSearchContent
-                ? pageSearchContent
-                : null
-            }
+            value={searchContent}
             className="w-full py-0 outline-none focus:border-none focus:outline-none"
             onChange={handleInput}
+            onClick={handleSearch}
             onSearch={confirmSearch}
             onCancelResearch={handleCancel}
-            onClick={handleSearch}
             disabled={!search}
             options={options}
           />
         </div>
 
-        <div className="w-min flex justify-end items-center ">
+        <div className="w-min flex justify-end items-center z-0">
           <button onClick={search ? confirmSearch : handleSearch}>
             <Icons.search className="relative border-r-5" />
           </button>
