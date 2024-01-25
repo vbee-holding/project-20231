@@ -38,9 +38,12 @@ const hotTrendTopics = async (req, res) => {
         },
       },
       {
+        $unwind: "$tags", // Chia nhỏ mảng tags thành các phần tử riêng lẻ để tính tổng thread từng tags
+      },
+      {
         $group: {
-          _id: "$topic", 
-          threadCount: { $sum: 1 }, // Count each thread in the topic
+          _id: "$tags",
+          threadCount: { $sum: 1 },
         },
       },
       {
@@ -50,6 +53,7 @@ const hotTrendTopics = async (req, res) => {
         $limit: 10,
       },
     ]);
+    
 
     return res.status(200).json({ hotTopics: topicCounts }) && logger.info({ status: 200, data: topicCounts, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
   } catch (err) {
