@@ -16,8 +16,8 @@ const Search = ({ params }) => {
   const [index, setIndex] = useState(1);
   const [onQuery, setOnQuery] = useState(true);
   const searchParams = useSearchParams();
-  const [searchContent, setSearchContent] = useState(searchParams.get("text"));
-  const [searchOrder, setSearchOrder] = useState(searchParams.get("order"));
+  const searchContent = searchParams.get("text");
+  const searchOrder = searchParams.get("order");
 
   useEffect(() => {
     axios
