@@ -7,7 +7,8 @@ const threadSchema = new Schema({
   author: { type: String},
   content: {type: String},
   summarizedContent: {type: String},
-  summarizedRepliesContent: {type: String}
+  summarizedRepliesContent: {type: String},
+  tags: { type: Array, default: [] },
 });
 
 const Thread = mongoose.model('Thread', threadSchema);
