@@ -94,7 +94,6 @@ class ReplyController{
     let totalReplies = await Reply.countDocuments({ content: { $in: regexKeyWords } });
     if(page > Math.ceil(totalReplies / repliesPerPage)){
       return res.status(404).send('404 - No replies found!') 
-      && logger.warn({ status: 404, message: "No replies found!", url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
     }
     if (newerThan && olderThan) {
       query = query.where('createdTime').gte(new Date(newerThan)).lte(new Date(olderThan));
@@ -129,10 +128,9 @@ class ReplyController{
           paginatedReplies
         }
         return res.status(200).json(response) 
-        && logger.info({ status: 200, data: response , url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers});
       })
       .catch(next);
-      return logger.error({ status: 404, message: error.message, stack : error.stack, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });;
+      return res.status(400);
     }
 
     const replies = await query
@@ -150,7 +148,6 @@ class ReplyController{
       replies
     }
     return res.status(200).json(response) 
-    && logger.info({ status: 200, data: response, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
   }
 }
 

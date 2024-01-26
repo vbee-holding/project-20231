@@ -117,21 +117,21 @@ services:
   #   labels:
   #     org.label-schema.group: "monitoring"
 
-  app-project20231:
-    build : 
-      context: ../backend
-      dockerfile: Dockerfile
-    volumes:
-      - ../backend/:/usr/app
-      - ../backend/src/log:/var/log/app-project20231
-      - /usr/src/app/node_modules/
-    command: npm start
-    ports:
-      - "3333:3003"
-    networks:
-      - project20231
-    labels:
-      org.label-schema.group: "monitoring"
+  # app-project20231:
+  #   build : 
+  #     context: ../backend
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ../backend/:/usr/app
+  #     - ../backend/src/log:/var/log/app-project20231
+  #     - /usr/src/app/node_modules/
+  #   command: npm start
+  #   ports:
+  #     - "3333:3003"
+  #   networks:
+  #     - project20231
+  #   labels:
+  #     org.label-schema.group: "monitoring"
 
   # alertmanager:
   #   image: prom/alertmanager:v0.24.0

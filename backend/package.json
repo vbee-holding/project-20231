@@ -21,6 +21,7 @@
     "openai": "^4.24.1",
     "passport": "^0.5.3",
     "passport-google-oauth20": "^2.0.0",
+    "prom-client": "^15.1.0",
     "winston": "^3.11.0"
   }
 }

@@ -39,6 +39,11 @@ scrape_configs:
     static_configs:
       - targets: ['pushgateway:9091']
 
+  - job_name: 'gae-exporter'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['cloudrun-backend-service-tgfeqcujja-et.a.run.app:443']
+
 
 alerting:
   alertmanagers:

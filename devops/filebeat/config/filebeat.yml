@@ -1,10 +1,10 @@
-filebeat.inputs:
-- type: filestream
-  enabled: true
-  paths:
-    - /var/log/app-project20231/*.log
-    - /var/log/nginx/*.log
-    - /usr/src/app/*.log
+# filebeat.inputs:
+# - type: filestream
+#   enabled: true
+#   paths:
+#     - /var/log/app-project20231/*.log
+#     - /var/log/nginx/*.log
+#     - /usr/src/app/*.log
 
 # filebeat.inputs:
 # - type: docker
@@ -16,6 +16,33 @@ filebeat.inputs:
 #       - "*"
 # processors:
 #   - add_docker_metadata: ~
+
+filebeat.inputs:
+- type: googlecloud
+  project_id: "voz-2023-410302"
+  credentials_json: '{"type": "service_account","project_id": "voz-2023-410302","private_key_id": "62c0fb87e6faa8b5e8bc00234ef58f3d95b25617","private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC0oiKmZjWBA3Se\n+oDi5Zw+pIKl8r7/WF+KMmSQCFx0WhOMy+jjQ7l46gyT2VzsurTMD3Pyb883KkQx\nYOii3pfJ8dFjamDuFFAooHGuV3k03aZUxOuri+y7ZjxLx+eCekApNg0azFBQiTgi\n86B81T+7JJQVTpc65CMkg/zDfUlKWFzAuAx6g5uH7O38GI6eQPYzwQQpYzwFg9TN\nM1pRfxu0gs17D+LKjPxtUuGVe2HwvgoOCAfzCvyvsze7ALvo8MKl9v+OXqfEjSl4\nlTzakcQcfJ8ys1J/aEbRIaJncLr3X5RJEJXNu+mUKRnLZLIkm7shbra7o/Lzwgyc\nlUzo9fTBAgMBAAECggEAVtPLAR6HYH0XPWYftzF04f21GWzul5JU1nqzsTJ7sqgr\n1pWb3EaNLIygwB8PVnHG/4H8E5DgU92ayvuQx91krDtzkaysbDTSdTzueEXu6tUS\no5PGzv6jLE+P80NjyunV1pl3QibtAlF7bP2b6vWcvWnvTrCo7DOGmwJg6V1bcgLo\n2YnukGeCWDpFys71segBgPw7F3JPUWNOdtF5W3rJZ1kGKP8H65hdZfeqg2aXbpUz\nMi5QgyJ7q/xoNIXXIm167HurB0JEcFur1s89SdkAhV1Q6ZtGJxjMP7w9d5InnL6J\nPPZKFORN2KBIbSOy0dI5dMzZyosG/brbq1GyMQkhwwKBgQDs8lxP8ngr2fQGdxjI\n/3lGLKrZS+eTTRFzVapg86JHKUflsElgBgU+k+84ZAfzxJ/JwI9WcVac8Z7rn+AU\npN/cLYyeRYozWU9kz4MuFk6ns//4/k2MkrCfsMFGrelEyUSUyRYkhL6l3GdAwjc+\nBgp83R3sfk5/OzMeia35PpX2EwKBgQDDKIrLlS4od296zPbDjZyLrLD8W0/ke+qw\nNcwrWzAZBPWNFvybyJpwu0jln8gG46NmI8uiH7imZ8PFl1vMtsSzZ54ezbJ8LKrm\nNtiYdWjwrWZLpTfTIIC9h9AGVa4JL7ejL0mfA73cY02dyITyNzTARIx7NS40olJi\nsH6nyZoUWwKBgQDdwSlh7SRIrg+y6U1595bxdSZkfaR6eFtHnLn7SKjsfpb6QRU6\n2AeafGsbVIsYukFtWVkM5r/P3FYGYTcfOvsDnmGHUr+3tPMX/xnfTSNJ0q1Sw/Wi\nBTtmCM+qLWMubEtSECw3+0BODEtaESoQUykHmQ3DYqZmbuo1v1bh+I/ynwKBgQCF\nSzmRVzERnpHb1AZvBlf35llz44Ir0p82/2eV7VBqpkJ4vUyHsnoZqTFe9MUQP4ap\nCqXY88WQkqraWEjxB5xN1OXgsCnKOk/3sVo6t2aXjDekTxJT94025n4k9XxK9fZ9\nVJz6KPoSfxjSPdTgAujasXcp5+bJOF0A3v+C5mWApQKBgA8YB0hkhc72js5lKSa6\n9Oy1stLHiQNY8GK1cb9bzueZs/EWNEeICDOZTAFBcq16U/0RpH6GSlE6zYaaTY/i\n0RmhAp+WL5joNOgqMam4HLqviJih93EHAx4/DISub60lda96ldZgUKuCp+UXXCuN\nckXqEOXkX25c2EKq5JkXiw7i\n-----END PRIVATE KEY-----\n",
+  "client_email": "cloud-run-exporter@voz-2023-410302.iam.gserviceaccount.com",
+  "client_id": "103799865682134938216",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/cloud-run-exporter%40voz-2023-410302.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
+'
+  input_type: log
+  include_children: true
+  processors:
+    - add_cloud_metadata:
+    - add_host_metadata:
+  fields:
+    logtype: gcs
+  fields_under_root: true
+  json.keys_under_root: true
+  json.overwrite_keys: true
+  paths:
+    - "gs://_Default"
+
 
 output.logstash:
   enabled: true

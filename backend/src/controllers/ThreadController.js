@@ -119,7 +119,7 @@ class ThreadController{
     let totalThreads = await Thread.countDocuments({ title: { $in: regexKeyWords } });
 
     if(page > Math.ceil(totalThreads / threadsPerPage)){
-      return res.status(404).send('404 - No threads found!') && logger.warn({status: 404, message : "No threads found!", url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers});
+      return res.status(404).send('404 - No threads found!');
     }
     
     if (newerThan && olderThan) {
@@ -163,7 +163,7 @@ class ThreadController{
           totalPages: Math.ceil(totalThreads / threadsPerPage),
           paginatedThreads
         }
-        return res.status(200).json(response) && logger.info({status: 200, message : "Đã tóm tắt nội dung", data: response ,url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers});
+        return res.status(200).json(response) ;
       })
       .catch(next);
       return;
@@ -175,7 +175,7 @@ class ThreadController{
       .limit(threadsPerPage)
       .lean();
       if(threads.length === 0){
-        return res.status(404).send('404 - No threads found!') && logger.warn({status: 404, message : "No threads found!", data: req, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers});;
+        return res.status(404).send('404 - No threads found!');
       }
       // return res.status(200).json(replies);
       threads.forEach(thread => {
@@ -192,7 +192,7 @@ class ThreadController{
         totalPages: Math.ceil(totalThreads / threadsPerPage),
         threads
       }
-      return res.status(200).json(response) && logger.info({status: 200, message : "", data: response, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers});
+      return res.status(200).json(response);
   }
 }
 
