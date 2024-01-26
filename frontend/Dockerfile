@@ -1,6 +1,4 @@
-FROM node:lts-alpine
-
-RUN apk add --no-cache libc6-compat
+FROM node:20-alpine
 
 WORKDIR /usr/frontend
 
@@ -15,8 +13,6 @@ EXPOSE ${PORT}
 COPY package.json . 
 
 RUN npm install
-
-RUN npm install next
 
 COPY . .
 
