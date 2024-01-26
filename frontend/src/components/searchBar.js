@@ -75,7 +75,6 @@ const SearchBar = ({
   onChange,
   placeholder,
   onCancelResearch,
-  onClick,
   onSearch,
   className,
   disabled,
@@ -120,10 +119,6 @@ const SearchBar = ({
     }
   };
 
-  const handleClick = (e) => {
-    onClick();
-  };
-
   return (
     <>
       <Search
@@ -134,7 +129,7 @@ const SearchBar = ({
         {!disabled ? (
           <StyledInputBase
             key={"StyledInputBase"}
-            className="outline-none focus:border-none focus:outline-none"
+            className="bg-white focus:bg-white hover:bg-white"
             inputProps={{
               ...getInputProps(),
               onChange: handleChange,
@@ -143,19 +138,16 @@ const SearchBar = ({
             placeholder={placeholder || "Search"}
             onKeyUp={handleKeyUp}
             disabled={disabled}
-            autoFocus
           />
         ) : (
           <StyledSubInputBase
             key={"StyledSubInputBase"}
-            className="outline-none focus:border-none focus:outline-none"
+            className="hidden"
             inputProps={{
               ...getInputProps(),
               onChange: handleChange,
-              onClick: handleClick,
               value: internalValue,
             }}
-            placeholder={placeholder || "Search"}
             onKeyUp={handleKeyUp}
             disabled={disabled}
           />
@@ -180,7 +172,7 @@ const SearchBar = ({
               />
             ))}
           </Listbox>
-        ): null}
+        ) : null}
       </Search>
     </>
   );
@@ -204,7 +196,6 @@ SearchBar.propTypes = {
   // fired when press enter
   onSearch: PropTypes.func,
   // override styles of the root element
-  onClick: PropTypes.func,
   style: PropTypes.object,
   // disable text field
   disabled: PropTypes.bool,
