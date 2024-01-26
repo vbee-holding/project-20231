@@ -18,7 +18,7 @@ export function AvatarUser({ image, name, email, setUserSession, userSession }) 
   };
   return (
     <div>
-      <Menu as="div" className="relative inline-block mr-2">
+      <Menu as="div" className="relative inline-block">
         <div>
           <Menu.Button className="inline-flex justify-center shadow-sm">
             <div>

@@ -8,7 +8,6 @@ const ModalNotify = ({ setShow, userSession }) => {
     setNoti(event.target.value);
   };
   const handleSubmit = () => {
-    console.log(noti);
     axios.put(`user/notify/${userSession.googleId}`,{
       isNotifi: noti,
     })
