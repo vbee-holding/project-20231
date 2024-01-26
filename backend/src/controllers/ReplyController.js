@@ -52,7 +52,6 @@ class ReplyController{
       let totalReplies = await Reply.countDocuments({threadId: req.params.threadId})
       if(page > Math.ceil(totalReplies / repliesPerPage)){
         return res.status(404).send('404 - No replies found!') 
-        && logger.warn({ status: 404, message: "No replies found!", url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
       }
       let replies = await Reply.find({threadId: req.params.threadId})
       .sort({ createdTime: -1 })
@@ -61,7 +60,6 @@ class ReplyController{
       .lean();
       if(replies.length === 0){
         return res.status(404).send('404 - No replies found!') 
-        && logger.warn({ status: 404, message: "No replies found!", url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
       }
       // return res.status(200).json(replies);
       const response = {
@@ -69,7 +67,6 @@ class ReplyController{
         replies
       }
       return res.status(200).json(response) 
-      && logger.info({ status: 200, data: response, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
 
     }
     catch(error){
@@ -140,7 +137,6 @@ class ReplyController{
     .lean();
     if(replies.length === 0){
       return res.status(404).send('404 - No replies found!') 
-      && logger.warn({ status: 404, message: "No replies found!", data : replies, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
     }
     // return res.status(200).json(replies);
     const response = {
