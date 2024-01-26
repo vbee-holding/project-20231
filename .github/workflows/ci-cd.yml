@@ -75,6 +75,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: executing remote ssh commands using password
+        timeout-minutes: 60
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }} 
