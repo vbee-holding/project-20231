@@ -208,6 +208,7 @@ class ThreadController{
       if(threads.length === 0){
         return res.status(404).send('404 - No threads found!');
       // return res.status(200).json(replies);
+      }
       threads.forEach(thread => {
         if (thread.replys && thread.replys.length > 0) {
           let content = thread.replys[0].content;
