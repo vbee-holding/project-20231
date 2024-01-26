@@ -13,6 +13,7 @@ const Searchorder = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const presentOrder = searchParams.get("order");
+  const searchContent = searchParams.get("text");
   const [order, setOrder] = useState(presentOrder || "date");
 
   const handleClick = (e) => {
@@ -29,13 +30,17 @@ const Searchorder = () => {
   function SearchBarFallback() {
     return <></>;
   }
-  
+
   return (
-    <div className="bg-zinc-100 border-b border-zinc-300 py-2">
+    <div className="py-2">
       <div className="container max-w-7xl h-full mx-auto flex items-center justify-between gap-2 px-4">
-        <hr className="static bg-gray-800 w-full h-0.5" />
+        <Suspense fallback={<SearchBarFallback />}>
+          <h1 className="text-2xl font-semibold tracking-tight truncate w-[100]">
+            Results for " {searchContent} "
+          </h1>
+        </Suspense>
         <Menu as="div" className="relative inline-block mr-2 ">
-          <Menu.Button className="bg-purple-600 hover:bg-purple-950 text-white font-bold py-2 px-2 rounded-full text-xs w-24">
+          <Menu.Button className="bg-purple-600 hover:bg-purple-950 text-white font-bold py-1 px-2 rounded-full text-xs w-24">
             <Suspense fallback={<SearchBarFallback />}>
               <div className="cursor-pointer">
                 {capitalize(order)}
