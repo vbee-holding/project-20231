@@ -21,6 +21,7 @@
     "openai": "^4.24.1",
     "passport": "^0.5.3",
     "passport-google-oauth20": "^2.0.0",
-    "winston": "^3.11.0"
+    "winston": "^3.11.0",
+    "keyword-extractor": "0.0.28"
   }
 }
