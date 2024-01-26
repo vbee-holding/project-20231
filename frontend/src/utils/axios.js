@@ -6,8 +6,10 @@ let baseURL;
 if (isDevelopment) {
   baseURL = 'http://localhost:3003/';
 } else {
-  baseURL = 'https://vozbackend-dot-voz-2023-410302.et.r.appspot.com/';
+  baseURL = 'http://194.233.74.59:3003';
 }
+console.log(baseURL);
+console.log(process.env);
 
 const instance = axios.create({
   baseURL: baseURL

@@ -1,9 +1,8 @@
 "use client";
-import Image from "next/image";
 import { AvatarUser } from "./authButton";
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
 import { decodeJwt } from "jose";
-import axios from '@/utils/axios'
+import axios from "@/utils/axios";
 import { Icons } from "./icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -24,63 +23,144 @@ const HeaderContainer = ({ children }) => {
   );
 };
 const Header = () => {
-  const [userSession,setUserSession] = useState();
+  const [userSession, setUserSession] = useState();
+  const router = useRouter();
   useEffect(() => {
-    // Kiểm tra xem có đang chạy ở môi trường client-side không
-    // if (typeof window !== 'undefined') {
-      // const 
-      setUserSession(JSON.parse(localStorage.getItem("userSession")));
-    // }
+    setUserSession(JSON.parse(localStorage.getItem("userSession")));
   }, []);
+  const login = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      // Gửi yêu cầu đến Google's UserInfo Endpoint
+      const payload = await axios
+        .get("https://www.googleapis.com/oauth2/v3/userinfo", {
+          headers: {
+            Authorization: `Bearer ${tokenResponse.access_token}`,
+          },
+        })
+        .then((response) => {
+          // Xử lý thông tin người dùng từ response
+          return response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching user info:", error.response.data);
+        });
+
+      if (payload) {
+        const userSess = {
+          googleId: payload.sub,
+          email: payload.email,
+          profileImgUrl: payload.picture,
+          username: payload.name,
+          isNotifi: 0,
+        };
+
+        axios
+          .post("user/profile", {
+            googleId: payload.sub,
+            email: payload.email,
+            image: payload.picture,
+            name: payload.name,
+            isNotifi: 0,
+          })
+          .then((res) => {
+            if (res.status === 201) {
+              localStorage.setItem(
+                "userSession",
+                JSON.stringify(res.data.user)
+              );
+              setUserSession(res.data.user);
+            } else {
+              localStorage.setItem("userSession", JSON.stringify(userSess));
+              setUserSession(userSess);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      router.refresh();
+    },
+    onError: () => {
+      console.log("Login Failed");
+    },
+    flow: "implicit",
+  });
   return (
     <>
       <HeaderContainer>
-        {!userSession && (
-          <GoogleLogin
-            onSuccess={(credentialResponse) => {
-              // console.log(credentialResponse);
-              const { credential } = credentialResponse;
-              const payload = credential ? decodeJwt(credential) : undefined;
-              if (payload) {
-                // console.log(payload);
-                const userSess = {
-                  email: payload.email,
-                  image: payload.picture,
-                  name: payload.name,
-                };
-                
-                axios.post('user/profile', {
-                  email: payload.email,
-                  image: payload.picture,
-                  name: payload.name,
-                  isNotifi: 0,
-                })
-                .then(
-                  () => {
-                    localStorage.setItem("userSession", JSON.stringify(userSess));
-                  }
-                )
-                .catch((error) => {
-                  console.log(error);
-                });
+        {
+          !userSession && (
+            <div onClick={() => login()} className="bg-white rounded-full">
+              <Icons.login />
+              <div className="hidden">
+                <GoogleLogin
+                  onSuccess={(credentialResponse) => {
+                    // console.log(credentialResponse);
+                    const { credential } = credentialResponse;
+                    const payload = credential
+                      ? decodeJwt(credential)
+                      : undefined;
+                    if (payload) {
+                      // console.log(payload);
+                      const userSess = {
+                        googleId: payload.sub,
+                        email: payload.email,
+                        profileImgUrl: payload.picture,
+                        username: payload.name,
+                        isNotifi: 0,
+                      };
 
-              }
-              window.location.reload();
-            }}
-            onError={() => {
-              console.log("Login Failed");
-            }}
-            useOneTap
-            theme="outline"
-            type="icon"
-            shape="circle"
-          />
-        )}
+                      axios
+                        .post("user/profile", {
+                          googleId: payload.sub,
+                          email: payload.email,
+                          image: payload.picture,
+                          name: payload.name,
+                          isNotifi: 0,
+                        })
+                        .then((res) => {
+                          if (res.status === 201) {
+                            localStorage.setItem(
+                              "userSession",
+                              JSON.stringify(res.data.user)
+                            );
+                            setUserSession(res.data.user);
+                          } else {
+                            localStorage.setItem(
+                              "userSession",
+                              JSON.stringify(userSess)
+                            );
+                            setUserSession(userSess);
+                          }
+                        })
+                        .catch((error) => {
+                          console.log(error);
+                        });
+                    }
+                    router.refresh();
+                  }}
+                  onError={() => {
+                    console.log("Login Failed");
+                  }}
+                  useOneTap
+                  theme="outline"
+                  type="icon"
+                  shape="circle"
+                />
+              </div>
+            </div>
+          )
+          // (
+
+          // )
+        }
         {userSession && (
           <AvatarUser
-            image={userSession.image}
-            name={userSession.name}
+            setUserSession={setUserSession}
+            image={userSession.profileImgUrl}
+            name={userSession.username}
             email={userSession.email}
+            userSession={userSession}
           />
         )}
       </HeaderContainer>

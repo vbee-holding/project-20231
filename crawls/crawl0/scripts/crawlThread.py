@@ -9,6 +9,7 @@ load_dotenv()
 
 # Kết nối với mongodb
 client = pymongo.MongoClient(os.getenv("MONGODB_URL_DEV"))
+# client = pymongo.MongoClient(os.getenv("MONGODB_URL_PRODUCT"))
 # client = pymongo.MongoClient("mongodb://localhost:27017/")
 database = client["test"]
 collection = database["threads"]

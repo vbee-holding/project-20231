@@ -3,19 +3,22 @@ import Image from "next/image";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import ModalNotify from "./modalNotify";
+import { useRouter } from "next/navigation";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-export function AvatarUser({ image, name, email }) {
+export function AvatarUser({ image, name, email, setUserSession, userSession }) {
   const [showSetting, setShowSetting] = useState(false);
+  const router = useRouter()
   const handleClick = () => {
     localStorage.removeItem("userSession");
-    window.location.reload();
+    router.refresh();
+    setUserSession()
   };
   return (
     <div>
-      <Menu as="div" className="relative inline-block mr-2">
+      <Menu as="div" className="relative inline-block">
         <div>
           <Menu.Button className="inline-flex justify-center shadow-sm">
             <div>
@@ -99,7 +102,7 @@ export function AvatarUser({ image, name, email }) {
           </Menu.Items>
         </Transition>
       </Menu>
-      {showSetting && <ModalNotify setShow={setShowSetting}/>}
+      {showSetting && <ModalNotify userSession={userSession} setShow={setShowSetting}/>}
     </div>
   );
 }

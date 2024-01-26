@@ -14,6 +14,7 @@ logging.basicConfig(filename='app.log', filemode='w',
 
 # Kết nối với MongoDB
 client = MongoClient(os.getenv("MONGODB_URL_DEV"))
+# client = MongoClient(os.getenv("MONGODB_URL_PRODUCT"))
 database = client["test"]
 collection_thread = database["threads"]
 collection_reply = database["replies"]

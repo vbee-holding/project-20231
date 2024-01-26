@@ -17,6 +17,7 @@ def crawl_thread():
     try:
         # Kết nối với MongoDB
         client = pymongo.MongoClient(os.getenv("MONGODB_URL_DEV"))
+        # client = pymongo.MongoClient(os.getenv("MONGODB_URL_PRODUCT"))
         database = client["test"]
         collection = database["threads"]
 

@@ -9,6 +9,7 @@ const threadSchema = new Schema({
   summarizedContent: {type: String},
   summarizedRepliesContent: {type: String},
   tags: { type: Array, default: [] },
+  latestRepliesLength: { type: Number }
 });
 
 const Thread = mongoose.model('Thread', threadSchema);
