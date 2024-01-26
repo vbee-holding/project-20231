@@ -8,14 +8,14 @@ import { Icons } from "@/components/icons";
 const Post_ChiTiet = (props) => {
   const router = useRouter(); 
   const handleBack = () => {
-    router.push("/"); 
+    router.back(); 
   };
 
   return (
     <div>
-      <div className="max-w-2xl p-4 mx-auto">
+      <div className="max-w-2xl p-3 mx-auto">
         <button
-              className="flex items-center  text-black py-2 px-3 my-2 mx-1 rounded-full focus:outline-none hover:bg-stone-100 transition"
+              className="flex items-center  text-black px-3 my-1 mx-1 rounded-full focus:outline-none hover:bg-stone-100 transition"
               onClick={handleBack}
             >
               <Icons.back className="mr-2 h-4 w-4"/>

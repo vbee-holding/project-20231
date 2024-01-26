@@ -1,6 +1,6 @@
 "use client";
 import { AvatarUser } from "./authButton";
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
 import { decodeJwt } from "jose";
 import axios from "@/utils/axios";
 import { Icons } from "./icons";
@@ -27,80 +27,133 @@ const Header = () => {
   const router = useRouter();
   useEffect(() => {
     setUserSession(JSON.parse(localStorage.getItem("userSession")));
-    // axios.get(`/user/profile/${userSession.googleId}`)
-    // .then(
-    //   (res)=>{
-    //     console.log(res.data)
-    //     setUserSession(res.data)
-    //     localStorage.setItem(
-    //       "userSession",
-    //       JSON.stringify(res.data)
-    //     );
-    //   }
-    // )
-    // .catch(
-    //   (err)=>console.log(err)
-    // )
   }, []);
+  const login = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      // Gửi yêu cầu đến Google's UserInfo Endpoint
+      const payload = await axios
+        .get("https://www.googleapis.com/oauth2/v3/userinfo", {
+          headers: {
+            Authorization: `Bearer ${tokenResponse.access_token}`,
+          },
+        })
+        .then((response) => {
+          // Xử lý thông tin người dùng từ response
+          return response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching user info:", error.response.data);
+        });
+
+      if (payload) {
+        const userSess = {
+          googleId: payload.sub,
+          email: payload.email,
+          profileImgUrl: payload.picture,
+          username: payload.name,
+          isNotifi: 0,
+        };
+
+        axios
+          .post("user/profile", {
+            googleId: payload.sub,
+            email: payload.email,
+            image: payload.picture,
+            name: payload.name,
+            isNotifi: 0,
+          })
+          .then((res) => {
+            if (res.status === 201) {
+              localStorage.setItem(
+                "userSession",
+                JSON.stringify(res.data.user)
+              );
+              setUserSession(res.data.user);
+            } else {
+              localStorage.setItem("userSession", JSON.stringify(userSess));
+              setUserSession(userSess);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      router.refresh();
+    },
+    onError: () => {
+      console.log("Login Failed");
+    },
+    flow: "implicit",
+  });
   return (
     <>
       <HeaderContainer>
-        {!userSession && (
-          <GoogleLogin
-            onSuccess={(credentialResponse) => {
-              // console.log(credentialResponse);
-              const { credential } = credentialResponse;
-              const payload = credential ? decodeJwt(credential) : undefined;
-              if (payload) {
-                // console.log(payload);
-                const userSess = {
-                  googleId: payload.sub,
-                  email: payload.email,
-                  profileImgUrl: payload.picture,
-                  username: payload.name,
-                  isNotifi: 0,
-                };
+        {
+          !userSession && (
+            <div onClick={() => login()} className="bg-white rounded-full">
+              <Icons.login />
+              <div className="hidden">
+                <GoogleLogin
+                  onSuccess={(credentialResponse) => {
+                    // console.log(credentialResponse);
+                    const { credential } = credentialResponse;
+                    const payload = credential
+                      ? decodeJwt(credential)
+                      : undefined;
+                    if (payload) {
+                      // console.log(payload);
+                      const userSess = {
+                        googleId: payload.sub,
+                        email: payload.email,
+                        profileImgUrl: payload.picture,
+                        username: payload.name,
+                        isNotifi: 0,
+                      };
 
-                axios
-                  .post("user/profile", {
-                    googleId: payload.sub,
-                    email: payload.email,
-                    image: payload.picture,
-                    name: payload.name,
-                    isNotifi: 0,
-                  })
-                  .then((res) => {
-                    if(res.status === 201){
-                      console.log(res.data.user)
-                      localStorage.setItem(
-                        "userSession",
-                        JSON.stringify(res.data.user)
-                      );
-                      setUserSession(res.data.user);
+                      axios
+                        .post("user/profile", {
+                          googleId: payload.sub,
+                          email: payload.email,
+                          image: payload.picture,
+                          name: payload.name,
+                          isNotifi: 0,
+                        })
+                        .then((res) => {
+                          if (res.status === 201) {
+                            localStorage.setItem(
+                              "userSession",
+                              JSON.stringify(res.data.user)
+                            );
+                            setUserSession(res.data.user);
+                          } else {
+                            localStorage.setItem(
+                              "userSession",
+                              JSON.stringify(userSess)
+                            );
+                            setUserSession(userSess);
+                          }
+                        })
+                        .catch((error) => {
+                          console.log(error);
+                        });
                     }
-                    else{
-                      localStorage.setItem(
-                        "userSession",
-                        JSON.stringify(userSess)
-                      );
-                      setUserSession(userSess);
-                    }
-                  })
-                  .catch((error) => {
-                    console.log(error);
-                  });
-              }
-              router.refresh();
-            }}
-            onError={() => {
-              console.log("Login Failed");
-            }}
-            useOneTap
-            theme="outline"
-            type="icon"
-            shape="circle"
-          />
-        )}
+                    router.refresh();
+                  }}
+                  onError={() => {
+                    console.log("Login Failed");
+                  }}
+                  useOneTap
+                  theme="outline"
+                  type="icon"
+                  shape="circle"
+                />
+              </div>
+            </div>
+          )
+          // (
+
+          // )
+        }
         {userSession && (
           <AvatarUser
             setUserSession={setUserSession}

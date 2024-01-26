@@ -87,22 +87,21 @@ class ThreadController{
         
       }
       // Nếu chưa có 
-      const prompt = "Summarize content you are provided with in Vietnamese as if you are the writer in exactly 100 words, please remember to keep the same way of addressing\n" + content;
-      if(content.length < 300){
+      const prompt = "Summarize content you are provided with in Vietnamese as if you are the writer in exactly 70 words, please remember to keep the same way of addressing\n" + content;
+      if (content.split(' ').length < 120) {
         thread.summarizedContent = content;
         return res.json(thread) && logger.info({status: 200, message : "Nội dung không cần tóm tắt", data: thread, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers});
       }
       else{
-
-        const result = await model.generateContent(prompt);
-        const response = result.response;
         let summarizedContent = "";
         // Thử tóm tắt bằng Gemini
         try{
+          const result = await model.generateContent(prompt);
+          const response = result.response;
           summarizedContent = response.text(); 
         }
 
-        // Nếu gặp lỗi BLOCKED DUE TO SAFETY thì dùng chatGPT
+        // Nếu gặp lỗi BLOCKED DUE TO SAFETY hoặc INTERNAL ERROR thì dùng chatGPT
         catch(error) {
           const promptGPT = "Summarize content you are provided with in Vietnamese as if you are the writer in exactly 100 words, please remember to keep the same way of addressing";
           const response = await openai.chat.completions.create({
