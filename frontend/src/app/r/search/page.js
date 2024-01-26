@@ -60,12 +60,6 @@ const Search = ({ params }) => {
       <MenuBar />
       {items.length > 0 ? (
         <div className="flex flex-col space-y-2 pt-2">
-          <Suspense fallback={<SearchBarFallback />}>
-            <h1 className="px-4 text-2xl font-semibold tracking-tight">
-              Results for " {searchContent} "
-            </h1>
-          </Suspense>
-
           <SearchFilter />
           <InfiniteScroll
             dataLength={items.length}
