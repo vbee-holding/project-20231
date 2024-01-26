@@ -140,7 +140,6 @@ class ReplyController{
     .lean();
     if(replies.length === 0){
       return res.status(404).send('404 - No replies found!') 
-      && logger.warn({ status: 404, message: "No replies found!", data : replies, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
     }
     // return res.status(200).json(replies);
     const response = {
