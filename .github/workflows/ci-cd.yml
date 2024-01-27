@@ -20,6 +20,7 @@ jobs:
           envkey_MONGODB_URL_PRODUCT: ${{ secrets.MONGODB_URL_DEV }}
           envkey_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           envkey_GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          envkey_OPENAI_API_KEY_QUANG: ${{ secrets.OPENAI_API_KEY_QUANG }}
           directory: backend
           
       - name: Create .env file for frontend
