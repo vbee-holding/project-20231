@@ -3,9 +3,9 @@ const Reply = require("../models/Reply");
 const logger = require("../utils/logger");
 const keywordExtractor = require("keyword-extractor"); // Chú ý việc sửa tên biến
 const { OpenAI } = require('openai');
-const { OPENAI_API_KEY } = require('../config');
+const { OPENAI_API_KEY_QUANG } = require('../config');
 const openai = new OpenAI({
-  apiKey: OPENAI_API_KEY,
+  apiKey: OPENAI_API_KEY_QUANG,
 });
 
 const hotTrendThreads = async (req, res) => {
