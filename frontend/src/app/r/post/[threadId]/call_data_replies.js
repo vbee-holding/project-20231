@@ -25,7 +25,6 @@ export default function CallReplies(params) {
         setItems(newReplies);
 
         if (newReplies.length <= 10 && totalPages === 1) {
-          newReplies.pop();
           setHasMore(false);
         }
       } catch (error) {
@@ -47,7 +46,7 @@ export default function CallReplies(params) {
         .then((res) => {
           const newReplies = res.data.replies;
           if (newReplies.length > 0) {
-            if (newReplies.length <= 10 && index === totalPages - 1) {
+            if (newReplies.length <= 10 && index === totalPages - 2) {
               setHasMore(false);
             }
             setItems((prevItems) =>
