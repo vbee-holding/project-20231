@@ -16,10 +16,13 @@ def join_collections():
 
     pipeline = [
         {
+            "$match": {"check": 1},
+        },
+        {
             "$lookup": {
                 "from": "replies",
-                "localField": "threadId",
                 "foreignField": "threadId",
+                "localField": "threadId",
                 "as": "replys"
             }
         },
