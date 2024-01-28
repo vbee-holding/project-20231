@@ -1,4 +1,5 @@
 import subprocess
+import time
 
 commands = [
     ["python", "scripts/crawlThread.py"],
@@ -6,5 +7,8 @@ commands = [
     ["python", "scripts/embedded.py"]
 ]
 
-for command in commands:
-    subprocess.run(command)
+while True:
+    for command in commands:
+        subprocess.run(command)
+
+    time.sleep(120)
