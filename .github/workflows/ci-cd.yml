@@ -166,22 +166,22 @@ jobs:
 
 
       - name: Build Docker image for backend
-        run: docker build -t asia-southeast2-docker.pkg.dev/${{ secrets.PROJECT_ID }}/voz-20231/backend:latest . 
+        run: docker build -t asia-southeast2-docker.pkg.dev/${{ secrets.PROJECT_ID }}/voz-20231-images/backend:latest . 
         working-directory: backend
       
       # - name: Build Docker image for frontend
-      #   run: docker build -t asia-southeast2-docker.pkg.dev/${{ secrets.PROJECT_ID }}/voz-20231/frontend:latest . 
+      #   run: docker build -t asia-southeast2-docker.pkg.dev/${{ secrets.PROJECT_ID }}/voz-20231-images/frontend:latest . 
       #   working-directory: frontend
 
       - name: Push Docker image for backend to Google Artifact Registry
-        run: docker push asia-southeast2-docker.pkg.dev/${{ secrets.PROJECT_ID }}/voz-20231/backend:latest
+        run: docker push asia-southeast2-docker.pkg.dev/${{ secrets.PROJECT_ID }}/voz-20231-images/backend:latest
 
       # - name: Push Docker image for frontend to Google Artifact Registry
-      #   run: docker push asia-southeast2-docker.pkg.dev/${{ secrets.PROJECT_ID }}/voz-20231/frontend:latest
+      #   run: docker push asia-southeast2-docker.pkg.dev/${{ secrets.PROJECT_ID }}/voz-20231-images/frontend:latest
 
       - name: deploy backend
-        run:  gcloud run deploy cloudrun-backend-service --image asia-southeast2-docker.pkg.dev/${{secrets.PROJECT_ID}}/voz-20231/backend:latest --region asia-southeast2 --allow-unauthenticated --service-account github-actions@${{secrets.PROJECT_ID}}.iam.gserviceaccount.com --memory 512Mi --cpu-throttling
+        run:  gcloud run deploy cloudrun-backend-service --image asia-southeast2-docker.pkg.dev/${{secrets.PROJECT_ID}}/voz-20231-images/backend:latest --region asia-southeast2 --allow-unauthenticated --service-account github-actions@${{secrets.PROJECT_ID}}.iam.gserviceaccount.com --memory 512Mi --cpu-throttling
 
       # - name: deploy frontend
-      #   run:  gcloud run deploy cloudrun-frontend-service --image asia-southeast2-docker.pkg.dev/${{secrets.PROJECT_ID}}/voz-20231/frontend:latest --region asia-southeast2 --allow-unauthenticated --service-account github-actions@${{secrets.PROJECT_ID}}.iam.gserviceaccount.com --memory 2Gi --cpu-throttling
+      #   run:  gcloud run deploy cloudrun-frontend-service --image asia-southeast2-docker.pkg.dev/${{secrets.PROJECT_ID}}/voz-20231-images/frontend:latest --region asia-southeast2 --allow-unauthenticated --service-account github-actions@${{secrets.PROJECT_ID}}.iam.gserviceaccount.com --memory 2Gi --cpu-throttling
 
