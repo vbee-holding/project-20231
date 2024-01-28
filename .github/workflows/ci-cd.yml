@@ -138,18 +138,32 @@ jobs:
         with:
           node-version: "20.x"
 
-      - name: Install dependencies for backend
-        working-directory: backend
-        run: npm install
+      # - name: Install dependencies for backend
+      #   working-directory: backend
+      #   run: npm install
 
-      - name: Install dependencies for frontend
-        working-directory: frontend
-        run: |- 
-          npm install && npm install next
+      # - name: Install dependencies for frontend
+      #   working-directory: frontend
+      #   run: npm install
 
       - name: Docker auth          
         run: |
           gcloud auth configure-docker asia-southeast2-docker.pkg.dev --quiet
+
+      - name: create credentials
+        run: |-
+          echo > credentials.txt && echo '${{secrets.GOOGLE_APPLICATION_CREDENTIALS}}' >> credentials.txt
+
+      - name: cat file
+        run: cat credentials.txt
+      - name: gcloud auth login with credentials
+        run : |-
+          gcloud auth login --cred-file=credentials.txt && gcloud config set project "${{secrets.PROJECT_ID}}"
+
+
+      - name: set account github action for gcloud
+        run : gcloud config set account github-actions@${{secrets.project_id}}.iam.gserviceaccount.com 
+
 
       - name: Build Docker image for backend
         run: docker build -t asia-southeast2-docker.pkg.dev/${{ secrets.PROJECT_ID }}/voz20231/backend:latest . 
@@ -164,20 +178,6 @@ jobs:
 
       # - name: Push Docker image for frontend to Google Artifact Registry
       #   run: docker push asia-southeast2-docker.pkg.dev/${{ secrets.PROJECT_ID }}/voz20231/frontend:latest
-  
-      - name: create credentials
-        run: |-
-          echo > credentials.txt && echo '${{secrets.GOOGLE_APPLICATION_CREDENTIALS}}' >> credentials.txt
-
-      - name: cat file
-        run: cat credentials.txt
-      - name: gcloud auth login with credentials
-        run : |-
-          gcloud auth login --cred-file=credentials.txt && gcloud config set project "${{secrets.PROJECT_ID}}"
-
-
-      - name: set account github action for gcloud
-        run : gcloud config set account github-actions@${{secrets.project_id}}.iam.gserviceaccount.com 
 
       - name: deploy backend
         run:  gcloud run deploy cloudrun-backend-service --image asia-southeast2-docker.pkg.dev/${{secrets.PROJECT_ID}}/voz20231/backend:latest --region asia-southeast2 --allow-unauthenticated --service-account github-actions@${{secrets.project_id}}.iam.gserviceaccount.com --memory 512Mi --cpu-throttling
