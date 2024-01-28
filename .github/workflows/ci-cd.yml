@@ -97,7 +97,7 @@ jobs:
   #           docker run -d --name backend -p 3003:3003 mjnhmnmm/backend:latest
   #           docker run -d --name frontend -p 3000:3000 mjnhmnmm/frontend:latest
 
-  build-cloud:
+  build-deploy-cloud:
     runs-on: ubuntu-latest
     steps:          
       - name: Code Checkout
@@ -147,9 +147,6 @@ jobs:
         run: |- 
           npm install && npm install next
 
-  Push-Docker-to-Artifact-Registry:
-    runs-on: ubuntu-latest
-    steps:  
       - name: Docker auth          
         run: |
           gcloud auth configure-docker asia-southeast2-docker.pkg.dev --quiet
@@ -168,9 +165,6 @@ jobs:
       # - name: Push Docker image for frontend to Google Artifact Registry
       #   run: docker push asia-southeast2-docker.pkg.dev/${{ secrets.PROJECT_ID }}/voz20231/frontend:latest
   
-  Auth-Google-Cloud-and-Deploy:
-    runs-on: ubuntu-latest
-    steps:  
       - name: create credentials
         run: |-
           echo > credentials.txt && echo '${{secrets.GOOGLE_APPLICATION_CREDENTIALS}}' >> credentials.txt
