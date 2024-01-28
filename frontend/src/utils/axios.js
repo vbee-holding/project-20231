@@ -6,7 +6,7 @@ let baseURL;
 if (isDevelopment) {
   baseURL = 'http://localhost:3003/';
 } else {
-  baseURL = 'http://194.233.74.59:3003';
+  baseURL = process.env.BASE_URL;
 }
 console.log(baseURL);
 console.log(process.env);
