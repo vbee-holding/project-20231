@@ -79,7 +79,7 @@ const Searchorder = () => {
                         active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                         "block pt-1 pb-4 text-xs"
                       )}
-                      onClick={handleClick}
+                      onClick={order == "date" ? null :handleClick}
                     >
                       <button
                         value="date"
@@ -100,7 +100,7 @@ const Searchorder = () => {
                         active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                         "block pt-1 pb-4 text-xs"
                       )}
-                      onClick={handleClick}
+                      onClick={order == "relevance" ? null :handleClick}
                     >
                       <button
                         value="relevance"
