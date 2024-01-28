@@ -80,7 +80,7 @@ export default function CallReplies(params) {
               linkImg={item.avatarUrl}
               name={item.author}
               created={item.createdTime}
-              overView={item.content}
+              overView={item.contentElement}
             />
           ))}
       </InfiniteScroll>
