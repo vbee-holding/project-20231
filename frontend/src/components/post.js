@@ -20,7 +20,7 @@ const Item = (props) => {
 const Post = (props) => {
   return (
     <Link href={`/r/post/${props.threadId}`}>
-      <div className="max-w-2xl p-4 mx-auto hover:bg-neutral-50 cursor-pointer">
+      <div className="max-w-2xl p-4 mx-auto hover:bg-neutral-50 active:bg-neutral-100 cursor-pointer">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             {props.linkImg.startsWith("https://") ? (
