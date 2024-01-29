@@ -52,6 +52,7 @@ class HotTopicController{
       }
       sortedTags.sort((a, b) => b.threadCount - a.threadCount);
       const trendingTopics = sortedTags.slice(0, 6);
+      return res.status(200).json(trendingTopics);
       //return res.status(200).json({ hotTopics: topicCounts }) && logger.info({ status: 200, data: topicCounts, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
     } catch (err) {
       console.error(err);
@@ -61,11 +62,27 @@ class HotTopicController{
 
   async getTopicThreads(req, res, next){
     const topic = req.params.topic;
-    const topicThreads = await Thread.find({ tags: topic}).lean();
+    const topicThreads = await Thread.find({ tags: { $regex: new RegExp(topic, 'i') } }).lean();
     if(!topicThreads){
       res.status(400).send("Không có bài viết nào cho topic này");
     }
-    res.status(200).json(topicThreads);
+    topicThreads.forEach(thread => {
+      if (thread.replys && thread.replys.length > 0) {
+        let content = thread.replys[0].content;
+        if (thread.replys[0].content.split(' ').length > 20) {
+          let threadContent = thread.replys[0].content;
+          content = threadContent.split(' ').slice(0, 20).join(' ') + '...';
+        }
+        thread.content = content;
+      }
+    });
+    const response = {
+      topicThreads: topicThreads.map(thread => {
+        const threadCopy = { ...thread, replys: undefined };
+        return threadCopy;
+      })
+    }
+    res.status(200).json(response);
   }
 }
 

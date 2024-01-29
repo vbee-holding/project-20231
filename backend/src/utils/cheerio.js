@@ -27,7 +27,7 @@ async function fetchData(url) {
         const existing_reply = await collection_reply.findOne({ replyId });
 
         const blockquote = $(item).find('.bbWrapper blockquote');
-        if (blockquote.length === 0 && !existing_reply && replyId) {
+        if (!existing_reply && replyId) {
           const createdAt = $(item).find('time.u-dt').attr('title');
           // console.log(createdAt);
           const createdTime = moment(createdAt, date_format).toDate();
