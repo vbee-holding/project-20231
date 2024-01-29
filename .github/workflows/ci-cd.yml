@@ -126,6 +126,13 @@ jobs:
           envkey_BASE_URL: ${{secrets.BASE_URL}}
           directory: frontend
 
+      - name: Create .env file for crawls
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_MONGODB_URL_DEV: ${{ secrets.MONGODB_URL_DEV }}
+          envkey_MONGODB_URL_PRODUCT: ${{ secrets.MONGODB_URL_DEV }}
+          directory: crawls
+
       - name: Set up Cloud SDK
         uses: "google-github-actions/setup-gcloud@v1"
         with:
@@ -174,11 +181,18 @@ jobs:
         run: docker build -t asia-southeast2-docker.pkg.dev/${{ vars.PROJECT_ID }}/voz-20231-images/frontend:latest . 
         working-directory: frontend
 
+      - name: Build Docker image for crawls
+        run: docker build -t asia-southeast2-docker.pkg.dev/${{ vars.PROJECT_ID }}/voz-20231-images/crawls:latest . 
+        working-directory: crawls
+
       - name: Push Docker image for backend to Google Artifact Registry
         run: docker push asia-southeast2-docker.pkg.dev/${{ vars.PROJECT_ID }}/voz-20231-images/backend:latest
 
       - name: Push Docker image for frontend to Google Artifact Registry
         run: docker push asia-southeast2-docker.pkg.dev/${{ vars.PROJECT_ID }}/voz-20231-images/frontend:latest
+
+      - name: Push Docker image for crawls to Google Artifact Registry
+        run: docker push asia-southeast2-docker.pkg.dev/${{ vars.PROJECT_ID }}/voz-20231-images/crawls:latest
 
       - name: deploy backend
         run:  gcloud run deploy cloudrun-backend-service --image asia-southeast2-docker.pkg.dev/${{vars.PROJECT_ID}}/voz-20231-images/backend:latest --region asia-southeast2 --allow-unauthenticated --service-account githubaction@${{vars.PROJECT_ID}}.iam.gserviceaccount.com --memory 512Mi --cpu-throttling
