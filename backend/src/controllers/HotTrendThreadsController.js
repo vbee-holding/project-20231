@@ -58,7 +58,13 @@ class HotTrendThreadsController{
         return res.status(400).send("Hôm nay chưa có bài viết nào!");
       }
       else{
-        res.status(200).json(hotThreads);
+        const threadResponse = {
+          hotThreads: hotThreads.map(thread => {
+            const threadCopy = { ...thread, replys: undefined };
+            return threadCopy;
+          })
+        }
+        res.status(200).json(threadResponse);
         // Tổng hợp nội dung của các thread
         const extractedContent = await Promise.all(
           hotThreads.map(async (thread) => {
