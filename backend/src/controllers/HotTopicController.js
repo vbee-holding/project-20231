@@ -1,5 +1,6 @@
 const Thread = require("../models/Thread");
 const logger = require("../utils/logger");
+const hotTrendThreadsController = require("./HotTrendThreadsController");
 
 class HotTopicController{
   async getHotTrendTopics(req, res, next){
@@ -31,9 +32,8 @@ class HotTopicController{
           999
         )
       );
-      const threads = await Thread.find({
-        updatedTime: { $gte: startOfToday, $lte: endOfToday}
-      }).lean();
+      const threads = hotTrendThreadsController.getHotTrendThreads();
+      return res.json(threads);
       const tagCounts = {};
 
       threads.forEach((thread) => {
