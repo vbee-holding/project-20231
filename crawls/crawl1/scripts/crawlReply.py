@@ -110,9 +110,9 @@ def scrape_data():
 
             if all_results:
                 collection_reply.insert_many(all_results)
-                print("Đã lưu dữ liệu vào MongoDB")
-            else:
-                print("Hiện tại không có dữ liệu mới nào được thêm vào")
+            #     print("Đã lưu dữ liệu vào MongoDB")
+            # else:
+            #     print("Hiện tại không có dữ liệu mới nào được thêm vào")
     except Exception as e:
         logging.error(
             f"Lỗi khi thực hiện crawl và lưu dữ liệu vào MongoDB: {e}")

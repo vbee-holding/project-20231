@@ -96,8 +96,8 @@ def scrape_data():
     if all_results:
         collection_similar_thread.insert_many(all_results)
         print("Đã thêm dữ liệu mới vào collection similarThread")
-    else:
-        print("Hiện tại không có dữ liệu mới nào được thêm vào")
+    # else:
+        # print("Hiện tại không có dữ liệu mới nào được thêm vào")
 
 
 scrape_data()
