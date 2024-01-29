@@ -34,7 +34,9 @@ const Post = (props) => {
         <div>
           <h1 className="font-semibold text-sm md:text-lg my-2">{props.title}</h1>
           <div>
-          <h1 className="font-normal text-sm my-2">{props.overView}</h1>
+          <h1 className="font-normal text-sm my-2"
+              dangerouslySetInnerHTML={{__html: props.overView}}
+          />
         </div>
         </div>
       </div>

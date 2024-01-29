@@ -1,9 +1,9 @@
-FROM python:3.8
+FROM python:3.11
 
-WORKDIR /usr/crawl
+WORKDIR /usr/crawls
 
 COPY . .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ["python", "your_script.py"]
+CMD ["python", "main.py"]

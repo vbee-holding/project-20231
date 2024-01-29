@@ -28,7 +28,7 @@ const Home = ({ params }) => {
               name={items.author}
               created={items.createdTime}
               title={items.title}
-              overView={items.replys.length > 0 ? items.replys[0].content : ""}         
+              overView={items.replys.length > 0 ? items.replys[0].contentElement : ""}         
               comment={items.totalReplies }
               view={items.views}
               id={items.threadId}
