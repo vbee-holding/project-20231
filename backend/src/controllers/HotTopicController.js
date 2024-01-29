@@ -66,6 +66,16 @@ class HotTopicController{
     if(!topicThreads){
       res.status(400).send("Không có bài viết nào cho topic này");
     }
+    topicThreads.forEach(thread => {
+      if (thread.replys && thread.replys.length > 0) {
+        let content = thread.replys[0].content;
+        if (thread.replys[0].content.split(' ').length > 20) {
+          let threadContent = thread.replys[0].content;
+          content = threadContent.split(' ').slice(0, 20).join(' ') + '...';
+        }
+        thread.content = content;
+      }
+    });
     const response = {
       topicThreads: topicThreads.map(thread => {
         const threadCopy = { ...thread, replys: undefined };
