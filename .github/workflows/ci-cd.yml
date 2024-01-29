@@ -6,9 +6,100 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  # build:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Code Checkout
+  #       uses: actions/checkout@master
+  #     - name: Create .env file for backend
+  #       uses: SpicyPizza/create-envfile@v2.0
+  #       with:
+  #         envkey_PORT: 3003
+  #         envkey_MONGODB_URL_DEV: ${{ secrets.MONGODB_URL_DEV }}
+  #         # temporary for testing
+  #         envkey_MONGODB_URL_PRODUCT: ${{ secrets.MONGODB_URL_DEV }}
+  #         envkey_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+  #         envkey_GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+  #         envkey_OPENAI_API_KEY_QUANG: ${{ secrets.OPENAI_API_KEY_QUANG }}
+  #         directory: backend
+          
+  #     - name: Create .env file for frontend
+  #       uses: SpicyPizza/create-envfile@v2.0
+  #       with:
+  #         envkey_PORT: 3000
+  #         envkey_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID_FRONT_END}}
+  #         envkey_BASE_URL: ${{secrets.BASE_URL}}
+  #         directory: frontend
+  
+  #     - name: Setup Node.js environment
+  #       uses: actions/setup-node@v4.0.1
+  #       with:
+  #         node-version: "20.x"
+
+  #     # - name: Install dependencies for backend
+  #     #   working-directory: backend
+  #     #   run: npm install
+
+  #     # - name: Install dependencies for frontend
+  #     #   working-directory: frontend
+  #     #   run: |- 
+  #     #     npm install && npm install next
+
+  #     - name: Login to Docker Hub
+  #       uses: docker/login-action@v3
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v3
+
+  #     - name: Build and push docker for backend
+  #       uses: docker/build-push-action@v5
+  #       with:
+  #         context: ./backend
+  #         file: ./backend/Dockerfile
+  #         push: true
+  #         tags: mjnhmnmm/backend:latest
+      
+  #     - name: Build and push docker for frontend
+  #       uses: docker/build-push-action@v5
+  #       with:
+  #         context: ./frontend
+  #         file: ./frontend/Dockerfile
+  #         push: true
+  #         tags: mjnhmnmm/frontend:latest
+
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 60
+  #   steps:
+  #     - name: executing remote ssh commands using password
+  #       timeout-minutes: 60
+  #       uses: appleboy/ssh-action@master
+  #       with:
+  #         host: ${{ secrets.HOST }} 
+  #         username: ${{ secrets.USERNAME }} 
+  #         password: ${{ secrets.PASSWORD }} 
+  #         port: ${{ secrets.PORT }} 
+  #         script: | 
+  #           docker pull mjnhmnmm/backend:latest
+  #           docker pull mjnhmnmm/frontend:latest
+
+  #           # Stop and remove any existing containers
+  #           docker stop backend || true
+  #           docker rm backend || true
+  #           docker stop frontend || true
+  #           docker rm frontend || true
+
+  #           # Run the Docker containers
+  #           docker run -d --name backend -p 3003:3003 mjnhmnmm/backend:latest
+  #           docker run -d --name frontend -p 3000:3000 mjnhmnmm/frontend:latest
+
+  build-deploy-cloud:
     runs-on: ubuntu-latest
-    steps:
+    steps:          
       - name: Code Checkout
         uses: actions/checkout@master
       - name: Create .env file for backend
@@ -18,9 +109,12 @@ jobs:
           envkey_MONGODB_URL_DEV: ${{ secrets.MONGODB_URL_DEV }}
           # temporary for testing
           envkey_MONGODB_URL_PRODUCT: ${{ secrets.MONGODB_URL_DEV }}
+          envkey_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          envkey_GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          envkey_CALLBACK_URL: http://localhost:3003/auth/google/callback
+          envkey_SECRET_KEY: SECRET_KEY
           envkey_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           envkey_GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          envkey_OPENAI_API_KEY_QUANG: ${{ secrets.OPENAI_API_KEY_QUANG }}
           directory: backend
           
       - name: Create .env file for frontend
@@ -30,6 +124,14 @@ jobs:
           envkey_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID_FRONT_END}}
           envkey_BASE_URL: ${{secrets.BASE_URL}}
           directory: frontend
+
+      - name: Set up Cloud SDK
+        uses: "google-github-actions/setup-gcloud@v1"
+        with:
+          project_id: ${{ vars.PROJECT_ID }}
+          service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          export_default_credentials: true
+
   
       - name: Setup Node.js environment
         uses: actions/setup-node@v4.0.1
@@ -42,57 +144,44 @@ jobs:
 
       # - name: Install dependencies for frontend
       #   working-directory: frontend
-      #   run: |- 
-      #     npm install && npm install next
+      #   run: npm install
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Docker auth          
+        run: |
+          gcloud auth configure-docker asia-southeast2-docker.pkg.dev --quiet
+
+      - name: create credentials
+        run: |-
+          echo > credentials.txt && echo '${{secrets.GOOGLE_APPLICATION_CREDENTIALS}}' >> credentials.txt
+
+      - name: cat file
+        run: cat credentials.txt
+      - name: gcloud auth login with credentials
+        run : |-
+          gcloud auth login --cred-file=credentials.txt && gcloud config set project "${{vars.PROJECT_ID}}" 
+
+
+      - name: set account github action for gcloud
+        run : gcloud config set account githubaction@${{vars.PROJECT_ID}}.iam.gserviceaccount.com 
+
+
+      - name: Build Docker image for backend
+        run: docker build -t asia-southeast2-docker.pkg.dev/${{ vars.PROJECT_ID }}/voz-20231-images/backend:latest . 
+        working-directory: backend
       
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Build Docker image for frontend
+        run: docker build -t asia-southeast2-docker.pkg.dev/${{ vars.PROJECT_ID }}/voz-20231-images/frontend:latest . 
+        working-directory: frontend
 
-      - name: Build and push docker for backend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./backend
-          file: ./backend/Dockerfile
-          push: true
-          tags: mjnhmnmm/backend:latest
-      
-      - name: Build and push docker for frontend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
-          push: true
-          tags: mjnhmnmm/frontend:latest
+      - name: Push Docker image for backend to Google Artifact Registry
+        run: docker push asia-southeast2-docker.pkg.dev/${{ vars.PROJECT_ID }}/voz-20231-images/backend:latest
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    steps:
-      - name: executing remote ssh commands using password
-        timeout-minutes: 60
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }} 
-          username: ${{ secrets.USERNAME }} 
-          password: ${{ secrets.PASSWORD }} 
-          port: ${{ secrets.PORT }} 
-          script: | 
-            docker pull mjnhmnmm/backend:latest
-            docker pull mjnhmnmm/frontend:latest
+      - name: Push Docker image for frontend to Google Artifact Registry
+        run: docker push asia-southeast2-docker.pkg.dev/${{ vars.PROJECT_ID }}/voz-20231-images/frontend:latest
 
-            # Stop and remove any existing containers
-            docker stop backend || true
-            docker rm backend || true
-            docker stop frontend || true
-            docker rm frontend || true
+      - name: deploy backend
+        run:  gcloud run deploy cloudrun-backend-service --image asia-southeast2-docker.pkg.dev/${{vars.PROJECT_ID}}/voz-20231-images/backend:latest --region asia-southeast2 --allow-unauthenticated --service-account githubaction@${{vars.PROJECT_ID}}.iam.gserviceaccount.com --memory 512Mi --cpu-throttling
 
-            # Run the Docker containers
-            docker run -d --name backend -p 3003:3003 mjnhmnmm/backend:latest
-            docker run -d --name frontend -p 3000:3000 mjnhmnmm/frontend:latest
+      - name: deploy frontend
+        run:  gcloud run deploy cloudrun-frontend-service --image asia-southeast2-docker.pkg.dev/${{vars.PROJECT_ID}}/voz-20231-images/frontend:latest --region asia-southeast2 --allow-unauthenticated --service-account githubaction@${{secrets.PROJECT_ID}}.iam.gserviceaccount.com --memory 2Gi --cpu-throttling
+
