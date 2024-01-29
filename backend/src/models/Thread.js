@@ -8,7 +8,7 @@ const threadSchema = new Schema({
   content: {type: String},
   summarizedContent: {type: String},
   summarizedRepliesContent: {type: String},
-  tags: { type: Array, default: [] },
+  tags: { type: [String] },
   latestRepliesLength: { type: Number }
 });
 

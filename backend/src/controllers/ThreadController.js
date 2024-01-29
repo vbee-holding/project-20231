@@ -9,6 +9,9 @@ const openai = new OpenAI({
   apiKey: OPENAI_API_KEY,
 });
 const logger = require("../utils/logger");
+const cheerio = require("../utils/cheerio")
+const axios = require('axios');
+const { MongoClient } = require('mongodb');
 class ThreadController{
   // [GET] /threads?page=<pageNumber>
   async showAll(req, res, next){
@@ -21,7 +24,7 @@ class ThreadController{
         return res.status(404).send('404 - No threads found!') && logger.warn({status: 404, message : "No threads found!", data: res, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers});
       }
       let threads = await Thread.find({})
-        .sort({ createdTime: -1 })
+        .sort({ updatedTime: -1 })
         .skip(page * threadsPerPage)
         .limit(threadsPerPage)
         .lean();
@@ -58,10 +61,65 @@ class ThreadController{
     try{
       let thread = await Thread.findOne({ threadId: req.params.threadId })
       .lean();
+      const threadId = thread.threadId;
+      const lastPage = thread.lastPage;
       if(!thread){
         return res.status(404).send('404 - No threads found!') && logger.warn({status: 404, message:"No threads found!", data: req.params,url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers })
       }
-      thread.content = thread.replys[0].content;
+      if(thread.replys && thread.replys.length > 0){
+        thread.content = thread.replys[0].content;
+        return res.status(200).json(thread)  && logger.info({status: 200, message:"OK", data: thread , url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers}); 
+      }
+      else{
+        const client = new MongoClient(process.env.MONGODB_URL_DEV, { useUnifiedTopology: true });
+        await client.connect();
+        const database = client.db('test');
+        const collection_reply = database.collection('replies');
+        const collection_thread = database.collection('threads');
+        const allResults = [];
+        for(let i = 1; i <= lastPage && i <= 10; i++){
+          const url = `https://voz.vn/t/${threadId}/page-${i}`;
+          const fetchedData = await cheerio.fetchData(url);
+          if (fetchedData) {
+            allResults.push(...fetchedData);
+          }
+        }
+        if(allResults.length > 0){
+          await collection_reply.insertMany(allResults);
+          console.log('Data saved to replies collection');
+        }
+        else{
+          console.log('No Data crawled');
+          res.status(400).send('Cannot crawl new data due to Internal Sever Error');
+          return;
+        }
+        const pipeline = [
+          {
+            $match: {
+              threadId: threadId
+            }
+          },
+          {
+            $lookup:{
+              from: 'replies',
+              localField: 'threadId',
+              foreignField: 'threadId',
+              as: 'replys'
+            }
+          },
+          {
+            $merge: {
+              into: 'threads',
+              whenMatched: 'merge'
+            }
+          }
+        ];
+        const result = await collection_thread.aggregate(pipeline).toArray();
+        console.log("Data merged");
+        thread = await Thread.findOne({threadId: threadId}).lean();
+        thread.content = thread.replys[0].content;
+        client.close();
+      }
       return res.status(200).json(thread)  && logger.info({status: 200, message:"OK", data: thread , url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers}); 
     }
     catch(error){
@@ -154,11 +212,11 @@ class ThreadController{
     }
     
     if (newerThan && olderThan) {
-      query = query.where('createdTime').gte(new Date(newerThan)).lte(new Date(olderThan));
+      query = query.where('updatedTime').gte(new Date(newerThan)).lte(new Date(olderThan));
     }
     // Sort by date
     if (order === 'date') {
-      query = query.sort({ createdTime: -1 });
+      query = query.sort({ updatedTime: -1 });
     }
 
     // Sort by relevance
@@ -201,7 +259,7 @@ class ThreadController{
     }
 
     const threads = await query
-      .sort({createdTime: -1})
+      .sort({updatedTime: -1})
       .skip(page * threadsPerPage)
       .limit(threadsPerPage)
       .lean();
