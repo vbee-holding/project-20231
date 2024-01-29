@@ -1,6 +1,5 @@
 const Thread = require("../models/Thread");
 const logger = require("../utils/logger");
-const hotTrendThreadsController = require("./HotTrendThreadsController");
 
 class HotTopicController{
   async getHotTrendTopics(req, res, next){
@@ -32,8 +31,9 @@ class HotTopicController{
           999
         )
       );
-      const threads = hotTrendThreadsController.getHotTrendThreads();
-      return res.json(threads);
+      const threads = await Thread.find({
+        updatedTime: { $gte: startOfToday, $lte: endOfToday}
+      }).lean();
       const tagCounts = {};
 
       threads.forEach((thread) => {
@@ -52,6 +52,7 @@ class HotTopicController{
       }
       sortedTags.sort((a, b) => b.threadCount - a.threadCount);
       const trendingTopics = sortedTags.slice(0, 6);
+      return res.status(200).json(trendingTopics);
       //return res.status(200).json({ hotTopics: topicCounts }) && logger.info({ status: 200, data: topicCounts, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
     } catch (err) {
       console.error(err);
@@ -61,11 +62,17 @@ class HotTopicController{
 
   async getTopicThreads(req, res, next){
     const topic = req.params.topic;
-    const topicThreads = await Thread.find({ tags: topic}).lean();
+    const topicThreads = await Thread.find({ tags: { $regex: new RegExp(topic, 'i') } }).lean();
     if(!topicThreads){
       res.status(400).send("Không có bài viết nào cho topic này");
     }
-    res.status(200).json(topicThreads);
+    const response = {
+      topicThreads: topicThreads.map(thread => {
+        const threadCopy = { ...thread, replys: undefined };
+        return threadCopy;
+      })
+    }
+    res.status(200).json(response);
   }
 }
 
