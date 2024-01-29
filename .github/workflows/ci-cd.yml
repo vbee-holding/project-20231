@@ -181,9 +181,9 @@ jobs:
         run: docker build -t asia-southeast2-docker.pkg.dev/${{ vars.PROJECT_ID }}/voz-20231-images/frontend:latest . 
         working-directory: frontend
 
-      # - name: Build Docker image for crawls
-      #   run: docker build -t asia-southeast2-docker.pkg.dev/${{ vars.PROJECT_ID }}/voz-20231-images/crawls:latest . 
-      #   working-directory: crawls
+      - name: Build Docker image for crawls
+        run: docker build -t asia-southeast2-docker.pkg.dev/${{ vars.PROJECT_ID }}/voz-20231-images/crawls:latest . 
+        working-directory: crawls/crawl1
 
       - name: Push Docker image for backend to Google Artifact Registry
         run: docker push asia-southeast2-docker.pkg.dev/${{ vars.PROJECT_ID }}/voz-20231-images/backend:latest
@@ -198,5 +198,7 @@ jobs:
         run:  gcloud run deploy cloudrun-backend-service --image asia-southeast2-docker.pkg.dev/${{vars.PROJECT_ID}}/voz-20231-images/backend:latest --region asia-southeast2 --allow-unauthenticated --service-account githubaction@${{vars.PROJECT_ID}}.iam.gserviceaccount.com --memory 512Mi --cpu-throttling
 
       - name: deploy frontend
-        run:  gcloud run deploy cloudrun-frontend-service --image asia-southeast2-docker.pkg.dev/${{vars.PROJECT_ID}}/voz-20231-images/frontend:latest --region asia-southeast2 --allow-unauthenticated --service-account githubaction@${{secrets.PROJECT_ID}}.iam.gserviceaccount.com --memory 2Gi --cpu-throttling
+        run:  gcloud run deploy cloudrun-frontend-service --image asia-southeast2-docker.pkg.dev/${{vars.PROJECT_ID}}/voz-20231-images/frontend:latest --region asia-southeast2 --allow-unauthenticated --service-account githubaction@${{secrets.PROJECT_ID}}.iam.gserviceaccount.com --memory 512Mi --cpu-throttling
 
+      - name: deploy crawls
+        run:  gcloud run deploy cloudrun-crawls-service --image asia-southeast2-docker.pkg.dev/${{vars.PROJECT_ID}}/voz-20231-images/crawls:latest --region asia-southeast2 --allow-unauthenticated --service-account githubaction@${{secrets.PROJECT_ID}}.iam.gserviceaccount.com --memory 512Mi --cpu-throttling

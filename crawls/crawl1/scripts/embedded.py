@@ -27,6 +27,10 @@ def join_collections():
             }
         },
         {
+            "limit":100
+        }
+        ,
+        {
             "$merge": {
                 "into": "threads",
                 "whenMatched": "merge"
@@ -35,7 +39,7 @@ def join_collections():
     ]
 
     try:
-        threads.aggregate(pipeline, maxTimeMS=120000)
+        threads.aggregate(pipeline, maxTimeMS=120000,allowDiskUse=True)
         print("Embedded thành công")
     except ExecutionTimeout as e:
         print("Lỗi timeout:", e)
