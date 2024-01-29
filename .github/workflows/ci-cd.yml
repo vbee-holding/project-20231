@@ -115,6 +115,7 @@ jobs:
           envkey_SECRET_KEY: SECRET_KEY
           envkey_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           envkey_GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          envkey_OPENAI_API_KEY_2: ${{ secrets.OPENAI_API_KEY_2 }}
           directory: backend
           
       - name: Create .env file for frontend
