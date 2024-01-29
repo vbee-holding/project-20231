@@ -11,6 +11,9 @@ const Post_ChiTiet = (props) => {
     router.back(); 
   };
 
+  function createMarkup() {
+    return {__html:'First &middot; Second'}
+  }
   return (
     <div>
       <div className="max-w-2xl p-3 mx-auto">
@@ -57,7 +60,9 @@ const Post_ChiTiet = (props) => {
           <h1 className="font-bold text-3xl my-2">{props.title}</h1>
         </div>
         <div>
-          <h1 className="font-normal text-sm my-2">{props.overView}</h1>
+          <h1 className="font-normal text-sm my-2"
+              dangerouslySetInnerHTML={{__html: props.overView}}
+          />
         </div>
         <div className="flex mt-2">
           <div className="flex items-center  bg-neutral-200 mr-4 py-1 px-2 rounded-3xl cursor-pointer">
