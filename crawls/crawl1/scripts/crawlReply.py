@@ -9,9 +9,8 @@ import logging
 load_dotenv()
 
 # Kết nối với mongodb
-client = MongoClient(os.getenv("MONGODB_URL_DEV"))
-# client = MongoClient(os.getenv("MONGODB_URL_PRODUCT"))
-# client = MongoClient("mongodb://localhost:27017/")
+# client = MongoClient(os.getenv("MONGODB_URL_DEV"))
+client = MongoClient(os.getenv("MONGODB_URL_PRODUCT"))
 database = client["test"]
 collection_thread = database["threads"]
 collection_reply = database["replies"]
@@ -43,13 +42,7 @@ def fetch_data(url):
                 existing_reply = collection_reply.find_one(
                     {"replyId": reply_id})
 
-                blockquote = None
-
-                if item.find('div', class_="bbWrapper").blockquote:
-                    blockquote = item.find(
-                        'div', class_="bbWrapper").blockquote
-
-                if blockquote is None and existing_reply is None and reply_id is not None:
+                if existing_reply is None and reply_id is not None:
                     # Lấy thời gian tạo
                     createdAt = item.find('time', class_='u-dt')['title']
                     createdTime = datetime.strptime(createdAt, date_format)
@@ -68,9 +61,9 @@ def fetch_data(url):
                             'src') if avatar_url_element.a.img else avatar_url_element.a.span.text.strip()
 
                     text_content_element = item.find('div', class_="bbWrapper")
-                    content_element = str(text_content_element)
                     for blockquote in text_content_element.find_all('blockquote'):
                         blockquote.extract()
+                    content_element = str(text_content_element)
                     for img in text_content_element.find_all('img'):
                         img.extract()
                     content = text_content_element.get_text(
