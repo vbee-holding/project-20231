@@ -18,7 +18,7 @@ router.post('/send-emails', (req, res) => {
       console.error('Error sending emails:', error);
     }
   });
-  res.send('Emails are scheduled to be sent at 7');
+  res.send('Emails are scheduled to be sent at 9');
 });
 
 module.exports = router;

@@ -46,7 +46,10 @@ class ThreadController{
 
       const response = {
         totalPages: Math.ceil(totalThreads / threadsPerPage),
-        threads
+        threads: threads.map(thread => {
+          const threadCopy = { ...thread, replys: undefined };
+          return threadCopy;
+        })
       }
       return res.status(200).json(response) && logger.info({status: 200, message : "No threads found!", data: response, url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers});
     }
