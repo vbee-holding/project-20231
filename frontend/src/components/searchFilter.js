@@ -62,7 +62,7 @@ const SearchFilter = () => {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Suspense fallback={<SearchBarFallback />}>
           <MobileDatePicker
-            label="Newer"
+            label="Sau"
             className="h-min w-28 outline-none border-none bg-white rounded-full"
             value={newer}
             onChange={(newValue) => setNewer(newValue)}
@@ -70,7 +70,7 @@ const SearchFilter = () => {
         </Suspense>
         <Suspense fallback={<SearchBarFallback />}>
           <MobileDatePicker
-            label="Older"
+            label="Trước"
             className="h-min w-28 outline-none border-none bg-white rounded-full"
             value={older}
             onChange={(newValue) => setOlder(newValue)}
