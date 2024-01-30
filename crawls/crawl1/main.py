@@ -3,7 +3,7 @@ import time
 import threading
 import sys
 from flask import Flask
-
+import os
 commands = [
     ["python", "scripts/crawlThread.py"],
     ["python", "scripts/crawlReply.py"],
@@ -27,13 +27,14 @@ def crawl():
         for command in commands:
             global i
             i += 1
-            print('\nloop: ' ,i,file=sys.stdout)    
-            sub_p.append(subprocess.Popen(command,stdout=None,shell=True))
+            print('\n service run: ' ,i,file=sys.stdout)    
+            # sub_p.append(subprocess.Popen(command,stdout=None,shell=True))
+            subprocess.run(command)
         time.sleep(120)
-        for s in sub_p:
-            s.terminate()
-            print('\nprocess killed')
-        sub_p.clear()
+        # for s in sub_p:
+        #     s.terminate()
+        #     print('\nprocess killed')
+        # sub_p.clear()
             
 thread_crawl =None
 @app.route('/start')
@@ -72,7 +73,7 @@ def stop():
         return 'Crawl service stopped'
     return 'Crawl service stopped yet'
 
+__start__()
 if(__name__ == '__main__'):
-    __start__()
-    app.run(debug=True)
+    app.run(debug=True,host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
     
