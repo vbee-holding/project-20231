@@ -59,7 +59,7 @@ const SearchFilter = () => {
   }
 
   return (
-    <div className="container max-w-7xl h-full mx-auto flex items-center justify-start gap-2.5 px-4 py-2">
+    <div className="container max-w-7xl h-full mx-auto flex items-center justify-start gap-1 px-4 py-2">
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Suspense fallback={<SearchBarFallback />}>
           <DateField
@@ -81,7 +81,7 @@ const SearchFilter = () => {
         </Suspense>
       </LocalizationProvider>
       <Menu as="div" className="relative inline-block mr-2 pl-8">
-        <Menu.Button className="bg-purple-600 hover:bg-purple-950 text-white font-bold py-1 px-2 rounded-full text-xs w-24">
+        <Menu.Button className="bg-purple-600 hover:bg-purple-950 text-white font-bold py-1 px-2 rounded-full text-xs w-28">
           <Suspense fallback={<SearchBarFallback />}>
             <div className="cursor-pointer">
               {order == "date" ? "Ngày" : "Liên quan"}
