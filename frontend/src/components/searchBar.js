@@ -58,16 +58,6 @@ const Listbox = styled("ul")(() => ({
   maxHeight: 200,
   borderRadius: "0 0 10px 10px",
   border: "1px solid rgba(0,0,0,.25)",
-  "& li": { textAlign: "left", paddingLeft: "10px" },
-  [`& li.${autocompleteClasses.focused}`]: {
-    backgroundColor: "#4a8df6",
-    color: "white",
-    cursor: "pointer",
-  },
-  "& li:active": {
-    backgroundColor: "#2977f5",
-    color: "white",
-  },
 }));
 
 const SearchBar = ({
@@ -126,40 +116,25 @@ const SearchBar = ({
         key={"SearchBarComponent-root"}
         className={`SearchBarComponent-root ${className ? className : null}`}
       >
-        {!disabled ? (
-          <StyledInputBase
-            key={"StyledInputBase"}
-            className="bg-white focus:bg-white hover:bg-white"
-            inputProps={{
-              ...getInputProps(),
-              onChange: handleChange,
-              value: internalValue,
-            }}
-            placeholder={placeholder || "Search"}
-            onKeyUp={handleKeyUp}
-            disabled={disabled}
-          />
-        ) : (
-          <StyledSubInputBase
-            key={"StyledSubInputBase"}
-            className="hidden"
-            inputProps={{
-              ...getInputProps(),
-              onChange: handleChange,
-              value: internalValue,
-            }}
-            onKeyUp={handleKeyUp}
-            disabled={disabled}
-          />
-        )}
-
-        {internalValue && !disabled ? (
+        <StyledInputBase
+          key={"StyledInputBase"}
+          className="bg-white focus:bg-white hover:bg-white"
+          inputProps={{
+            ...getInputProps(),
+            onChange: handleChange,
+            value: internalValue,
+          }}
+          placeholder={placeholder || "Search"}
+          onKeyUp={handleKeyUp}
+          disabled={disabled}
+        />
+        {internalValue ? (
           <CloseIconWrapper key={"CloseIconWrapper"} onClick={handleCancel}>
             <CloseIcon />
           </CloseIconWrapper>
         ) : null}
 
-        {!disabled && groupedOptions.length > 0 && internalValue.length ? (
+        {groupedOptions.length > 0 && internalValue.length ? (
           <Listbox {...getListboxProps()} key={"ListboxOptions"}>
             {groupedOptions.map((option, index) => (
               <Suggestion

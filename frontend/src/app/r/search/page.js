@@ -1,13 +1,14 @@
 "use client";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Post from "@/components/post";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "@/utils/axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Loader from "@/components/loader";
 import MenuBar from "@/components/menuBar";
 import NotFound from "@/components/notFound";
 import SearchFilter from "@/components/searchFilter";
+import SearchTitile from "@/components/searchTitle";
 
 const Search = ({ params }) => {
   const pathname = usePathname();
@@ -18,8 +19,12 @@ const Search = ({ params }) => {
   const searchParams = useSearchParams();
   const searchContent = searchParams.get("text");
   const searchOrder = searchParams.get("order");
+  const router = useRouter();
 
   useEffect(() => {
+    setItems([]);
+    setOnQuery(true);
+    setIndex(1);
     axios
       .get("/threads/search", {
         params: {
@@ -52,40 +57,44 @@ const Search = ({ params }) => {
   };
 
   function SearchBarFallback() {
-    return <></>
+    return <></>;
   }
 
   return (
     <div>
       <MenuBar />
-      {items.length > 0 ? (
-        <div className="flex flex-col space-y-2 pt-2">
-          <SearchFilter />
-          <InfiniteScroll
-            dataLength={items.length}
-            next={fetchMoreData}
-            hasMore={hasMore}
-            loader={<Loader />}
-          >
-            {items.map((item, index) => (
-              <Post
-                key={index}
-                linkImg={item.avatarUrl}
-                name={item.author}
-                created={item.createdTime}
-                title={item.title}
-                overView={item.content}
-                comment={item.totalReplies}
-                view={item.views}
-                threadId={item.threadId}
-              />
-            ))}
-          </InfiniteScroll>
-        </div>
-      ) : !onQuery ? (
-        <NotFound />
+      {items != undefined ? (
+        items.length > 0 ? (
+          <div className="flex flex-col space-y-2 pt-2">
+            <SearchTitile/>
+            <InfiniteScroll
+              dataLength={items.length}
+              next={fetchMoreData}
+              hasMore={hasMore}
+              loader={<Loader />}
+            >
+              {items.map((item, index) => (
+                <Post
+                  key={index}
+                  linkImg={item.avatarUrl}
+                  name={item.author}
+                  created={item.createdTime}
+                  title={item.title}
+                  overView={item.content}
+                  comment={item.totalReplies}
+                  view={item.views}
+                  threadId={item.threadId}
+                />
+              ))}
+            </InfiniteScroll>
+          </div>
+        ) : !onQuery ? (
+          <NotFound />
+        ) : (
+          <Loader />
+        )
       ) : (
-        <Loader />
+        <SearchTitile/>
       )}
     </div>
   );

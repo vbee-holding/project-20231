@@ -1,6 +1,7 @@
 import {
   ChatBubbleOutlineOutlined,
   ExpandMore,
+  FilterAltOutlined,
   NavigateNext,
   Search,
   Settings,
@@ -127,4 +128,5 @@ export const Icons = {
       </g>
     </svg>
   ),
+  filter: FilterAltOutlined,
 };
