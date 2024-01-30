@@ -25,9 +25,6 @@ def join_collections():
                 "localField": "threadId",
                 "as": "replys"
             }
-        },
-        {
-            "limit":100
         }
         ,
         {
