@@ -215,7 +215,10 @@ class ThreadController{
     }
     
     if (newerThan && olderThan) {
-      query = query.where('createdTime').gte(new Date(newerThan)).lte(new Date(olderThan));
+      const newerThanDate = new Date(newerThan);
+      const olderThanDate = new Date(olderThan);
+      olderThanDate.setHours(23, 59, 59, 999);
+      query = query.where('createdTime').gte(newerThanDate).lte(olderThanDate);
     }
     // Sort by date
     if (order === 'date') {

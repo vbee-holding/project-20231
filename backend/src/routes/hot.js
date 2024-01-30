@@ -10,7 +10,7 @@ router.get('/topics/:topic', hotTrendTopicsController.getTopicThreads);
 router.get('/topics', hotTrendTopicsController.getHotTrendTopics);
 
 // Gửi email vào 22h hằng ngày
-cron.schedule('0 22 * * *', async () => {
+cron.schedule('0  22 * * *', async () => {
   try {
     await emailController.sendThreads();
     await emailController.sendTopics();
@@ -18,7 +18,12 @@ cron.schedule('0 22 * * *', async () => {
     console.error('Error sending emails:', error);
     res.status(500).send('Internal Server Error');
   }
-});
+},
+  {
+    scheduled: true,
+    timezone: "Asia/Saigon"
+  }
+);
 
 router.get('/send-emails', async (req, res) => {
     try{
