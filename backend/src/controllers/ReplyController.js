@@ -96,7 +96,7 @@ class ReplyController{
         && logger.warn({ status: 404, message: "No replies found!", url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
       }
       let replies = await Reply.find({threadId: req.params.threadId})
-      .sort({ createdTime: -1 })
+      .sort({ createdTime: 1 })
       .skip(page * repliesPerPage)
       .limit(repliesPerPage)
       .lean();
