@@ -19,7 +19,8 @@ const Search = ({ params }) => {
   const searchParams = useSearchParams();
   const searchContent = searchParams.get("text");
   const searchOrder = searchParams.get("order");
-  const router = useRouter();
+  const older = searchParams.get("older");
+  const newer = searchParams.get("newer");
 
   useEffect(() => {
     setItems([]);
@@ -30,6 +31,8 @@ const Search = ({ params }) => {
         params: {
           text: searchContent,
           order: searchOrder,
+          older: older,
+          newer: newer,
         },
       })
       .then((res) => setItems(res.data.threads))
@@ -43,6 +46,8 @@ const Search = ({ params }) => {
         params: {
           text: searchContent,
           order: searchOrder,
+          older: older,
+          newer: newer,
           page: index,
         },
       })
@@ -63,10 +68,10 @@ const Search = ({ params }) => {
   return (
     <div>
       <MenuBar />
+      <SearchTitile />
       {items != undefined ? (
         items.length > 0 ? (
           <div className="flex flex-col space-y-2 pt-2">
-            <SearchTitile/>
             <InfiniteScroll
               dataLength={items.length}
               next={fetchMoreData}
@@ -94,7 +99,7 @@ const Search = ({ params }) => {
           <Loader />
         )
       ) : (
-        <SearchTitile/>
+         <NotFound/>
       )}
     </div>
   );
