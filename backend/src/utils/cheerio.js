@@ -30,7 +30,7 @@ async function fetchData(url) {
         if (!existing_reply && replyId) {
           const createdAt = $(item).find('time.u-dt').attr('title');
           // console.log(createdAt);
-          const createdTime = moment(createdAt, date_format).toDate();
+          const createdTime = moment.utc(createdAt, date_format).subtract(7, 'hours').toDate();
           // console.log(createdTime);
           const author_title = $(item).find('h5.message-userTitle').text().trim();
           // console.log(author_title);
