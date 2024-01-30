@@ -23,10 +23,6 @@ const Searchorder = () => {
     );
   };
 
-  function capitalize(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
-
   function SearchBarFallback() {
     return <></>;
   }
@@ -43,7 +39,7 @@ const Searchorder = () => {
           <Menu.Button className="bg-purple-600 hover:bg-purple-950 text-white font-bold py-1 px-2 rounded-full text-xs w-24">
             <Suspense fallback={<SearchBarFallback />}>
               <div className="cursor-pointer">
-                {capitalize(order)}
+                {order == "date" ? "Ngày": "Liên quan"}
                 <Icons.expandMore className="h-4 w-4" />
               </div>
             </Suspense>
@@ -68,7 +64,7 @@ const Searchorder = () => {
                         "block px-4 pt-1 pb-4 text-xs font-bold"
                       )}
                     >
-                      Sort by
+                      Xếp theo
                     </p>
                   )}
                 </Menu.Item>
@@ -88,7 +84,7 @@ const Searchorder = () => {
                         {order == "date" ? (
                           <Icons.right className="h-4 w-4" />
                         ) : null}
-                        Date
+                        Ngày
                       </button>
                     </div>
                   )}
@@ -109,7 +105,7 @@ const Searchorder = () => {
                         {order == "relevance" ? (
                           <Icons.right className="h-4 w-4" />
                         ) : null}
-                        Relevance
+                        Liên quan
                       </button>
                     </div>
                   )}

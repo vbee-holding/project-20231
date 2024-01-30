@@ -58,16 +58,6 @@ const Listbox = styled("ul")(() => ({
   maxHeight: 200,
   borderRadius: "0 0 10px 10px",
   border: "1px solid rgba(0,0,0,.25)",
-  "& li": { textAlign: "left", paddingLeft: "10px" },
-  [`& li.${autocompleteClasses.focused}`]: {
-    backgroundColor: "#4a8df6",
-    color: "white",
-    cursor: "pointer",
-  },
-  "& li:active": {
-    backgroundColor: "#2977f5",
-    color: "white",
-  },
 }));
 
 const SearchBar = ({

@@ -4,14 +4,20 @@ import { Icons } from "./icons";
 import ButtonGroupMenu from "./buttonGroupMenu";
 import SearchBar from "./searchBar";
 import axios from "@/utils/axios";
-import { useRouter} from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { debounce } from "@mui/material";
 
 const MenuBar = () => {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [search, setSearch] = React.useState(false);
   const [searchContent, setSearchContent] = React.useState("");
   const [options, setOptions] = React.useState([]);
   const router = useRouter();
+
+  React.useEffect(() => {
+    setSearchContent("");
+  }, [pathname, searchParams]);
 
   const handleSearch = () => {
     setSearch(!search);
@@ -22,17 +28,20 @@ const MenuBar = () => {
     setSearch(!search);
   };
 
-  const handleInput = async (e) => {
-    setSearchContent(e);
-    axios
-      .get("threads/search", {
-        params: {
-          text: e,
-        },
-      })
-      .then((response) => setOptions(response.data.threads))
-      .catch(() => setOptions([]));  
-  };
+  function handleOptions(e) {
+    debounce(
+      async () =>
+        axios
+          .get("threads/search", {
+            params: {
+              text: e,
+            },
+          })
+          .then((response) => setOptions(response.data.threads))
+          .catch(() => setOptions([])),
+      800
+    );
+  }
 
   const handleCancel = () => {
     setSearchContent("");
@@ -58,7 +67,10 @@ const MenuBar = () => {
           <SearchBar
             value={searchContent}
             className="w-full py-0 outline-none focus:border-none focus:outline-none"
-            onChange={handleInput}
+            onChange={(e) => {
+              setSearchContent(e);
+              handleOptions(e);
+            }}
             onClick={handleSearch}
             onSearch={confirmSearch}
             onCancelResearch={handleCancel}
