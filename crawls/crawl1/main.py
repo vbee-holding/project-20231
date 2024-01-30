@@ -65,11 +65,6 @@ def stop():
     global crawl_running
     if(crawl_running):
         crawl_running = False
-        global sub_p
-        for s in sub_p:
-            s.terminate()
-            print('\nprocess killed')
-        sub_p.clear()
         return 'Crawl service stopped'
     return 'Crawl service stopped yet'
 
