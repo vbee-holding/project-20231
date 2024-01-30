@@ -105,8 +105,8 @@ class ReplyController{
         && logger.warn({ status: 404, message: "No replies found!", url: req.originalUrl, method: req.method, sessionID: req.sessionID, headers: req.headers });
       }
       // return res.status(200).json(replies);
-      if(page == Math.ceil(totalReplies / repliesPerPage) - 1){
-        replies.pop();
+      if(page == 0){
+        replies.shift();
       }
       const response = {
         totalPages: Math.ceil(totalReplies / repliesPerPage),
