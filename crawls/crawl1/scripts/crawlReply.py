@@ -28,9 +28,6 @@ def fetch_data(url):
             soup = BeautifulSoup(response.content, 'html.parser')
             items = soup.find_all('div', class_="message-inner")
 
-            # Format lại dữ liệu vừa crawl về theo dạng datetime để lưu vào database
-            date_format = "%b %d, %Y at %I:%M %p"
-
             # Xử lý dữ liệu
             result = []
             for item in items:
@@ -44,8 +41,9 @@ def fetch_data(url):
 
                 if existing_reply is None and reply_id is not None:
                     # Lấy thời gian tạo
-                    createdAt = item.find('time', class_='u-dt')['title']
-                    createdTime = datetime.strptime(createdAt, date_format)
+                    createdAt = item.find('time', class_='u-dt')['datetime']
+                    createdTime = datetime.strptime(
+                        createdAt, "%Y-%m-%dT%H:%M:%S%z")
 
                     author_title = item.find(
                         'h5', class_='message-userTitle').text.strip()
@@ -110,9 +108,9 @@ def scrape_data():
 
             if all_results:
                 collection_reply.insert_many(all_results)
-                print("Đã lưu dữ liệu vào MongoDB")
-            else:
-                print("Hiện tại không có dữ liệu mới nào được thêm vào")
+            #     print("Đã lưu dữ liệu vào MongoDB")
+            # else:
+            #     print("Hiện tại không có dữ liệu mới nào được thêm vào")
     except Exception as e:
         logging.error(
             f"Lỗi khi thực hiện crawl và lưu dữ liệu vào MongoDB: {e}")

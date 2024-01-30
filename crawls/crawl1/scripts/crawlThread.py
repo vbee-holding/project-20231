@@ -35,15 +35,14 @@ def crawl_thread():  # Hàm crawl data thread
             soup = BeautifulSoup(response.content, "html.parser")
             post_contents = soup.find_all("div", class_="structItem")
 
-            # Format lại dữ liệu vừa crawl về theo dạng datetime để lưu vào database
-            date_format = "%b %d, %Y at %I:%M %p"
             result = []
 
             # Lặp qua post_contents để lấy những nội dung cần thiết
             for post_content in post_contents:
                 updatedAt = post_content.find(
-                    "time", class_="structItem-latestDate u-dt")["title"]
-                updatedTime = datetime.strptime(updatedAt, date_format)
+                    "time", class_="structItem-latestDate u-dt")['datetime']
+                updatedTime = datetime.strptime(
+                    updatedAt, "%Y-%m-%dT%H:%M:%S%z")
 
                 title = post_content.find(
                     "div", class_="structItem-title").a.text.strip()
@@ -70,7 +69,7 @@ def crawl_thread():  # Hàm crawl data thread
                 # Kiểm tra tiêu đề đã có trong collection thread chưa
                 if existing_thread:
                     # Nếu title đã tồn tại và updatedTime mới hơn latest_time, cập nhật lại updatedTime, updatedAt
-                    if updatedTime > latest_time:
+                    if latest_time is not None and updatedTime > latest_time:
                         collection.update_one(
                             {"title": title}, {"$set": {"updatedTime": updatedTime}})
                         collection.update_one(
@@ -99,8 +98,9 @@ def crawl_thread():  # Hàm crawl data thread
                     )
 
                     createdAt = post_content.find(
-                        "time", class_="u-dt")["title"]
-                    createdTime = datetime.strptime(createdAt, date_format)
+                        "time", class_="u-dt")['datetime']
+                    createdTime = datetime.strptime(
+                        createdAt, "%Y-%m-%dT%H:%M:%S%z")
 
                     author = (
                         post_content.find(

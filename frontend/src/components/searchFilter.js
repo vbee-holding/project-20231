@@ -9,7 +9,11 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const Searchorder = () => {
+function SearchBarFallback() {
+  return <></>;
+}
+
+const SearchFilter = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const presentOrder = searchParams.get("order");
@@ -19,31 +23,17 @@ const Searchorder = () => {
   const handleClick = (e) => {
     setOrder(e.target.value);
     router.push(
-      "/r/search/?text=" + searchParams.get("text") + "&order=" + e.target.value
+      "/r/search/?text=" + searchContent + "&order=" + e.target.value
     );
   };
 
-  function capitalize(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
-
-  function SearchBarFallback() {
-    return <></>;
-  }
-
   return (
-    <div className="py-2">
-      <div className="container max-w-7xl h-full mx-auto flex items-center justify-between gap-2 px-4">
-        <Suspense fallback={<SearchBarFallback />}>
-          <h1 className="text-2xl font-semibold tracking-tight truncate w-[100]">
-            Results for " {searchContent} "
-          </h1>
-        </Suspense>
+      <div className="container max-w-7xl h-full mx-auto flex items-center justify-between gap-2 px-4 py-2">
         <Menu as="div" className="relative inline-block mr-2 ">
           <Menu.Button className="bg-purple-600 hover:bg-purple-950 text-white font-bold py-1 px-2 rounded-full text-xs w-24">
-            <Suspense fallback={<SearchBarFallback />}>
+            <Suspense fallback={<SearchBarFallback />}> 
               <div className="cursor-pointer">
-                {capitalize(order)}
+                {order == "date" ? "Ngày": "Liên quan"}
                 <Icons.expandMore className="h-4 w-4" />
               </div>
             </Suspense>
@@ -68,7 +58,7 @@ const Searchorder = () => {
                         "block px-4 pt-1 pb-4 text-xs font-bold"
                       )}
                     >
-                      Sort by
+                      Xếp theo
                     </p>
                   )}
                 </Menu.Item>
@@ -79,7 +69,7 @@ const Searchorder = () => {
                         active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                         "block pt-1 pb-4 text-xs"
                       )}
-                      onClick={handleClick}
+                      onClick={order == "date" ? null :handleClick}
                     >
                       <button
                         value="date"
@@ -88,7 +78,7 @@ const Searchorder = () => {
                         {order == "date" ? (
                           <Icons.right className="h-4 w-4" />
                         ) : null}
-                        Date
+                        Ngày
                       </button>
                     </div>
                   )}
@@ -100,7 +90,7 @@ const Searchorder = () => {
                         active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                         "block pt-1 pb-4 text-xs"
                       )}
-                      onClick={handleClick}
+                      onClick={order == "relevance" ? null :handleClick}
                     >
                       <button
                         value="relevance"
@@ -109,7 +99,7 @@ const Searchorder = () => {
                         {order == "relevance" ? (
                           <Icons.right className="h-4 w-4" />
                         ) : null}
-                        Relevance
+                        Liên quan
                       </button>
                     </div>
                   )}
@@ -119,7 +109,6 @@ const Searchorder = () => {
           </Transition>
         </Menu>
       </div>
-    </div>
   );
 };
-export default Searchorder;
+export default SearchFilter;

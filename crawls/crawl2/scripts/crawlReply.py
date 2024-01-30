@@ -46,8 +46,9 @@ def fetch_data(url):
                 # if existing_reply is None and reply_id is not None:
                 if existing_reply is None and reply_id is not None:
                     # Lấy thời gian tạo
-                    createdAt = item.find('time', class_='u-dt')['title']
-                    createdTime = datetime.strptime(createdAt, date_format)
+                    createdAt = item.find('time', class_='u-dt')['datetime']
+                    createdTime = datetime.strptime(
+                        createdAt, "%Y-%m-%dT%H:%M:%S%z")
 
                     author_title = item.find(
                         'h5', class_='message-userTitle').text.strip()
@@ -90,7 +91,7 @@ def fetch_data(url):
 def scrape_data():
     try:
         data = collection_thread.find(
-            {"check": 10}, {"threadId": 1, "lastPage": 1})
+            {"check": 2}, {"threadId": 1, "lastPage": 1})
 
         for child in data:
             all_results = []
