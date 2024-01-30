@@ -207,7 +207,7 @@ class ThreadController{
     const page = req.query.page || 0;
     const threadsPerPage = 10;
 
-    let query = Thread.find({ title: { $in: regexKeyWords } });
+    let query = Thread.find({ title: { $in: regexKeyWords } }).limit(500);
     let totalThreads = await Thread.countDocuments({ title: { $in: regexKeyWords } });
 
     if(page > Math.ceil(totalThreads / threadsPerPage)){
