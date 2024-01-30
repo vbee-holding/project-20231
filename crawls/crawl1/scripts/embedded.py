@@ -7,8 +7,8 @@ load_dotenv()
 
 
 def join_collections():
-    # client = MongoClient(os.getenv("MONGODB_URL_PRODUCT"))
-    client = MongoClient(os.getenv("MONGODB_URL_DEV"))
+    client = MongoClient(os.getenv("MONGODB_URL_PRODUCT"))
+    # client = MongoClient(os.getenv("MONGODB_URL_DEV"))
     database = client["test"]
 
     threads = database["threads"]
@@ -16,13 +16,17 @@ def join_collections():
 
     pipeline = [
         {
+            "$match": {"check": 1},
+        },
+        {
             "$lookup": {
                 "from": "replies",
-                "localField": "threadId",
                 "foreignField": "threadId",
+                "localField": "threadId",
                 "as": "replys"
             }
-        },
+        }
+        ,
         {
             "$merge": {
                 "into": "threads",
@@ -32,7 +36,7 @@ def join_collections():
     ]
 
     try:
-        threads.aggregate(pipeline, maxTimeMS=120000)
+        threads.aggregate(pipeline, maxTimeMS=120000,allowDiskUse=True)
         print("Embedded thành công")
     except ExecutionTimeout as e:
         print("Lỗi timeout:", e)

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Icons } from "./icons";
-import axios from '../utils/axios'
+import axios from "../utils/axios";
 
 const ModalNotify = ({ setShow, userSession }) => {
   const [noti, setNoti] = useState(userSession.isNotifi);
@@ -8,21 +8,19 @@ const ModalNotify = ({ setShow, userSession }) => {
     setNoti(event.target.value);
   };
   const handleSubmit = () => {
-    axios.put(`user/notify/${userSession.googleId}`,{
-      isNotifi: noti,
-    })
-    .then(
-      ()=>{
-        userSession.isNotifi=noti;
+    axios
+      .put(`user/notify/${userSession.googleId}`, {
+        isNotifi: noti,
+      })
+      .then(() => {
+        userSession.isNotifi = noti;
 
-        localStorage.setItem(
-          "userSession",
-          JSON.stringify(userSession)
-        );
-      }
-    ).catch((error) => {
-      console.log(error);
-    });
+        localStorage.setItem("userSession", JSON.stringify(userSession));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    setShow(false);
   };
   return (
     <div
@@ -143,14 +141,14 @@ const ModalNotify = ({ setShow, userSession }) => {
               <button
                 onClick={() => handleSubmit()}
                 type="button"
-                className="inline-flex w-full justify-center rounded-md bg-green-400 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto"
+                className="inline-flex w-full justify-center rounded-md bg-green-400 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 active:bg-green-800 sm:ml-3 sm:w-auto"
               >
                 Xác nhận
               </button>
               <button
                 onClick={() => setShow(false)}
                 type="button"
-                className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 active:bg-gray-200 sm:mt-0 sm:w-auto"
               >
                 Đóng
               </button>

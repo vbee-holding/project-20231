@@ -78,7 +78,7 @@ export function AvatarUser({ image, name, email, setUserSession, userSession }) 
                     onClick={()=>{setShowSetting(true)}}
                     className={classNames(
                       active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                      "block w-full px-4 py-2 text-left text-sm"
+                      "block w-full px-4 py-2 text-left text-sm active:bg-gray-200"
                     )}
                   >
                     Cài đặt thông báo
@@ -91,7 +91,7 @@ export function AvatarUser({ image, name, email, setUserSession, userSession }) 
                     onClick={handleClick}
                     className={classNames(
                       active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                      "block w-full px-4 py-2 text-left text-sm"
+                      "block w-full px-4 py-2 text-left text-sm active:bg-gray-200"
                     )}
                   >
                     Đăng xuất

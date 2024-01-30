@@ -7,6 +7,7 @@ module.exports = {
   CALLBACK_URL: process.env.DEPLOYED_CALLBACK_URL || process.env.CALLBACK_URL,
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+  OPENAI_API_KEY_2: process.env.OPENAI_API_KEY_2,
   SECRET_KEY: process.env.SECRET_KEY,
   BASE_URL: process.env.BASE_URL || 'http://localhost',
 };

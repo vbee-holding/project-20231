@@ -3,6 +3,28 @@ import Image from "next/image";
 import TimeAgo from "@/components/timeago";
 
 const Post = (props) => {
+
+    //Thêm "https://voz.vn" vào đường dẫn hình ảnh
+    const addVozProxy = (htmlString) => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlString, 'text/html');
+  
+      // Lấy img từ html
+      const imgElements = doc.querySelectorAll('img');
+  
+      // Duyệt và thêm "https://voz.vn" 
+      imgElements.forEach((imgElement) => {
+        const currentSrc = imgElement.getAttribute('src');
+        if (currentSrc && currentSrc.includes('/proxy.php?')) {
+          const newSrc = `https://voz.vn${currentSrc}`;
+          imgElement.setAttribute('src', newSrc);
+        }
+      });
+  
+      const updatedHtmlString = new XMLSerializer().serializeToString(doc);
+      return updatedHtmlString;
+    };
+    const updatedHtml = addVozProxy(props.overView);
   return (
     <div>
       <div className="max-w-2xl p-4 mx-auto">
@@ -34,7 +56,9 @@ const Post = (props) => {
         <div>
           <h1 className="font-semibold text-sm md:text-lg my-2">{props.title}</h1>
           <div>
-          <h1 className="font-normal text-sm my-2">{props.overView}</h1>
+          <h1 className="font-normal text-sm my-2"
+              dangerouslySetInnerHTML={{__html: updatedHtml}}
+          />
         </div>
         </div>
       </div>
