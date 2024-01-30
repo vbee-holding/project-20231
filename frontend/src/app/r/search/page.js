@@ -8,6 +8,7 @@ import Loader from "@/components/loader";
 import MenuBar from "@/components/menuBar";
 import NotFound from "@/components/notFound";
 import SearchFilter from "@/components/searchFilter";
+import SearchTitile from "@/components/searchTitle";
 
 const Search = ({ params }) => {
   const pathname = usePathname();
@@ -65,7 +66,7 @@ const Search = ({ params }) => {
       {items != undefined ? (
         items.length > 0 ? (
           <div className="flex flex-col space-y-2 pt-2">
-            <SearchFilter />
+            <SearchTitile/>
             <InfiniteScroll
               dataLength={items.length}
               next={fetchMoreData}
@@ -93,7 +94,7 @@ const Search = ({ params }) => {
           <Loader />
         )
       ) : (
-        <SearchFilter />
+        <SearchTitile/>
       )}
     </div>
   );

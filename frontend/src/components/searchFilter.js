@@ -9,7 +9,11 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const Searchorder = () => {
+function SearchBarFallback() {
+  return <></>;
+}
+
+const SearchFilter = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const presentOrder = searchParams.get("order");
@@ -23,18 +27,8 @@ const Searchorder = () => {
     );
   };
 
-  function SearchBarFallback() {
-    return <></>;
-  }
-
   return (
-    <div className="py-2">
-      <div className="container max-w-7xl h-full mx-auto flex items-center justify-between gap-2 px-4">
-        <Suspense fallback={<SearchBarFallback />}>
-          <h1 className="text-2xl font-semibold tracking-tight truncate w-[100]">
-            Results for " {searchContent} "
-          </h1>
-        </Suspense>
+      <div className="container max-w-7xl h-full mx-auto flex items-center justify-between gap-2 px-4 py-2">
         <Menu as="div" className="relative inline-block mr-2 ">
           <Menu.Button className="bg-purple-600 hover:bg-purple-950 text-white font-bold py-1 px-2 rounded-full text-xs w-24">
             <Suspense fallback={<SearchBarFallback />}> 
@@ -115,7 +109,6 @@ const Searchorder = () => {
           </Transition>
         </Menu>
       </div>
-    </div>
   );
 };
-export default Searchorder;
+export default SearchFilter;

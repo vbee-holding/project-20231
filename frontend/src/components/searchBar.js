@@ -116,40 +116,25 @@ const SearchBar = ({
         key={"SearchBarComponent-root"}
         className={`SearchBarComponent-root ${className ? className : null}`}
       >
-        {!disabled ? (
-          <StyledInputBase
-            key={"StyledInputBase"}
-            className="bg-white focus:bg-white hover:bg-white"
-            inputProps={{
-              ...getInputProps(),
-              onChange: handleChange,
-              value: internalValue,
-            }}
-            placeholder={placeholder || "Search"}
-            onKeyUp={handleKeyUp}
-            disabled={disabled}
-          />
-        ) : (
-          <StyledSubInputBase
-            key={"StyledSubInputBase"}
-            className="hidden"
-            inputProps={{
-              ...getInputProps(),
-              onChange: handleChange,
-              value: internalValue,
-            }}
-            onKeyUp={handleKeyUp}
-            disabled={disabled}
-          />
-        )}
-
-        {internalValue && !disabled ? (
+        <StyledInputBase
+          key={"StyledInputBase"}
+          className="bg-white focus:bg-white hover:bg-white"
+          inputProps={{
+            ...getInputProps(),
+            onChange: handleChange,
+            value: internalValue,
+          }}
+          placeholder={placeholder || "Search"}
+          onKeyUp={handleKeyUp}
+          disabled={disabled}
+        />
+        {internalValue ? (
           <CloseIconWrapper key={"CloseIconWrapper"} onClick={handleCancel}>
             <CloseIcon />
           </CloseIconWrapper>
         ) : null}
 
-        {!disabled && groupedOptions.length > 0 && internalValue.length ? (
+        {groupedOptions.length > 0 && internalValue.length ? (
           <Listbox {...getListboxProps()} key={"ListboxOptions"}>
             {groupedOptions.map((option, index) => (
               <Suggestion
