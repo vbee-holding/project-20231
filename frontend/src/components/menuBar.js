@@ -29,8 +29,8 @@ const MenuBar = () => {
   };
 
   function handleOptions(e) {
-    debounce(
-      async () =>
+    if (e != "")
+      debounce(
         axios
           .get("threads/search", {
             params: {
@@ -39,8 +39,8 @@ const MenuBar = () => {
           })
           .then((response) => setOptions(response.data.threads))
           .catch(() => setOptions([])),
-      800
-    );
+        250
+      );
   }
 
   const handleCancel = () => {
@@ -66,7 +66,7 @@ const MenuBar = () => {
         >
           <SearchBar
             value={searchContent}
-            className="w-full py-0 outline-none focus:border-none focus:outline-none"
+            className="w-full py-0 outline-none focus:border-none focus:outline-none rounded-full"
             onChange={(e) => {
               setSearchContent(e);
               handleOptions(e);

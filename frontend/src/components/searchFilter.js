@@ -19,7 +19,7 @@ const Searchorder = () => {
   const handleClick = (e) => {
     setOrder(e.target.value);
     router.push(
-      "/r/search/?text=" + searchParams.get("text") + "&order=" + e.target.value
+      "/r/search/?text=" + searchContent + "&order=" + e.target.value
     );
   };
 
@@ -37,7 +37,7 @@ const Searchorder = () => {
         </Suspense>
         <Menu as="div" className="relative inline-block mr-2 ">
           <Menu.Button className="bg-purple-600 hover:bg-purple-950 text-white font-bold py-1 px-2 rounded-full text-xs w-24">
-            <Suspense fallback={<SearchBarFallback />}>
+            <Suspense fallback={<SearchBarFallback />}> 
               <div className="cursor-pointer">
                 {order == "date" ? "Ngày": "Liên quan"}
                 <Icons.expandMore className="h-4 w-4" />
