@@ -1,6 +1,6 @@
 FROM python:3.11
 
-WORKDIR /usr/crawls
+WORKDIR /usr/crawls/crawl1
 
 COPY . .
 
