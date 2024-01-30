@@ -61,10 +61,6 @@ const Search = ({ params }) => {
     setIndex((prevIndex) => prevIndex + 1);
   };
 
-  function SearchBarFallback() {
-    return <></>;
-  }
-
   return (
     <div>
       <MenuBar />
