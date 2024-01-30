@@ -10,7 +10,6 @@ const MenuSearchBar = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [searchContent, setSearchContent] = useState("");
-  const [options, setOptions] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -46,7 +45,6 @@ const MenuSearchBar = () => {
 
   const handleCancel = () => {
     setSearchContent("");
-    setOptions([]);
   };
 
   return (
