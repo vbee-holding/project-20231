@@ -16,7 +16,7 @@ def join_collections():
 
     pipeline = [
         {
-            "$match": {"check": 10},
+            "$match": {"check": 2},
         },
         {
             "$lookup": {

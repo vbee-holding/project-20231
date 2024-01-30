@@ -35,7 +35,6 @@ def crawl_thread():
                 soup = BeautifulSoup(response.content, "html.parser")
                 post_contents = soup.find_all("div", class_="structItem")
 
-                date_format = "%b %d, %Y at %I:%M %p"
                 result = []
 
                 for post_content in post_contents:
@@ -57,8 +56,9 @@ def crawl_thread():
                         )
 
                         createdAt = post_content.find(
-                            "time", class_="u-dt")["title"]
-                        createdTime = datetime.strptime(createdAt, date_format)
+                            "time", class_="u-dt")["datetime"]
+                        createdTime = datetime.strptime(
+                            createdAt, "%Y-%m-%dT%H:%M:%S%z")
 
                         author = (
                             post_content.find(
@@ -74,8 +74,9 @@ def crawl_thread():
                             "dl", class_="structItem-minor").dd.text
 
                         updatedAt = post_content.find(
-                            "time", class_="structItem-latestDate u-dt")["title"]
-                        updatedTime = datetime.strptime(updatedAt, date_format)
+                            "time", class_="structItem-latestDate u-dt")["datetime"]
+                        updatedTime = datetime.strptime(
+                            updatedAt, "%Y-%m-%dT%H:%M:%S%z")
 
                         page_jump = post_content.find(
                             'span', class_='structItem-pageJump')
@@ -87,7 +88,7 @@ def crawl_thread():
                                 if all_links[-1].text:
                                     last_page = int(all_links[-1].text)
 
-                        check = 10
+                        check = 2
 
                         result.append(
                             {
