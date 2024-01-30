@@ -28,9 +28,9 @@ async function fetchData(url) {
 
         const blockquote = $(item).find('.bbWrapper blockquote');
         if (!existing_reply && replyId) {
-          const createdAt = $(item).find('time.u-dt').attr('title');
+          const createdAt = $(item).find('time.u-dt').attr('datetime');
           // console.log(createdAt);
-          const createdTime = moment(createdAt, date_format).toDate();
+          const createdTime = moment(createdAt, "%Y-%m-%dT%H:%M:%S%z").toDate();
           // console.log(createdTime);
           const author_title = $(item).find('h5.message-userTitle').text().trim();
           // console.log(author_title);
