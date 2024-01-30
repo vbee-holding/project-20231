@@ -57,33 +57,38 @@ const logger = createLogger({
   transports: [new transports.Console()],
 });
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV == 'production') {
   logger.clear().add(
     new transports.Console({
+      filename: path.join(__dirname, '..', '/log/errors.log'),
       format: combine(
         errors({ stack: true }),
         validateMessage(),
         ignorePrivate(),
         hideSensitive(),
-        format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSSZ' }),
+        format.timestamp(),
         printf((msg) => {
-          const { timestamp, level, message, product, service, module, requestID, stack, details, ...meta } = msg;
-          const metadata = Object.keys(meta).length ? `${JSON.stringify(meta)}` : '';
-          const moduleName = module ? `${module.toString().padStart(12)}`: `${'-'.repeat(20)}`;
-          const request_ID = requestID ? `[${requestID.toString()}]`:`${''}`;
-          const httpContext = details && details.url && details.statusCode ? `"\x1b[3m${details.toString()} /${details.url.toString()}\x1b[0m - ${details.statusCode}"`:'';
-
-          if (stack) {
-            const formattedStack = stack.split('\n').map((line) => colorize().colorize(level, line)).join('\n\t\t\t\t');
-            const productService = product && service ? `[${product.toString().padStart(10)} : \x1b[33m${service.toString().padStart(10)}\x1b[0m]`: `${'-'.repeat(20)}`;
-
-            return colorize().colorize(level, `[${timestamp}] \x1b[1m[${level.padStart(5).toUpperCase()}]\x1b[0m ${productService} [${moduleName}] ${request_ID} ${httpContext} : ${message} ${metadata} \n\t\t\t\t ${formattedStack}`);
-          } else {
-            const productService = product && service ? `[${product.toString().padStart(10)} : \x1b[35m${service.toString().padStart(10)}\x1b[0m]`: `${'-'.repeat(20)}`;
-            return colorize().colorize(level, `[${timestamp}] \x1b[1m[${level.padStart(5).toUpperCase()}] \x1b[0m ${productService} [${moduleName}] ${request_ID} ${httpContext} : ${message} ${metadata}`);
+          const { level, timestamp, message, ...meta } = msg;
+          const data = { timestamp, level, message, ...meta };
+          let isCircularStructure = false;
+    
+          try {
+            JSON.stringify(data);
+          } catch (error) {
+            if (error.message.match('Converting circular structure to JSON')) {
+              isCircularStructure = true;
+            }
           }
-          }),
+    
+          const formattedData = isCircularStructure
+            ? util.inspect(data)
+            : JSON.stringify(data);
+    
+          // eslint-disable-next-line prettier/prettier
+          return `${formattedData}`;
+        }),
       ),
+      transports: [new transports.Console()],
     }),
     logger.clear().add(
     new transports.File({
@@ -122,33 +127,38 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 
-if (process.env.NODE_ENV == 'production') {
+if (process.env.NODE_ENV !== 'production') {
   logger.clear().add(
     new transports.Console({
+      filename: path.join(__dirname, '..', '/log/errors.log'),
       format: combine(
         errors({ stack: true }),
         validateMessage(),
         ignorePrivate(),
         hideSensitive(),
-        format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSSZ' }),
+        format.timestamp(),
         printf((msg) => {
-          const { timestamp, level, message, product, service, module, requestID, stack, details, ...meta } = msg;
-          const metadata = Object.keys(meta).length ? `${JSON.stringify(meta)}` : '';
-          const moduleName = module ? `${module.toString().padStart(12)}`: `${'-'.repeat(20)}`;
-          const request_ID = requestID ? `[${requestID.toString()}]`:`${''}`;
-          const httpContext = details && details.url && details.statusCode ? `"\x1b[3m${details.toString()} /${details.url.toString()}\x1b[0m - ${details.statusCode}"`:'';
-
-          if (stack) {
-            const formattedStack = stack.split('\n').map((line) => colorize().colorize(level, line)).join('\n\t\t\t\t');
-            const productService = product && service ? `[${product.toString().padStart(10)} : \x1b[33m${service.toString().padStart(10)}\x1b[0m]`: `${'-'.repeat(20)}`;
-
-            return colorize().colorize(level, `[${timestamp}] \x1b[1m[${level.padStart(5).toUpperCase()}]\x1b[0m ${productService} [${moduleName}] ${request_ID} ${httpContext} : ${message} ${metadata} \n\t\t\t\t ${formattedStack}`);
-          } else {
-            const productService = product && service ? `[${product.toString().padStart(10)} : \x1b[35m${service.toString().padStart(10)}\x1b[0m]`: `${'-'.repeat(20)}`;
-            return colorize().colorize(level, `[${timestamp}] \x1b[1m[${level.padStart(5).toUpperCase()}] \x1b[0m ${productService} [${moduleName}] ${request_ID} ${httpContext} : ${message} ${metadata}`);
+          const { level, timestamp, message, ...meta } = msg;
+          const data = { timestamp, level, message, ...meta };
+          let isCircularStructure = false;
+    
+          try {
+            JSON.stringify(data);
+          } catch (error) {
+            if (error.message.match('Converting circular structure to JSON')) {
+              isCircularStructure = true;
+            }
           }
-          }),
+    
+          const formattedData = isCircularStructure
+            ? util.inspect(data)
+            : JSON.stringify(data);
+    
+          // eslint-disable-next-line prettier/prettier
+          return `${formattedData}`;
+        }),
       ),
+      transports: [new transports.Console()],
     }),
     logger.clear().add(
     new transports.File({
