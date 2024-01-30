@@ -116,6 +116,11 @@ jobs:
           envkey_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           envkey_GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           envkey_OPENAI_API_KEY_2: ${{ secrets.OPENAI_API_KEY_2 }}
+          envkey_EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+          envkey_EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          envkey_GOOGLE_MAILER_CLIENT_SECRET: ${{ secrets.GOOGLE_MAILER_CLIENT_SECRET }}
+          envkey_GOOGLE_MAILER_CLIENT_ID: ${{ secrets.GOOGLE_MAILER_CLIENT_ID }}
+          envkey_GOOGLE_MAILER_REFRESH_TOKEN: ${{ secrets.GOOGLE_MAILER_REFRESH_TOKEN }}
           directory: backend
           
       - name: Create .env file for frontend
