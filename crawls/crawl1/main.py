@@ -4,11 +4,6 @@ import threading
 import sys
 from flask import Flask
 import os
-import embedded
-import crawlReply
-import crawlSimilarThreads
-import crawlThread
-
 commands = [
     ["python", "scripts/crawlThread.py"],
     ["python", "scripts/crawlReply.py"],
@@ -24,15 +19,17 @@ def hello():
 i = 0
 crawl_running = False
 
+sub_p = []
 def crawl():
     global crawl_running
+    global sub_p
     while crawl_running:
-        
-        print('\n service run: ' ,i,file=sys.stdout)    
-        crawlThread.crawl_thread()
-        crawlReply.scrape_data()
-        embedded.join_collections()
-
+        for command in commands:
+            global i
+            i += 1
+            print('\n service run: ' ,i,file=sys.stdout)    
+            # sub_p.append(subprocess.Popen(command,stdout=None,shell=True))
+            subprocess.run(command)
         time.sleep(120)
         # for s in sub_p:
         #     s.terminate()
