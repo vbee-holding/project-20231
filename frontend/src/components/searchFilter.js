@@ -1,6 +1,6 @@
 "use client";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
+import { DateField, LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment, Suspense, useState } from "react";
@@ -41,6 +41,7 @@ const SearchFilter = () => {
   };
 
   function parsedDate(date) {
+    if (date == null) return "";
     const result = "";
     const day = date.get("date");
     const month = date.get("month") + 1;
@@ -61,25 +62,24 @@ const SearchFilter = () => {
     <div className="container max-w-7xl h-full mx-auto flex items-center justify-start gap-2.5 px-4 py-2">
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Suspense fallback={<SearchBarFallback />}>
-          <MobileDatePicker
+          <DateField
             label="Sau"
             className="h-min w-28 outline-none border-none bg-white rounded-full"
             value={newer}
             onChange={(newValue) => setNewer(newValue)}
+            format="DD-MM-YYYY"
           />
         </Suspense>
         <Suspense fallback={<SearchBarFallback />}>
-          <MobileDatePicker
+          <DateField
             label="Trước"
             className="h-min w-28 outline-none border-none bg-white rounded-full"
             value={older}
             onChange={(newValue) => setOlder(newValue)}
+            format="DD-MM-YYYY"
           />
         </Suspense>
       </LocalizationProvider>
-      {/* <button onClick={newer ? console.log(newer.get("date")) : null}>
-        test
-      </button> */}
       <Menu as="div" className="relative inline-block mr-2 pl-8">
         <Menu.Button className="bg-purple-600 hover:bg-purple-950 text-white font-bold py-1 px-2 rounded-full text-xs w-24">
           <Suspense fallback={<SearchBarFallback />}>
