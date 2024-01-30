@@ -1,3 +1,5 @@
+"use client"
+
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { Icons } from "./icons";
@@ -18,7 +20,7 @@ const SearchTitile = () => {
       <div className="container max-w-7xl h-full mx-auto flex items-center justify-between gap-2 py-2">
         <Suspense fallback={<SearchBarFallback />}>
           <h1 className="px-4 text-2xl font-semibold tracking-tight truncate w-[100]">
-            Results for " {searchContent} "
+            Kết quả cho " {searchContent} "
           </h1>
         </Suspense>
         <button onClick={handleFilter} className="absolute right-4">

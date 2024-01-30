@@ -1,3 +1,5 @@
+"use client";
+
 import { Icons } from "./icons";
 import ButtonGroupMenu from "./buttonGroupMenu";
 import MenuSearchBar from "./menuSearchBar";
@@ -24,7 +26,7 @@ const MenuBar = () => {
         <QueryClientProvider client={queryClient}>
           {search ? <MenuSearchBar /> : null}
         </QueryClientProvider>
-        
+
         <div className="w-min flex justify-end items-center z-0 pr-4">
           {search ? null : (
             <button onClick={handleSearch}>
