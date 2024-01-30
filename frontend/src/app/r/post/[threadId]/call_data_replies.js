@@ -9,6 +9,7 @@ export default function CallReplies(params) {
   const [hasMore, setHasMore] = useState(true);
   const [index, setIndex] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+  const [firstLoad, setFirstLoad] = useState(true);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -27,13 +28,21 @@ export default function CallReplies(params) {
         if (newReplies.length <= 10 && totalPages === 1) {
           setHasMore(false);
         }
+
+        // Đánh dấu lần đầu tiên đã load thành công
+        setFirstLoad(false);
       } catch (error) {
         console.error('Error fetching initial data:', error);
+
+        // Nếu lần đầu không thành công, thực hiện gọi lại
+        if (firstLoad) {
+          fetchInitialData();
+        }
       }
     };
 
     fetchInitialData();
-  }, [params.threadId]);
+  }, [params.threadId, firstLoad]);
 
   const fetchMoreData = () => {
     if (index < totalPages - 1) {
