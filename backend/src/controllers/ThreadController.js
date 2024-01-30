@@ -215,19 +215,19 @@ class ThreadController{
     }
     
     if (newerThan && olderThan) {
-      query = query.where('updatedTime').gte(new Date(newerThan)).lte(new Date(olderThan));
+      query = query.where('createdTime').gte(new Date(newerThan)).lte(new Date(olderThan));
     }
     // Sort by date
     if (order === 'date') {
-      query = query.sort({ updatedTime: -1 });
+      query = query.sort({ createdTime: -1 });
     }
 
     // Sort by relevance
     else if (order === 'relevance'){
       query = query
       .lean()
-      .then(threads => {
-        threads.forEach(thread => {
+      .then(relevanceThreads => {
+        relevanceThreads.forEach(thread => {
           let relevanceScore = 0;
           keywords.forEach(keyword =>{
             const keywordRegex = new RegExp(keyword, 'i');
@@ -246,14 +246,14 @@ class ThreadController{
             thread.content = content;
           }
         });
-        threads.sort((a, b) => b.relevanceScore - a.relevanceScore);
+        relevanceThreads.sort((a, b) => b.relevanceScore - a.relevanceScore);
         const startIndex = page * threadsPerPage;
         const endIndex = startIndex + threadsPerPage;
-        const paginatedThreads = threads.slice(startIndex, endIndex);
+        const threads = relevanceThreads.slice(startIndex, endIndex);
         // res.status(200).json(paginatedThreads);
         const response = {
           totalPages: Math.ceil(totalThreads / threadsPerPage),
-          paginatedThreads
+          threads
         }
         return res.status(200).json(response);
       })
@@ -262,7 +262,7 @@ class ThreadController{
     }
 
     const threads = await query
-      .sort({updatedTime: -1})
+      .sort({createdTime: -1})
       .skip(page * threadsPerPage)
       .limit(threadsPerPage)
       .lean();
