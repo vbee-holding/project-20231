@@ -133,7 +133,7 @@ class EmailController{
   
       if (topTopics && topTopics.length > 0) {
         const top3TopicsForEmail = topTopics.slice(0, 3);
-        const emailBody = `Đây là các chủ đề được nhiều người quan tâm hôm nay - ${moment().format('dddd, D [tháng] M, YYYY')}:\n\n${top3TopicsForEmail.map(topic => `Tên chủ đề: ${topic.tag}\nSố lượng bài viết: ${topic.threadCount}\nLink đến các bài viết thuộc chủ đề này: https://cloudrun-frontend-service-lsz2erfp2q-et.a.run.app/r/trending/topics/${encodeURIComponent(topic.tag)}\n\n`).join('\n')}`;
+        const emailBody = `Đây là các chủ đề được nhiều người quan tâm hôm nay - ${moment().format('dddd, D [tháng] M, YYYY')}:\n\n${top3TopicsForEmail.map(topic => `Tên chủ đề: ${topic.tag}\nSố lượng bài viết: ${topic.threadCount}\nLink đến các bài viết thuộc chủ đề này: https://cloudrun-frontend-service-lsz2erfp2q-et.a.run.app/r/topic-detail/${encodeURIComponent(topic.tag)}\n\n`).join('\n')}`;
 
         const mailOptions = this.createMailOptions(`Đây là 3 chủ đề được nhiều người quan tâm hôm nay!`, emailBody, usersToNotify);
   
