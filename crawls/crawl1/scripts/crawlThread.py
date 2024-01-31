@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime
+from datetime import datetime, timezone
 import pymongo
 from dotenv import load_dotenv
 import os
@@ -69,7 +69,7 @@ def crawl_thread():  # Hàm crawl data thread
                 # Kiểm tra tiêu đề đã có trong collection thread chưa
                 if existing_thread:
                     # Nếu title đã tồn tại và updatedTime mới hơn latest_time, cập nhật lại updatedTime, updatedAt
-                    if latest_time is not None and updatedTime > latest_time:
+                    if latest_time is not None and updatedTime.replace(tzinfo=None) > latest_time:
                         collection.update_one(
                             {"title": title}, {"$set": {"updatedTime": updatedTime}})
                         collection.update_one(
