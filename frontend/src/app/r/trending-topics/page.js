@@ -3,11 +3,12 @@ import MenuBar from "@/components/menuBar";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "@/utils/axios";
+import Loader from "@/components/loader";
 
 const Item = (props) => {
   return (
     <div className="flex-column items-center pl-8 mb-7 mx-2 overflow-hidden float-left ">
-      <Link href="./trending-topics-detail">
+      <Link href="./r/TrendingTopicDetail/${props.tag}">
         <div>
           <div className="w-[143px] h-[87px] bg-zinc-300 rounded-[5px] border border-black color-inherit decoration-none outline-none;" />
           <h2 className="text-xl text-gray-800 mt-1 font-bold cursor-pointer text-center color-inherit decoration-none outline-none">
@@ -43,15 +44,19 @@ const HotTrendTopics = () => {
         </h1>
         <div className="bg-gray-400 h-0.5 grow mt-12"></div>
       </div>
-      <div>
-        {items.map((child, index) => (
-          <Item
-            key={index}
-            topic={child.tag}
-            amount={child.threadCount}
-          />
-        ))}
-      </div>
+      {items.length === 0 && loadedAxios ? (
+        <p className="text-center mt-5">Không có chủ đề nào</p>
+      ) : (
+        <div>
+          {items.map((child, index) => (
+            <Item
+              key={index}
+              topic={child.tag}
+              amount={child.threadCount}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
