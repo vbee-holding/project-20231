@@ -48,7 +48,9 @@ class HotTopicController{
         threadCount: tagCounts[tag],
       }))
       if(sortedTags.length === 0){
-        return res.status(400).send("Không có hot topic nào hôm nay");
+        return res.status(200).json({
+          trendingTopic: []
+        });
       }
       sortedTags.sort((a, b) => b.threadCount - a.threadCount);
       const trendingTopics = sortedTags.slice(0, 6);
