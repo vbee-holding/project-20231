@@ -21,7 +21,7 @@ def crawl_thread():
         database = client["test"]
         collection = database["threads"]
 
-        for i in range(1, 10):
+        for i in range(1, 2):
             url = f"https://voz.vn/f/chuyen-tro-linh-tinh.17/page-{i}"
             print(url)
             headersList = {
