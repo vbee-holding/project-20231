@@ -8,20 +8,24 @@ import Loader from "@/components/loader";
 const Item = (props) => {
   return (
     <div className="flex-column items-center pl-8 mb-7 mx-2 overflow-hidden float-left ">
-      <Link href="./r/TrendingTopicDetail/${props.tag}">
+      <Link href= {`/r/topic-detail/${props.topic}`}>
         <div>
-          <div className="w-[143px] h-[87px] bg-zinc-300 rounded-[5px] border border-black color-inherit decoration-none outline-none;" />
-          <h2 className="text-xl text-gray-800 mt-1 font-bold cursor-pointer text-center color-inherit decoration-none outline-none">
-            {props.topic}
-          </h2>
+          <div
+            className="flex flex-col justify-center w-[145px] h-[90px] bg-zinc-300 rounded-[5px] border border-black color-inherit decoration-none outline-none;"
+          >
+            <h2 className="text-l text-gray-800 mt-1 font-bold cursor-pointer text-center color-inherit decoration-none outline-none">
+              {props.topic}
+            </h2>
+            <h2 className="text-0.5 mb-0.5 text-gray-800 cursor-pointer text-center">
+              {`${props.amount} bài viết`}
+            </h2>
+          </div>
         </div>
-        <h2 className="text-0.5 mb-0.5 text-gray-800 cursor-pointer text-center">
-          {`${props.amount} bài viết`}
-        </h2>
       </Link>
     </div>
   );
 };
+
 
 const HotTrendTopics = () => {
   const [items, setItems] = useState([]);
@@ -30,7 +34,7 @@ const HotTrendTopics = () => {
     axios
       .get("trending/topics")
       .then((response) => {
-        setItems(response.data.trendingTopic);
+        setItems(response.data);
         SetLoaded(true)
       })
       .catch((error) => console.log(error));
@@ -57,6 +61,7 @@ const HotTrendTopics = () => {
           ))}
         </div>
       )}
+      {items.length === 0 && !loadedAxios && <Loader />}
     </div>
   );
 };
