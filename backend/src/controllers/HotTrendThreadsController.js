@@ -55,7 +55,9 @@ class HotTrendThreadsController{
       const topThreadIds = sortedThreadId.slice(0, threadNumber);
       const hotThreads = await Thread.find({ threadId: { $in: topThreadIds}}).lean();
       if(hotThreads.length === 0){
-        return res.status(400).send("Hôm nay chưa có bài viết nào!");
+        return res.status(200).json({
+          hotThreads: []
+        });
       }
       else{
         const threadResponse = {
