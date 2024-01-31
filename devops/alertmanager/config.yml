@@ -1,61 +1,49 @@
-global:
-  resolve_timeout: 1m
-  slack_api_url: 'https://hooks.slack.com/services/<webhook-id>'
-
 route:
-  # continue: false
-  # group_by:
-  # - job
+  group_by: ['alertname']
   group_wait: 30s
-  group_interval: 1m
-  repeat_interval: 4h
-  receiver: 'slack-notifications'
+  group_interval: 5m
+  repeat_interval: 1h
+  receiver: 'email-notifier'
   routes:
-  # - receiver: 'slack-notifications'
-  #   continue: true
-  - receiver: default-telegram
+    - match:
+        receiver: 'telegram-notifier'
       continue: true
-
-  
 receivers:
-# - name: 'slack-notifications'
-#   slack_configs:
-#   - channel: '#<Your-chanel>' # Example: #bh-webhook
-#     send_resolved: true
-#     icon_url: https://avatars3.githubusercontent.com/u/3380462
-#     title: |-
-#       [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }} for {{ .CommonLabels.job }}
-#       {{- if gt (len .CommonLabels) (len .GroupLabels) -}}
-#         {{" "}}(
-#         {{- with .CommonLabels.Remove .GroupLabels.Names }}
-#           {{- range $index, $label := .SortedPairs -}}
-#             {{ if $index }}, {{ end }}
-#             {{- $label.Name }}="{{ $label.Value -}}"
-#           {{- end }}
-#         {{- end -}}
-#         )
-#       {{- end }}
-#     text: >-
-#       {{ range .Alerts -}}
-#       *Alert:* {{ .Annotations.title }}{{ if .Labels.severity }} - `{{ .Labels.severity }}`{{ end }}
+  - name: default-telegram
+    telegram_configs:
+      - api_url: https://api.telegram.org
+        bot_token: 6714849193:AAH8eeCCrd1vmEmijVJ55Df7FArmooEvxHc
+        chat_id: 1626517174
+        disable_notifications: false
+        http_config:
+          follow_redirects: true
+        send_resolved: true
+        parse_mode: ""
 
-#       *Description:* {{ .Annotations.description }}
+  - name: 'email-notifier'
+    email_configs:
+      - to: 'ddta.1389@gmail.com'
+        from: 'tienanhbghd@gmail.com'
+        smarthost: 'smtp.gmail.com:587'
+        auth_username: 'tienanhbghd@gmail.com'
+        auth_identity: 'tienanhbghd@gmail.com'
+        auth_password: 'swrj pjuk feil miaf'
+        send_resolved: true
+        require_tls: true
 
-#       *Details:*
-#         {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
-#         {{ end }}
-#       {{ end }}
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'instance']
 
-- name: default-telegram
-  telegram_configs:
-  - api_url: https://api.telegram.org
-    bot_token: 6714849193:AAH8eeCCrd1vmEmijVJ55Df7FArmooEvxHc
-    chat_id: 1626517174
-    disable_notifications: false
-    http_config:
-      follow_redirects: true
-    send_resolved: true
-    parse_mode: ""
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'instance']
 
 templates:
 - /etc/alertmanager/config/*.tmpl
