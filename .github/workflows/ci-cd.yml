@@ -136,7 +136,7 @@ jobs:
         with:
           envkey_MONGODB_URL_DEV: ${{ secrets.MONGODB_URL_DEV }}
           envkey_MONGODB_URL_PRODUCT: ${{ secrets.MONGODB_URL_DEV }}
-          directory: crawls
+          directory: crawls/crawl1
 
       - name: Set up Cloud SDK
         uses: "google-github-actions/setup-gcloud@v1"
