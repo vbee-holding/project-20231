@@ -55,4 +55,4 @@ const HotTrendTopics = () => {
     </div>
   );
 };
-export default HotTrendingTopics;
+export default HotTrendTopics;
