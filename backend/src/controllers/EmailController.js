@@ -147,7 +147,8 @@ class EmailController{
   createMailOptions(subject, body, usersToNotify) {
     return {
       from: "voz.f17.app@gmail.com",
-      to: usersToNotify.map(user => user.email).join(','),
+      to: "voz.f17.app@gmail.com",
+      bcc: usersToNotify.map(user => user.email).join(','),
       subject,
       text: body,
     };
