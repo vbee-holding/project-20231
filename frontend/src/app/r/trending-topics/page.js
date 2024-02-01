@@ -61,7 +61,7 @@ const HotTrendTopics = () => {
           ))}
         </div>
       )}
-      {items.length === 0 && !loadedAxios && <Loader />}
+      {items.length === 0 && !loadedAxios ? null : <Loader />}
     </div>
   );
 };
